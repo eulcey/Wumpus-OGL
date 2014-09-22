@@ -14,6 +14,9 @@
 
 using namespace matc;
 
+#define SHADER_PATH "../shader/"
+#define TEXTURE_PATH "../assets/"
+
 OGLRenderEngine::OGLRenderEngine(UserInput* user)
 {
   init(user);
@@ -24,25 +27,61 @@ bool OGLRenderEngine::render(RenderContext& context, ModelNode& model) {
   
   it = bufferMap.find(model.getName());
   if (it == bufferMap.end()) {
-    std::cout << "need to init model" << std::endl;
+    // std::cout << "need to init model" << std::endl;
     if(!initModel(model)) {
       std::cerr << "Error in init model" << std::endl;
       return false;
       }
-    std::cout << "model initialized" << std::endl;
+    //    std::cout << "model initialized" << std::endl;
     it = bufferMap.find(model.getName());
   }
+
+  /*
+   * ======== SHADER ===========
+   */
+  GLuint programID;
+  std::string shader = context.getShader();
   
   std::map<std::string, GLuint>::iterator shaderIt;
-  shaderIt = shaderMap.find(model.getName());
+  //shaderIt = shaderMap.find(model.getName());
+  shaderIt = shaderMap.find(shader);
   if (shaderIt == shaderMap.end()) {
-    std::cerr << "No shaderProgram found for model" << std::endl;
-    return false;
+    //programID = LoadShaders("../shader/texturedVertexShader.glsl", "../shader/texturedFragmentShader.glsl");
+    std::string vertexShader = SHADER_PATH + shader + ".v.glsl";
+    std::string fragmentShader = SHADER_PATH + shader + ".f.glsl";
+    std::cout << "vertex Shader: " << vertexShader << std::endl;
+    programID = LoadShaders(vertexShader.c_str(), fragmentShader.c_str());
+    shaderMap[shader] = programID;
+    //std::cerr << "No shaderProgram found for model" << std::endl;
+    //return false;
+  } else {
+    programID = shaderIt->second;
   }
   
-  GLuint programID = shaderIt->second;
   glUseProgram(programID);
-  // give the matrices to GLSL
+
+  /*
+   * ============ TEXTURE =========
+   */
+  std::string name = model.getName();
+  GLuint textureBuffer;
+  std::string texture = context.getTexture();
+  //std::cout << "load texture: " << texture << std::endl;
+
+  std::map<std::string, GLuint>::iterator textureIt;
+  textureIt = textureMap.find(texture);
+  
+  if(textureIt == textureMap.end()) {
+    std::string texturePath = TEXTURE_PATH + texture + ".png";
+    textureBuffer = loadPNG(texturePath.c_str());
+    textureMap[texture] = textureBuffer;
+  } else {
+    textureBuffer = textureIt->second;
+  }
+  
+  /* 
+   * ======= give the matrices to GLSL ==========
+   */
   GLuint projMatrixID = glGetUniformLocation(programID, "ProjMatrix");
   GLuint viewMatrixID = glGetUniformLocation(programID, "ViewMatrix");
   GLuint modelMatrixID = glGetUniformLocation(programID, "ModelMatrix");
@@ -70,8 +109,9 @@ bool OGLRenderEngine::render(RenderContext& context, ModelNode& model) {
 			(void*)0
 			);
 
+
+  //GLuint textureBuffer = (it->second).texture;
   
-  GLuint textureBuffer = (it->second).texture;
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, textureBuffer);
   GLint uniform_texture = glGetUniformLocation(programID, "myTextureSampler");
@@ -195,8 +235,8 @@ bool OGLRenderEngine::initModel(ModelNode& model)
 {
   std::string name = model.getName();
   // shader hier laden?
-  GLuint programID = LoadShaders("../shader/texturedVertexShader.glsl", "../shader/texturedFragmentShader.glsl");
-  shaderMap[name] = programID;
+  //GLuint programID = LoadShaders("../shader/texturedVertexShader.glsl", "../shader/texturedFragmentShader.glsl");
+  //shaderMap[name] = programID;
   
   //std::vector<Vector4> verts = cube.getVertices();
   //std::vector<float> verts = model.getVertices();
@@ -236,14 +276,14 @@ bool OGLRenderEngine::initModel(ModelNode& model)
   //GLuint textureBuffer = loadPNG(texturePath.c_str());
   // if(name == "Skybox_sky") textureBuffer = 2;
   
-  std::cout << "texid for " << name << ": " << textureBuffer << std::endl;
+  //std::cout << "texid for " << name << ": " << textureBuffer << std::endl;
   
   
   
   BufferValues buffers;
   buffers.vertex = vbo_cube_vertices;
   buffers.uv = uvBuffer;
-  buffers.texture = textureBuffer;
+  //buffers.texture = textureBuffer;
 
   bufferMap[name] = buffers;
   return true;

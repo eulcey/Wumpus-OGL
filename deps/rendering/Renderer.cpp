@@ -55,8 +55,9 @@ bool Renderer::visit(LightNode& lNode)
 bool Renderer::visit(MaterialNode& material)
 {
   context.setTexture(material.getTexture());
-  context.setVertexShader(material.getVertexShader());
-  context.setFragmentShader(material.getFragmentShader());
+  context.setShader(material.getShader());
+  //context.setVertexShader(material.getVertexShader());
+  //context.setFragmentShader(material.getFragmentShader());
   return true;
 }
 

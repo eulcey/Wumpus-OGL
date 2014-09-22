@@ -7,7 +7,7 @@
 class TransformNode: public SceneNode
 {
 public:
-  TransformNode(std::string name, const matc::Matrix4x4 trans): transform(trans), SceneNode(name) {}
+  TransformNode(std::string name, const matc::Matrix4x4 trans): SceneNode(name), transform(trans){}
   ~TransformNode() {}
 
   void setTransform(const matc::Matrix4x4 trans)

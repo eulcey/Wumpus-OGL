@@ -19,9 +19,9 @@ struct BufferValues {
   GLuint vertex = -1;
   GLuint color = -1;
   GLuint element = -1;
-  GLuint texture = -1;
+  //GLuint texture = -1;
   GLuint uv = -1;
-  GLuint program = -1;
+  //GLuint program = -1;
 };
 
 class OGLRenderEngine
@@ -44,5 +44,6 @@ private:
   GLFWwindow* window;
   std::map<std::string, BufferValues> bufferMap;
   std::map<std::string, GLuint> shaderMap;
+  std::map<std::string, GLuint> textureMap;
 };
 #endif

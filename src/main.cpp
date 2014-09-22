@@ -21,7 +21,8 @@ Matrix4x4 computeView(double, double, float&, float&, double, Vector3);
 int main(void)
 {
 
-  TransformNode root("Root", Matrix4x4());
+  //TransformNode root("Root", Matrix4x4());
+  MaterialNode root("Rootmaterial", "cube","texturedShader");
 
   Vector3 position(0.0, 3.0, 10.0);
   Matrix4x4 viewMatrix = lookAt(Vector3(0.0, 0.0, 0.0), Vector3(0.0, 0.0, 0.0), Vector3(0.0, 1.0, 0.0)).invert();
@@ -45,13 +46,19 @@ int main(void)
   TransformNode cube2Scale("Scale 2", scale(Matrix4x4(),1.0f, 1.0f, 1.0f));
 
   ModelNode modelCube1("ModelCube 1", "../assets/cube.obj");
+  MaterialNode modelCube1_material("ModelCube 1 Material", "cube", "texturedShader");
   ModelNode modelCube2("ModelCube 2", "../assets/cube.obj");
+  MaterialNode modelCube2_material("ModelCube 2 Material", "cube", "texturedShader");
   //ModelNode modelCube("Monkey", "../assets/monkey.obj");
   ModelNode skybox_ground("Skybox_ground", "../assets/skybox_ground.obj");
+  MaterialNode skybox_ground_material("Skybox Ground Material", "Skybox_ground", "texturedShader");
+  skybox_ground_material.addChild(&skybox_ground);
   ModelNode skybox_sky("Skybox_sky", "../assets/skybox_sky.obj");
+  MaterialNode skybox_sky_material("Skybox Sky Material", "Skybox_sky", "texturedShader");
+  skybox_sky_material.addChild(&skybox_sky);
 
   TransformNode skyboxScale("Skybox Scale", scale(Matrix4x4(), 10.0f, 10.0f, 10.0f));
-  skyboxScale.addChild(&skybox_sky);
+  skyboxScale.addChild(&skybox_sky_material);
   //skyboxScale.addChild(&skybox_ground);
   TransformNode groundTrans("Ground Translation", translate(Matrix4x4(), Vector3(0.0, -0.2f, 0.0)));
   TransformNode groundScale("Ground Scale", scale(Matrix4x4(), 10.0f, 0.1f, 10.0f));
@@ -63,10 +70,13 @@ int main(void)
   
   root.addChild(&cube1Translation);
   cube1Translation.addChild(&cube1Rotation);
-  cube1Rotation.addChild(&modelCube2);
+  cube1Rotation.addChild(&modelCube2_material);
   
   root.addChild(&cube2Translation);
-  cube2Translation.addChild(&modelCube1);
+  cube2Translation.addChild(&modelCube1_material);
+
+  modelCube1_material.addChild(&modelCube1);
+  modelCube2_material.addChild(&modelCube1);
   
   
   UserInput user;

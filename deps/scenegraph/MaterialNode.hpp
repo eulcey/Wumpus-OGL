@@ -8,20 +8,18 @@ class NodeVisitor;
 class MaterialNode: public SceneNode
 {
 public:
-  MaterialNode(std::string name, std::string texture, std::string vertexShader, std::string fragmentShader):
-    SceneNode(name), texturePath(texture), vertexShaderPath(vertexShader), fragmentShaderPath(fragmentShader) {}
+  MaterialNode(std::string name, std::string texture, std::string shader):
+    SceneNode(name), textureName(texture), shaderName(shader) {} 
   ~MaterialNode() {}
 
   bool accept(NodeVisitor &visitor);
 
-  std::string getTexture() const { return texturePath; }
-  std::string getVertexShader() const { return vertexShaderPath; }
-  std::string getFragmentShader() const { return fragmentShaderPath; }
+  std::string getTexture() const { return textureName; }
+  std::string getShader() const { return shaderName; }
   
 private:
-  std::string texturePath;
-  std::string vertexShaderPath;
-  std::string fragmentShaderPath;
+  std::string textureName;
+  std::string shaderName;
 };
   
 #endif

@@ -18,20 +18,23 @@ public:
   void setModel(matc::Matrix4x4);
   
   void setTexture(std::string texture) { this->texture = texture; }
-  void setVertexShader(std::string vertex) { this->vertexShader = vertex; }
-  void setFragmentShader(std::string fragment) { this->fragmentShader = fragment; }
+  void setShader(std::string shader) { this->shader = shader; }
+  //void setVertexShader(std::string vertex) { this->vertexShader = vertex; }
+  //void setFragmentShader(std::string fragment) { this->fragmentShader = fragment; }
   // bool render(ModelNode& model);
   matc::Matrix4x4 getProjection() const { return projectionTransformation; }
   matc::Matrix4x4 getView() const { return viewTransformation; }
   matc::Matrix4x4 getModel() const { return modelTransformation; }
 
   std::string getTexture() const { return texture; }
-  std::string getVertexShader() const { return vertexShader; }
-  std::string getFragmentShader() const { return fragmentShader; }
+  std::string getShader() const { return shader; }
+  //std::string getVertexShader() const { return vertexShader; }
+  //std::string getFragmentShader() const { return fragmentShader; }
 private:
   std::string texture;
-  std::string vertexShader;
-  std::string fragmentShader;
+  std::string shader;
+  // std::string vertexShader;
+  // std::string fragmentShader;
   // shader or program
   matc::Matrix4x4 projectionTransformation;
   matc::Matrix4x4 viewTransformation;

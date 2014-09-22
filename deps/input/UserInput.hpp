@@ -15,7 +15,7 @@ public:
   bool init(GLFWwindow* window);
   bool setMouseInputAction(int input, std::function<void (void)> action);
   bool setKeyboardInputAction(int input, std::function<void (void)> action);
-  bool setMousePosAction(std::function<void (double, double)> action) { this->mousePosChange = action; }
+  bool setMousePosAction(std::function<void (double, double)> action) { this->mousePosChange = action; return true; }
   
 private:
   static void mousePosCallbackImpl(GLFWwindow* window, double, double);
