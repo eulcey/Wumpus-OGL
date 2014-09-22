@@ -11,7 +11,6 @@ namespace matc
   class Vector4;
 
   const int MAT_DIM = 4;
-  const int MAT_3_DIM = 3;
   
   class Matrix4x4
   {
@@ -42,38 +41,7 @@ namespace matc
     std::vector<float> values;
     // float* values;
   };
-
-  class Vector3;
   
-  class Matrix3x3
-  {
-  public:
-    Matrix3x3();
-    Matrix3x3(std::vector<float> nValues): values(nValues) {}
-    Matrix3x3(float value): values(MAT_3_DIM*MAT_3_DIM, value) {}
-    Matrix3x3(const Matrix3x3 &m);
-    ~Matrix3x3() {}
-
-    Matrix3x3 operator+(const Matrix3x3 &other) const;
-    Matrix3x3 operator*(const Matrix3x3 &other) const;
-    Vector3 operator*(const Vector3 &vec) const;
-
-    Matrix3x3 transpose() const;
-    Matrix3x3 invert() const;
-
-    void setIdentity();
-
-    const std::vector<float> getValues() const;
-    const float* asArray() const;
-    const std::string toString() const;
-    void set(int row, int col, float v);
-    
-    friend std::ostream& operator<<(std::ostream &out, Matrix3x3 &m);
-    
-  private:
-    std::vector<float> values;
-  };
-    
   class Vector3
   {
   public:
@@ -87,7 +55,6 @@ namespace matc
     Vector3 operator+(const Vector3 &other) const;
     Vector3 operator-(const Vector3 &other) const;
     Vector3 operator*(const double d) const;
-    Vector3 operator*(const Matrix3x3 &mat) const;
     float dot(const Vector3 &other) const;
     Vector3 cross(const Vector3 &other) const;
 

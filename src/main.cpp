@@ -4,8 +4,11 @@
 #include "Renderer.hpp"
 #include "CubeNode.hpp"
 #include "ModelNode.hpp"
+#include "CameraNode.hpp"
 #include "OGLRenderEngine.hpp"
 #include "UserInput.hpp"
+#include "Camera.hpp"
+#include "World.hpp"
 
 using namespace matc;
 using namespace std;
@@ -15,8 +18,8 @@ const int screen_height = 768;
 const float mouseSpeed = 0.0005;
 const float speed = 0.01;
 
-Matrix4x4 computeTranslation(int, double, Vector3&);
-Matrix4x4 computeView(double, double, float&, float&, double, Vector3);
+//Matrix4x4 computeTranslation(int, double, Vector3&);
+//Matrix4x4 computeView(double, double, float&, float&, double, Vector3);
 
 Vector3 globalDirection;
 Vector3 globalRight;
@@ -27,18 +30,12 @@ int main(void)
   //TransformNode root("Root", Matrix4x4());
   MaterialNode root("Rootmaterial", "cube","texturedShader");
 
-  Vector3 position(0.0, 3.0, 10.0);
-  Matrix4x4 viewMatrix = lookAt(Vector3(0.0, 0.0, 0.0), Vector3(0.0, 0.0, 0.0), Vector3(0.0, 1.0, 0.0)).invert();
-  Matrix4x4 posMatrix = translate(Matrix4x4(), position);
-  TransformNode view("View-Inverse", viewMatrix);
-  TransformNode cameraPos("Camera Pos", posMatrix);
-  //TransformNode view("View-Translation", translate(Matrix4x4(), Vector3(0.0, 3.0, 10.0)));
-  CameraNode camera("Camera 1", 45.0f, 1.0f*screen_width/screen_height, 0.1f, 100.0f);
-
-  view.addChild(&camera);
-  root.addChild(&cameraPos);
-  cameraPos.addChild(&view);
-
+  
+  // Camera camera("Camera 1", screen_width, screen_height);
+  //camera.link(root);
+  Camera camera2("Camera 2", screen_width, screen_height, glfwGetTime());
+  camera2.link(root);
+  
   CubeNode cube("Cube");
   TransformNode cube1Translation("Translation 1", translate(Matrix4x4(), Vector3(0.0, 0.0, -2.0)));
   TransformNode cube1Rotation("Rotation 1", rotate(Matrix4x4(), 3.14/4, Vector3(0.0, 1.0, 0.0)));
@@ -67,8 +64,10 @@ int main(void)
   TransformNode groundScale("Ground Scale", scale(Matrix4x4(), 10.0f, 0.1f, 10.0f));
   groundScale.addChild(&cube);
   groundTrans.addChild(&groundScale);
-  skyboxScale.addChild(&groundTrans);
-  cameraPos.addChild(&skyboxScale);
+  //skyboxScale.addChild(&groundTrans);
+  root.addChild(&groundTrans);
+  //cameraPos.addChild(&skyboxScale);
+  camera2.addSkybox(skyboxScale);
 
   
   root.addChild(&cube1Translation);
@@ -81,6 +80,17 @@ int main(void)
   modelCube1_material.addChild(&modelCube1);
   modelCube2_material.addChild(&modelCube1);
   
+
+  
+  WallSegment segment1(Vector3(-2.0, 0.0, 1.0), Vector3(0.0, 3.14f/2, 0.0));
+  WallSegment segment2(Vector3(-2.0, 0.0, 3.0), Vector3(0.0, 3.14f/2, 0.0));
+  WallSegment segment3(Vector3(-2.0, 0.0, 5.0), Vector3(0.0, 3.14f/2, 0.0));
+  WallSegment segment4(Vector3(-2.0, 0.0, 7.0), Vector3(0.0, 3.14f/2, 0.0));
+
+  segment1.linkSegment(root);
+  segment2.linkSegment(root);
+  segment3.linkSegment(root);
+  segment4.linkSegment(root);
   
   UserInput user;
   
@@ -92,31 +102,42 @@ int main(void)
   
   user.setMouseInputAction(GLFW_MOUSE_BUTTON_LEFT, [] { std::cout << "left mouse button clicked" << std::endl; });
   user.setMouseInputAction(GLFW_MOUSE_BUTTON_RIGHT, [] { std::cout << "right mouse button clicked" << std::endl; });
+  
   user.setMousePosAction([&] (double xpos, double ypos) {
-      viewMatrix = computeView(xpos, ypos, horizontalAngle, verticalAngle, lastTime, position).invert();
+      //viewMatrix = computeView(xpos, ypos, horizontalAngle, verticalAngle, lastTime, position).invert();
+      camera2.changeView(xpos, ypos, glfwGetTime());
     });
-
+  /*
   user.setKeyboardInputAction(GLFW_KEY_W, [&] { posMatrix = computeTranslation(GLFW_KEY_W, lastTime, position); });
   user.setKeyboardInputAction(GLFW_KEY_A, [&] { posMatrix = computeTranslation(GLFW_KEY_A, lastTime, position); });
   user.setKeyboardInputAction(GLFW_KEY_S, [&] { posMatrix = computeTranslation(GLFW_KEY_S, lastTime, position); });
   user.setKeyboardInputAction(GLFW_KEY_D, [&] { posMatrix = computeTranslation(GLFW_KEY_D, lastTime, position); });
-  user.setKeyboardInputAction(GLFW_KEY_SPACE, [] { std::cout << "space pressed" << std::endl; });
-  user.setKeyboardInputAction(GLFW_KEY_ESCAPE, [&] {engine.close();});
+  */
+  
+  user.setKeyboardInputAction(GLFW_KEY_W, [&] (int action) { camera2.onKeyboard(movement::FORWARD, action); });
+  user.setKeyboardInputAction(GLFW_KEY_A, [&] (int action) { camera2.onKeyboard(movement::LEFT, action); });
+  user.setKeyboardInputAction(GLFW_KEY_S, [&] (int action) { camera2.onKeyboard(movement::BACKWARD, action); });
+  user.setKeyboardInputAction(GLFW_KEY_D, [&] (int action) { camera2.onKeyboard(movement::RIGHT, action); });
+  user.setKeyboardInputAction(GLFW_KEY_SPACE, [&] (int action) {  });
+  user.setKeyboardInputAction(GLFW_KEY_ESCAPE, [&] (int action) {engine.close();});
   
   Renderer renderer(&engine);
   Printer printer;
   root.accept(printer);
 
+
+  //std::cout << "Viewmatrix: " << viewMatrix << std::endl;
   // main loop
   do {
-    view.setTransform(viewMatrix);
-    cameraPos.setTransform(posMatrix);
-    
+    //view.setTransform(viewMatrix);
+    //cameraPos.setTransform(posMatrix);
+    camera2.update(glfwGetTime());
     root.accept(renderer);
     engine.update();
   } while(engine.isRunning());
 }
 
+/*
 Matrix4x4 computeTranslation(int button, double lastTime, Vector3 &position)
 {
   double currentTime = glfwGetTime();
@@ -158,3 +179,4 @@ Matrix4x4 computeView(double xpos, double ypos, float &horizontalAngle, float &v
   return lookAt(Vector3(0.0, 0.0, 0.0), direction, up);
   //return rotate(rotate(Matrix4x4(), horizontalAngle, Vector3(0.0, 1.0, 0.0)), verticalAngle, Vector3(1.0, 0.0, 0.0)).transpose();
 }
+*/

@@ -63,15 +63,16 @@ void UserInput::keyCallbackImpl(GLFWwindow* window, int key, int scancode, int a
   UserInput* user = reinterpret_cast<UserInput*>(glfwGetWindowUserPointer(window));
 
   user->keyCallback(key, scancode, action, mods);
+
 }
 
 void UserInput::keyCallback(int key, int scancode, int action, int mods)
 {
   //std::cout << "key: " << key << " " << scancode << " " << action << " " << mods << std::endl;
 
-  std::map<int, std::function<void (void)>>::iterator it = keyboardMap.find(key);
+  std::map<int, std::function<void (int)>>::iterator it = keyboardMap.find(key);
   if(it != keyboardMap.end()) {
-     (it->second)();
+    (it->second)(action);
   }else {
     std::cerr << "Key \"" << key << "\"" << " not found in config UserInput" << std::endl;
   }
@@ -83,7 +84,7 @@ bool UserInput::setMouseInputAction(int input, std::function<void (void)> action
   return true;
 }
 
-bool UserInput::setKeyboardInputAction(int input, std::function<void (void)> action)
+bool UserInput::setKeyboardInputAction(int input, std::function<void (int)> action)
 {
   keyboardMap[input] = action;
   return true;

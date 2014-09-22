@@ -9,6 +9,7 @@ FILE(GLOB GRAPH_FILES deps/scenegraph/*.cpp)
 FILE(GLOB RENDER_FILES deps/rendering/*.cpp)
 FILE(GLOB UTIL_FILES deps/utils/*.cpp)
 FILE(GLOB INPUT_FILES deps/input/*.cpp)
+FILE(GLOB OBJECT_FILES src/objects/*.cpp)
 
 
 find_package(OpenGL REQUIRED)
@@ -22,6 +23,7 @@ add_executable(
     ${GRAPH_FILES}
     ${RENDER_FILES}
     ${INPUT_FILES}
+    ${OBJECT_FILES}
     )
 
 include_directories(deps/mathcore)
@@ -31,6 +33,7 @@ include_directories(deps/scenegraph)
 include_directories(deps/rendering)
 include_directories(deps/utils)
 include_directories(deps/input)
+include_directories(src/objects)
 
 target_link_libraries(
     wumpus_ogl

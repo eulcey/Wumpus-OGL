@@ -15,6 +15,9 @@ public:
   matc::Matrix4x4 getProjection();
 
   inline bool isActive() const { return active; }
+
+  void setActive() { this->active = true; }
+  void setInactive() { this->active = false; }
   
 private:
   bool active = true;

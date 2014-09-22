@@ -176,150 +176,6 @@ std::ostream& matc::operator<<(std::ostream &out, Matrix4x4 &m)
   out << m.toString() << "\n";
   return out;
 }
-
-//================================
-//---Matrix 3x3 --------
-//================================
-Matrix3x3::Matrix3x3()
-{
-  setIdentity();
-}
-
-Matrix3x3::Matrix3x3(const Matrix3x3 &m)
-{
-  const float* v = m.asArray();
-  this->values = std::vector<float>(v, v + MAT_3_DIM*MAT_3_DIM);
-}
-
-Matrix3x3 Matrix3x3::operator+(const Matrix3x3 &other) const
-{
-  Matrix3x3 res;
-   for(int i = 0; i < MAT_3_DIM; i++)
-    {
-      for(int j = 0; j <MAT_3_DIM; j++)
-	{
-	  res.set(i,j, this->asArray()[i*MAT_3_DIM+j] + other.asArray()[i*MAT_3_DIM+j]);
-	}
-    }
-  return res;
-}
-
-Matrix3x3 Matrix3x3::operator*(const Matrix3x3 &other) const
-{
-  Matrix3x3 res;
-   for(int i = 0; i < MAT_3_DIM; i++)
-    {
-      for(int j = 0; j < MAT_3_DIM; j++)
-	{
-	  float v = 0;
-	  int this_row = i;
-	  int other_col = j;
-	  for(int k = 0; k < MAT_3_DIM; k++)
-	    {
-	      v += (other.asArray()[(this_row*MAT_3_DIM)+k]) * (this->asArray()[(k*MAT_3_DIM)+other_col]) ;
-	    }
-	  res.set(i, j, v);
-	}
-    }
-   return res;
-}
-
-Vector3 Matrix3x3::operator*(const Vector3 &vec) const
-{
-  float v1 = values[0]*vec.x + values[1]*vec.y + values[2]*vec.z;
-  float v2 = values[3]*vec.x + values[4]*vec.y + values[5]*vec.z;
-  float v3 = values[6]*vec.x + values[7]*vec.y + values[8]*vec.z;
-  return Vector3(v1, v2, v3);
-}
-
-
-Matrix3x3 Matrix3x3::transpose() const
-{
-  Matrix3x3 res;
-  for(int row = 0; row < MAT_3_DIM; row++)
-    {
-      for(int col = 0; col < MAT_3_DIM; col++)
-	{
-	  res.set(col, row, this->values.data()[row*MAT_3_DIM + col]);
-	}
-    }
-  return res;
-}
-
-Matrix3x3 Matrix3x3::invert() const
-{
-  Matrix3x3 res;
-  // Blockwise Inversion
-  const float *a = values.data();
- 
- 
-  // determinant of a
-  float det_a = a[0]*(a[4]*a[8] - a[5]*a[7]) - a[1]*(a[8]*a[3]-a[5]*a[6]) + a[2]*(a[3]*a[7]-a[4]*a[6]);
-  if(det_a < 0.0001 && det_a > -0.0001) {
-    std::cerr << "Matrix not invertible: " << this->toString() << std::endl;
-    return res;
-  }
-  // inverse of a
-  float inv_a[9] = {(a[4]*a[8]-a[5]*a[7])/det_a, -(a[1]*a[8]-a[2]*a[7])/det_a, (a[1]*a[7]-a[2]*a[4])/det_a,
-		    -(a[3]*a[8]-a[5]*a[6])/det_a, (a[0]*a[8]-a[2]*a[6])/det_a, -(a[0]*a[5]-a[2]*a[3])/det_a,
-		    (a[3]*a[7]-a[4]*a[6])/det_a, -(a[0]*a[7]-a[1]*a[6])/det_a, (a[0]*a[4]-a[1]*a[3])/det_a};
-
-  res.values = std::vector<float>(inv_a, inv_a + 9);
-  return res;
-}
-
-void Matrix3x3::setIdentity()
-{
-  this->values.clear();
-  this->values.resize(MAT_3_DIM*MAT_3_DIM,0);
-  float *p = this->values.data();
-  p[0] = 1.0f;
-  p[MAT_3_DIM + 1] = 1.0f;
-  p[2*MAT_3_DIM + 2] = 1.0f;
-  p[3*MAT_3_DIM + 3] = 1.0f;
-}
-
-const std::vector<float> Matrix3x3::getValues() const
-{
-  return this->values;
-}
-
-const float* Matrix3x3::asArray () const
-{
-  return this->values.data();
-}
-
-const std::string Matrix3x3::toString() const
-{
-  std::string s = "[ ";
-
-  for(int row = 0; row < MAT_3_DIM; row++)
-    {
-      s += "(";
-      for(int col = 0; col < MAT_3_DIM; col++)
-	{
-	  s += std::to_string(values[MAT_3_DIM*row + col]);
-	  s += " ";
-	}
-      s += ")";
-    }
-  s += "]";
-
-  return s;
-}
-
-void Matrix3x3::set(int row, int col, float v)
-{
-  float *p = this->values.data();
-  p[MAT_3_DIM*row + col] = v;
-}
-
-std::ostream& matc::operator<<(std::ostream &out, Matrix3x3 &m)
-{
-  out << m.toString() << "\n";
-  return out;
-}
-  
 //================================
 //---Vector 3 ----------
 //================================
@@ -349,15 +205,6 @@ Vector3::Vector3(const Vector4 &v)
   this->x = v.x;
   this->y = v.y;
   this->z = v.z;
-}
-
-Vector3 Vector3::operator*(const Matrix3x3 &mat) const
-{
-  std::vector<float>values = mat.getValues();
-  float v1 = this->x*values[0] + this->y*values[3] + this->z*values[6];
-  float v2 = this->x*values[1] + this->y*values[4] + this->z*values[7];
-  float v3 = this->x*values[2] + this->y*values[5] + this->z*values[8];
-  return Vector3(v1, v2, v3);
 }
 
 Vector3 Vector3::operator+(const Vector3 &other) const
@@ -516,10 +363,10 @@ std::ostream& matc::operator<<(std::ostream &out, Vector2 &v)
 Matrix4x4 matc::translate(const Matrix4x4 &m, const Vector3 &v)
 {
   matc::Matrix4x4 res(m);
-  const float* p = res.asArray();
-  res.set(MAT_DIM-1, 0, p[MAT_DIM-1] + v.x);
-  res.set(MAT_DIM-1, 1, p[MAT_DIM+MAT_DIM-1] + v.y);
-  res.set(MAT_DIM-1, 2, p[2*MAT_DIM+MAT_DIM-1] + v.z);
+  const float* p = m.asArray();
+  res.set(MAT_DIM-1, 0, p[MAT_DIM * (MAT_DIM-1) + 0] + v.x);
+  res.set(MAT_DIM-1, 1, p[MAT_DIM * (MAT_DIM-1) + 1] + v.y);
+  res.set(MAT_DIM-1, 2, p[MAT_DIM * (MAT_DIM-1) + 2] + v.z);
   return res;
 }
 

@@ -14,7 +14,7 @@ public:
 
   bool init(GLFWwindow* window);
   bool setMouseInputAction(int input, std::function<void (void)> action);
-  bool setKeyboardInputAction(int input, std::function<void (void)> action);
+  bool setKeyboardInputAction(int input, std::function<void (int)> action);
   bool setMousePosAction(std::function<void (double, double)> action) { this->mousePosChange = action; return true; }
   
 private:
@@ -25,7 +25,7 @@ private:
   static void keyCallbackImpl(GLFWwindow* window, int key, int scancode, int action, int mods);
   void keyCallback(int key, int scancode, int action, int mods);
   
-  std::map<int, std::function<void (void)>> keyboardMap;
+  std::map<int, std::function<void (int)>> keyboardMap;
   std::map<int, std::function<void (void)>> mouseMap;
 
   std::function<void (double, double)> mousePosChange;
