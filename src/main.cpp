@@ -15,8 +15,11 @@ const int screen_height = 768;
 const float mouseSpeed = 0.0005;
 const float speed = 0.01;
 
-Matrix4x4 computeTranslation(Vector3, double, Vector3&);
+Matrix4x4 computeTranslation(int, double, Vector3&);
 Matrix4x4 computeView(double, double, float&, float&, double, Vector3);
+
+Vector3 globalDirection;
+Vector3 globalRight;
 
 int main(void)
 {
@@ -93,10 +96,10 @@ int main(void)
       viewMatrix = computeView(xpos, ypos, horizontalAngle, verticalAngle, lastTime, position).invert();
     });
 
-  user.setKeyboardInputAction(GLFW_KEY_W, [&] { posMatrix = computeTranslation(Vector3(0.0, 0.0, -1.0), lastTime, position); });
-  user.setKeyboardInputAction(GLFW_KEY_A, [&] { posMatrix = computeTranslation(Vector3(-1.0, 0.0, 0.0), lastTime, position); });
-  user.setKeyboardInputAction(GLFW_KEY_S, [&] { posMatrix = computeTranslation(Vector3(0.0, 0.0, 1.0), lastTime, position); });
-  user.setKeyboardInputAction(GLFW_KEY_D, [&] { posMatrix = computeTranslation(Vector3(1.0, 0.0, 0.0), lastTime, position); });
+  user.setKeyboardInputAction(GLFW_KEY_W, [&] { posMatrix = computeTranslation(GLFW_KEY_W, lastTime, position); });
+  user.setKeyboardInputAction(GLFW_KEY_A, [&] { posMatrix = computeTranslation(GLFW_KEY_A, lastTime, position); });
+  user.setKeyboardInputAction(GLFW_KEY_S, [&] { posMatrix = computeTranslation(GLFW_KEY_S, lastTime, position); });
+  user.setKeyboardInputAction(GLFW_KEY_D, [&] { posMatrix = computeTranslation(GLFW_KEY_D, lastTime, position); });
   user.setKeyboardInputAction(GLFW_KEY_SPACE, [] { std::cout << "space pressed" << std::endl; });
   user.setKeyboardInputAction(GLFW_KEY_ESCAPE, [&] {engine.close();});
   
@@ -114,10 +117,20 @@ int main(void)
   } while(engine.isRunning());
 }
 
-Matrix4x4 computeTranslation(Vector3 direction, double lastTime, Vector3 &position)
+Matrix4x4 computeTranslation(int button, double lastTime, Vector3 &position)
 {
   double currentTime = glfwGetTime();
   float deltaTime = float(currentTime - lastTime);
+  Vector3 direction;
+  if(button == GLFW_KEY_W) {
+    direction = globalDirection * -1;
+  } else if(button == GLFW_KEY_S) {
+    direction = globalDirection;
+  } else if(button == GLFW_KEY_D) {
+    direction = globalRight * -1;
+  } else {
+    direction = globalRight;
+  }
   position = position + direction * deltaTime * speed;
   return translate(Matrix4x4(), Vector4(position.x, position.y, position.z, 0)).invert();
 }
@@ -138,6 +151,9 @@ Matrix4x4 computeView(double xpos, double ypos, float &horizontalAngle, float &v
 		cos(horizontalAngle - 3.14f/2.0f)
 		);
   Vector3 up = right.cross(direction);
+
+  globalDirection = direction;
+  globalRight = right;
 
   return lookAt(Vector3(0.0, 0.0, 0.0), direction, up);
   //return rotate(rotate(Matrix4x4(), horizontalAngle, Vector3(0.0, 1.0, 0.0)), verticalAngle, Vector3(1.0, 0.0, 0.0)).transpose();
