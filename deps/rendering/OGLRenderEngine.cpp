@@ -49,7 +49,8 @@ bool OGLRenderEngine::render(RenderContext& context, ModelNode& model) {
     //programID = LoadShaders("../shader/texturedVertexShader.glsl", "../shader/texturedFragmentShader.glsl");
     std::string vertexShader = SHADER_PATH + shader + ".v.glsl";
     std::string fragmentShader = SHADER_PATH + shader + ".f.glsl";
-    std::cout << "vertex Shader: " << vertexShader << std::endl;
+    // std::cout << "OGLRENDERER vertex Shader: " << vertexShader << std::endl;
+    //std::cout << "OGLRENDERER fragment Shader: " << fragmentShader << std::endl;
     programID = LoadShaders(vertexShader.c_str(), fragmentShader.c_str());
     shaderMap[shader] = programID;
     //std::cerr << "No shaderProgram found for model" << std::endl;
@@ -73,7 +74,12 @@ bool OGLRenderEngine::render(RenderContext& context, ModelNode& model) {
   
   if(textureIt == textureMap.end()) {
     std::string texturePath = TEXTURE_PATH + texture + ".png";
+    std::cout << "OGLRENDERER: need to load texture: " << texturePath << std::endl;
     textureBuffer = loadPNG(texturePath.c_str());
+    if(textureBuffer == -1) {
+      std::cerr << "OGLRENDERER Couldn't load file: texturePath" << std::endl;
+      return false;
+    }
     textureMap[texture] = textureBuffer;
   } else {
     textureBuffer = textureIt->second;
@@ -263,6 +269,7 @@ bool OGLRenderEngine::initModel(ModelNode& model)
     textureBuffer = loadDDS("../assets/uvmap.DDS");
   }
   */
+  /*
   GLuint textureBuffer;
   if(name == "ModelCube 1") {
     textureBuffer = loadPNG("../assets/cube.png");
@@ -273,6 +280,7 @@ bool OGLRenderEngine::initModel(ModelNode& model)
   }else {
     textureBuffer = loadPNG("../assets/sample.png");
   }
+  */
   //GLuint textureBuffer = loadPNG(texturePath.c_str());
   // if(name == "Skybox_sky") textureBuffer = 2;
   

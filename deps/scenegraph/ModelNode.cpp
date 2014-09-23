@@ -29,12 +29,13 @@ bool ModelNode::init(std::string filename)
 
   matc::Vector3 firstV = vertices[0];
 
+  /*
   std::cout << "first vector: " << firstV << std::endl;
   std::cout << "size: " << sizeof(matc::Vector3) << std::endl;
   std::cout << "offset x: " << offsetof(matc::Vector3, x) << std::endl;
   std::cout << "offset y: " << offsetof(matc::Vector3, y) << std::endl;
   std::cout << "offset z: " << offsetof(matc::Vector3, z) << std::endl;
-
+  */
   return true;
 }
 

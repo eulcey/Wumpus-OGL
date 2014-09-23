@@ -7,8 +7,9 @@
 #include "CameraNode.hpp"
 #include "OGLRenderEngine.hpp"
 #include "UserInput.hpp"
-#include "Camera.hpp"
-#include "World.hpp"
+#include "Scene.hpp"
+//#include "Camera.hpp"
+//#include "World.hpp"
 
 using namespace matc;
 using namespace std;
@@ -33,8 +34,8 @@ int main(void)
   
   // Camera camera("Camera 1", screen_width, screen_height);
   //camera.link(root);
-  Camera camera2("Camera 2", screen_width, screen_height, glfwGetTime());
-  camera2.link(root);
+  //Camera camera2("Camera 2", screen_width, screen_height, glfwGetTime());
+  //camera2.link(root);
   
   CubeNode cube("Cube");
   TransformNode cube1Translation("Translation 1", translate(Matrix4x4(), Vector3(0.0, 0.0, -2.0)));
@@ -46,7 +47,7 @@ int main(void)
   TransformNode cube2Scale("Scale 2", scale(Matrix4x4(),1.0f, 1.0f, 1.0f));
 
   ModelNode modelCube1("ModelCube 1", "../assets/cube.obj");
-  MaterialNode modelCube1_material("ModelCube 1 Material", "cube", "texturedShader");
+  MaterialNode modelCube1_material("ModelCube 1 Material", "sample", "texturedShader");
   ModelNode modelCube2("ModelCube 2", "../assets/cube.obj");
   MaterialNode modelCube2_material("ModelCube 2 Material", "cube", "texturedShader");
   //ModelNode modelCube("Monkey", "../assets/monkey.obj");
@@ -60,6 +61,7 @@ int main(void)
   TransformNode skyboxScale("Skybox Scale", scale(Matrix4x4(), 10.0f, 10.0f, 10.0f));
   skyboxScale.addChild(&skybox_sky_material);
   //skyboxScale.addChild(&skybox_ground);
+  /*
   TransformNode groundTrans("Ground Translation", translate(Matrix4x4(), Vector3(0.0, -0.2f, 0.0)));
   TransformNode groundScale("Ground Scale", scale(Matrix4x4(), 10.0f, 0.1f, 10.0f));
   groundScale.addChild(&cube);
@@ -67,32 +69,30 @@ int main(void)
   //skyboxScale.addChild(&groundTrans);
   root.addChild(&groundTrans);
   //cameraPos.addChild(&skyboxScale);
-  camera2.addSkybox(skyboxScale);
+  */
+  //camera2.addSkybox(skyboxScale);
 
   
-  root.addChild(&cube1Translation);
-  cube1Translation.addChild(&cube1Rotation);
-  cube1Rotation.addChild(&modelCube2_material);
+  //root.addChild(&cube1Translation);
+  //cube1Translation.addChild(&cube1Rotation);
+  //cube1Rotation.addChild(&modelCube2_material);
   
-  root.addChild(&cube2Translation);
+    root.addChild(&cube2Translation);
   cube2Translation.addChild(&modelCube1_material);
 
   modelCube1_material.addChild(&modelCube1);
   modelCube2_material.addChild(&modelCube1);
   
 
+  // World world = loadWorld("..");
+  //world.linkWorld(root);
   
-  WallSegment segment1(Vector3(-2.0, 0.0, 1.0), Vector3(0.0, 3.14f/2, 0.0));
-  WallSegment segment2(Vector3(-2.0, 0.0, 3.0), Vector3(0.0, 3.14f/2, 0.0));
-  WallSegment segment3(Vector3(-2.0, 0.0, 5.0), Vector3(0.0, 3.14f/2, 0.0));
-  WallSegment segment4(Vector3(-2.0, 0.0, 7.0), Vector3(0.0, 3.14f/2, 0.0));
-
-  segment1.linkSegment(root);
-  segment2.linkSegment(root);
-  segment3.linkSegment(root);
-  segment4.linkSegment(root);
   
   UserInput user;
+  Scene scene(screen_width, screen_height);
+  scene.load("");
+
+  Camera *camera = scene.getCamera();
   
   float horizontalAngle = 3.14f;
   float verticalAngle = 0.0f;
@@ -105,7 +105,7 @@ int main(void)
   
   user.setMousePosAction([&] (double xpos, double ypos) {
       //viewMatrix = computeView(xpos, ypos, horizontalAngle, verticalAngle, lastTime, position).invert();
-      camera2.changeView(xpos, ypos, glfwGetTime());
+      camera->changeView(xpos, ypos, glfwGetTime());
     });
   /*
   user.setKeyboardInputAction(GLFW_KEY_W, [&] { posMatrix = computeTranslation(GLFW_KEY_W, lastTime, position); });
@@ -114,16 +114,17 @@ int main(void)
   user.setKeyboardInputAction(GLFW_KEY_D, [&] { posMatrix = computeTranslation(GLFW_KEY_D, lastTime, position); });
   */
   
-  user.setKeyboardInputAction(GLFW_KEY_W, [&] (int action) { camera2.onKeyboard(movement::FORWARD, action); });
-  user.setKeyboardInputAction(GLFW_KEY_A, [&] (int action) { camera2.onKeyboard(movement::LEFT, action); });
-  user.setKeyboardInputAction(GLFW_KEY_S, [&] (int action) { camera2.onKeyboard(movement::BACKWARD, action); });
-  user.setKeyboardInputAction(GLFW_KEY_D, [&] (int action) { camera2.onKeyboard(movement::RIGHT, action); });
+  user.setKeyboardInputAction(GLFW_KEY_W, [&] (int action) { camera->onKeyboard(movement::FORWARD, action); });
+  user.setKeyboardInputAction(GLFW_KEY_A, [&] (int action) { camera->onKeyboard(movement::LEFT, action); });
+  user.setKeyboardInputAction(GLFW_KEY_S, [&] (int action) { camera->onKeyboard(movement::BACKWARD, action); });
+  user.setKeyboardInputAction(GLFW_KEY_D, [&] (int action) { camera->onKeyboard(movement::RIGHT, action); });
   user.setKeyboardInputAction(GLFW_KEY_SPACE, [&] (int action) {  });
   user.setKeyboardInputAction(GLFW_KEY_ESCAPE, [&] (int action) {engine.close();});
   
   Renderer renderer(&engine);
   Printer printer;
-  root.accept(printer);
+  //root.accept(printer);
+  scene.print(printer);
 
 
   //std::cout << "Viewmatrix: " << viewMatrix << std::endl;
@@ -131,8 +132,9 @@ int main(void)
   do {
     //view.setTransform(viewMatrix);
     //cameraPos.setTransform(posMatrix);
-    camera2.update(glfwGetTime());
-    root.accept(renderer);
+    camera->update(glfwGetTime());
+    //root.accept(renderer);
+    scene.render(renderer);
     engine.update();
   } while(engine.isRunning());
 }

@@ -59,7 +59,7 @@ void UserInput::mouseButtonCallback(int button, int action, int mods)
 
 void UserInput::keyCallbackImpl(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-  std::cout << key << std::endl;
+  //std::cout << key << std::endl;
   UserInput* user = reinterpret_cast<UserInput*>(glfwGetWindowUserPointer(window));
 
   user->keyCallback(key, scancode, action, mods);
