@@ -49,6 +49,12 @@ bool Renderer::visit(CameraNode& cNode)
 bool Renderer::visit(LightNode& lNode)
 {
   // std::cout << "rendering light" << std::endl;
+  Light light;
+  light.color = lNode.color;
+  light.ambientIntensity = lNode.ambientIntensity;
+  light.direction = lNode.direction;
+  light.diffuseIntensity = lNode.diffuseIntensity;
+  context.setLight(light);
   return true;
 }
 

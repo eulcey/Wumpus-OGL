@@ -43,14 +43,10 @@ bool OGLRenderEngine::render(RenderContext& context, ModelNode& model) {
   std::string shader = context.getShader();
   
   std::map<std::string, GLuint>::iterator shaderIt;
-  //shaderIt = shaderMap.find(model.getName());
   shaderIt = shaderMap.find(shader);
   if (shaderIt == shaderMap.end()) {
-    //programID = LoadShaders("../shader/texturedVertexShader.glsl", "../shader/texturedFragmentShader.glsl");
     std::string vertexShader = SHADER_PATH + shader + ".v.glsl";
     std::string fragmentShader = SHADER_PATH + shader + ".f.glsl";
-    // std::cout << "OGLRENDERER vertex Shader: " << vertexShader << std::endl;
-    //std::cout << "OGLRENDERER fragment Shader: " << fragmentShader << std::endl;
     programID = LoadShaders(vertexShader.c_str(), fragmentShader.c_str());
     shaderMap[shader] = programID;
     //std::cerr << "No shaderProgram found for model" << std::endl;
@@ -96,6 +92,23 @@ bool OGLRenderEngine::render(RenderContext& context, ModelNode& model) {
   glUniformMatrix4fv(viewMatrixID, 1, GL_FALSE, context.getView().asArray());
   glUniformMatrix4fv(modelMatrixID, 1, GL_FALSE, context.getModel().asArray());
 
+  /*
+   * ======== LIGHT ===============
+   */
+  GLuint lightColorID = glGetUniformLocation(programID, "gDirectionalLight.color");
+  GLuint lightAmbientID = glGetUniformLocation(programID, "gDirectionalLight.ambientIntensity");
+  GLuint diffuseID = glGetUniformLocation(programID, "gDirectionalLight.diffuseIntensity");
+  GLuint directionID = glGetUniformLocation(programID, "gDirectionalLight.direction");
+  Light light = context.getLight();
+  Vector3 lightDirection = light.direction.normalize();
+
+  //std::cout << lightDirection << std::endl;
+  
+  glUniform3f(lightColorID, light.color.x, light.color.y, light.color.z);
+  glUniform1f(lightAmbientID, light.ambientIntensity);
+  glUniform1f(diffuseID, light.diffuseIntensity);
+  glUniform3f(directionID, lightDirection.x, lightDirection.y, lightDirection.z);
+
   GLuint vertexbuffer = (it->second).vertex;
   if (vertexbuffer == -1) {
     std::cerr << "No Vertex information found" << std::endl;
@@ -124,9 +137,6 @@ bool OGLRenderEngine::render(RenderContext& context, ModelNode& model) {
   //std::cout << "textureID " << uniform_texture << std::endl;
   glUniform1i(uniform_texture, 0);
   
-  
-
-  
   GLuint uvBuffer = (it->second).uv;
   glEnableVertexAttribArray(1);
   glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
@@ -137,6 +147,22 @@ bool OGLRenderEngine::render(RenderContext& context, ModelNode& model) {
 			GL_FALSE,
 			//0,
 			sizeof(matc::Vector2),
+			(void*)0
+			);
+
+  GLuint normalBuffer = (it->second).normal;
+  if(normalBuffer == -1) {
+      std::cerr << "No normal information found" << std::endl;
+      return false;
+    }
+  
+  glEnableVertexAttribArray(2);
+  glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
+  glVertexAttribPointer(2,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			sizeof(matc::Vector3),
 			(void*)0
 			);
 
@@ -218,6 +244,8 @@ bool OGLRenderEngine::render(RenderContext& context, CubeNode& cube)
 			(void*)0
 			);
 
+			
+
   GLuint elementbuffer = (it->second).element;
   if (elementbuffer != -1) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
@@ -259,6 +287,19 @@ bool OGLRenderEngine::initModel(ModelNode& model)
   glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
   glBufferData(GL_ARRAY_BUFFER, uvs.size()*sizeof(matc::Vector2), uvs.data(), GL_STATIC_DRAW);
 
+  std::vector<matc::Vector3> normals = model.getNormals();
+  //std::cout << "normals: " << normals.size() << std::endl;
+  /*
+  for(int i = 0; i < normals.size(); i++) {
+    float test = normals[i].normalize().dot(Vector3(0, -1, -1));
+    std::cout << test << std::endl;
+  }
+  */
+  GLuint normalBuffer;
+  glGenBuffers(1, &normalBuffer);
+  glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
+  glBufferData(GL_ARRAY_BUFFER, normals.size()*sizeof(matc::Vector3), normals.data(), GL_STATIC_DRAW);
+
   /*
   std::string texturePath = "../assets/" + name + ".png";
   GLuint textureBuffer;
@@ -291,6 +332,7 @@ bool OGLRenderEngine::initModel(ModelNode& model)
   BufferValues buffers;
   buffers.vertex = vbo_cube_vertices;
   buffers.uv = uvBuffer;
+  buffers.normal = normalBuffer;
   //buffers.texture = textureBuffer;
 
   bufferMap[name] = buffers;

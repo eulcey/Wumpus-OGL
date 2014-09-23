@@ -7,6 +7,7 @@
 
 class Renderer;
 class Printer;
+class LightNode;
 
 class Scene
 {
@@ -22,5 +23,10 @@ private:
   TransformNode *root;
   Camera camera;
   World world;
+  LightNode *light;
+  
+  TransformNode *wumpusPosition;
+  MaterialNode *wumpusMaterial;
+  ModelNode *wumpus;
 };
 #endif

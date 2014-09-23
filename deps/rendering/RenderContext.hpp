@@ -5,6 +5,14 @@
 
 class ModelNode;
 
+struct Light
+{
+  matc::Vector3 color;
+  float ambientIntensity;
+  matc::Vector3 direction;
+  float diffuseIntensity;
+};
+
 class RenderContext
 {
 public:
@@ -16,26 +24,21 @@ public:
   void setProjection(matc::Matrix4x4);
   void setView(matc::Matrix4x4);
   void setModel(matc::Matrix4x4);
-  
   void setTexture(std::string texture) { this->texture = texture; }
   void setShader(std::string shader) { this->shader = shader; }
-  //void setVertexShader(std::string vertex) { this->vertexShader = vertex; }
-  //void setFragmentShader(std::string fragment) { this->fragmentShader = fragment; }
-  // bool render(ModelNode& model);
+  void setLight(Light light) { this->light = light; }
+
+  
   matc::Matrix4x4 getProjection() const { return projectionTransformation; }
   matc::Matrix4x4 getView() const { return viewTransformation; }
   matc::Matrix4x4 getModel() const { return modelTransformation; }
-
   std::string getTexture() const { return texture; }
   std::string getShader() const { return shader; }
-  //std::string getVertexShader() const { return vertexShader; }
-  //std::string getFragmentShader() const { return fragmentShader; }
+  Light getLight() const { return light; }
 private:
+  Light light;
   std::string texture;
   std::string shader;
-  // std::string vertexShader;
-  // std::string fragmentShader;
-  // shader or program
   matc::Matrix4x4 projectionTransformation;
   matc::Matrix4x4 viewTransformation;
   matc::Matrix4x4 modelTransformation = matc::Matrix4x4();

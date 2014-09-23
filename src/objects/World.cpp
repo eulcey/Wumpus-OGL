@@ -14,7 +14,7 @@ WallSegment::WallSegment(Vector3 position, Vector3 rotation)
   Matrix4x4 zyxRotation = rotate(yxRotation, rotation.z, Vector3(0.0, 0.0, 1.0));
   Matrix4x4 transformMatrix = translate(zyxRotation, position);
   transform = new TransformNode("WallSegment-Transform", transformMatrix);
-  material = new MaterialNode("WallSegment-Material", "wall_segment", "texturedShader");
+  material = new MaterialNode("WallSegment-Material", "wall_segment", "ambientShader");//"texturedShader");
   model = new ModelNode("WallSegment-Model", "../assets/wall_segment.obj");
 
   scaleTrafo = new TransformNode("WallSegment-Scaling", scale(Matrix4x4(), 1.0f, 2.0f, 1.0f));
@@ -33,7 +33,7 @@ bool WallSegment::linkPart(SceneNode& node)
 Floor::Floor()
 {
   transform = new TransformNode("Floor", translate(Matrix4x4(), Vector3(0.0, 0.0, 0.0)));
-  material = new MaterialNode("Floor-Material", "cube", "texturedShader");
+  material = new MaterialNode("Floor-Material", "floor", "ambientShader");//"texturedShader");
   model = new ModelNode("Floor-Model", "../assets/cube.obj");
   scaleTrafo = new TransformNode("Floor-Scaling", scale(Matrix4x4(), 50.0f, 0.2f, 50.0f));
   
@@ -74,9 +74,12 @@ bool World::loadFile(std::string file)
   for(int z = -15; z < 25; z += 2) {
     walls.push_back(new WallSegment(Vector3(-2.0, 0.0, z), Vector3(0.0, 3.14f/2, 0.0)));
   }
+  for(int x = -15; x < 25; x += 2) {
+    walls.push_back(new WallSegment(Vector3(x, 0.0, 25), Vector3(0.0, 0, 0.0)));
+  }
   for(int i = 0; i < walls.size(); i++) {
     walls[i]->linkPart(*transform);
-  }
+  } 
   return true;
 }
 

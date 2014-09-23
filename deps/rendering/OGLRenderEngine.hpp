@@ -21,6 +21,7 @@ struct BufferValues {
   GLuint element = -1;
   //GLuint texture = -1;
   GLuint uv = -1;
+  GLuint normal = -1;
   //GLuint program = -1;
 };
 
