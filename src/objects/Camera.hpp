@@ -10,7 +10,7 @@ class TransformNode;
 class CameraNode;
 
 const double MOUSE_SPEED = 0.0005;
-const double MOVE_SPEED = 0.01;
+const double MOVE_SPEED = 0.02;
 
 namespace movement
 {
@@ -25,23 +25,23 @@ namespace movement
 class Camera
 {
 public:
-Camera(std::string name, int screenWidth, int screenHeight, double time);
+Camera(std::string name, int screenWidth, int screenHeight);
 ~Camera();
 
   bool link(SceneNode &link);
   bool addSkybox(SceneNode &skybox);
   void onKeyboard(int key, int action);
-  void update(double currentTime);
-  void changeView(double xpos, double ypos, double time);
+  void update(float deltaTime);
+  void changeView(double xpos, double ypos, float deltaTime);
 
-void activate();
-void deactivate(); 
+  void activate();
+  void deactivate();
+  
 private:
   int width, height;
   CameraNode *camera;
   TransformNode *position;
   TransformNode *rotation;
-  double lastTime;
   float horizontalAngle = 3.14f;
   float verticalAngle = 0.0f;
   matc::Vector3 direction;

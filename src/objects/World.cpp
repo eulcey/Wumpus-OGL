@@ -74,8 +74,8 @@ bool World::loadFile(std::string file)
   for(int z = -15; z < 25; z += 2) {
     walls.push_back(new WallSegment(Vector3(-2.0, 0.0, z), Vector3(0.0, 3.14f/2, 0.0)));
   }
-  for(int x = -15; x < 25; x += 2) {
-    walls.push_back(new WallSegment(Vector3(x, 0.0, 25), Vector3(0.0, 0, 0.0)));
+  for(int x = -2; x < 25; x += 2) {
+    walls.push_back(new WallSegment(Vector3(x, 0.0, 23), Vector3(0.0, 0, 0.0)));
   }
   for(int i = 0; i < walls.size(); i++) {
     walls[i]->linkPart(*transform);

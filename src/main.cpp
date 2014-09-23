@@ -1,10 +1,11 @@
 #include <iostream>
 #include "MathCore.hpp"
+
 #include "Printer.hpp"
 #include "Renderer.hpp"
-#include "CubeNode.hpp"
-#include "ModelNode.hpp"
-#include "CameraNode.hpp"
+//#include "CubeNode.hpp"
+//#include "ModelNode.hpp"
+//#include "CameraNode.hpp"
 #include "OGLRenderEngine.hpp"
 #include "UserInput.hpp"
 #include "Scene.hpp"
@@ -42,7 +43,7 @@ int main(void)
   user.setMouseInputAction(GLFW_MOUSE_BUTTON_RIGHT, [] { std::cout << "right mouse button clicked" << std::endl; });
   
   user.setMousePosAction([&] (double xpos, double ypos) {
-      camera->changeView(xpos, ypos, glfwGetTime());
+      camera->changeView(xpos, ypos, float(glfwGetTime()-lastTime));
     });
   
   user.setKeyboardInputAction(GLFW_KEY_W, [&] (int action) { camera->onKeyboard(movement::FORWARD, action); });
@@ -54,13 +55,11 @@ int main(void)
   
   Renderer renderer(&engine);
   Printer printer;
-  //root.accept(printer);
   scene.print(printer);
-
 
   // main loop
   do {
-    camera->update(glfwGetTime());
+    camera->update(float(glfwGetTime()-lastTime));
     scene.render(renderer);
     engine.update();
   } while(engine.isRunning());

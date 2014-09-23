@@ -6,7 +6,7 @@
 
 using namespace matc;
 
-Camera::Camera(std::string name, int screenWidth, int screenHeight, double time): width(screenWidth), height(screenHeight), lastTime(time)
+Camera::Camera(std::string name, int screenWidth, int screenHeight): width(screenWidth), height(screenHeight)
 {
   Vector3 startPosition(0.0, 2.0, 4.0);
   Matrix4x4 viewMatrix = Matrix4x4();//lookAt(Vector3(0.0, 0.0, 0.0), Vector3(0.0, 0.0, 0.0), Vector3(0.0, 1.0, 0.0)).invert();
@@ -62,9 +62,9 @@ void Camera::onKeyboard(int move, int action)
  
 }
 
-void Camera::update(double currentTime)
+void Camera::update(float deltaTime)
 {
-  float deltaTime = float(currentTime - lastTime);
+  //  float deltaTime = float(currentTime - lastTime);
   Vector3 posChange(0, 0, 0);
   if(move_pressed[movement::FORWARD]) {
     posChange = posChange + direction * deltaTime * MOVE_SPEED;
@@ -85,12 +85,18 @@ void Camera::update(double currentTime)
   position->setTransform(newPosition);
 }
 
-void Camera::changeView(double xpos, double ypos, double currentTime)
+void Camera::changeView(double xpos, double ypos, float deltaTime)
 {
-  float deltaTime = float(currentTime - lastTime);
+  //float deltaTime = float(currentTime - lastTime);
   
   horizontalAngle += MOUSE_SPEED * deltaTime * float(width/2 - xpos);
   verticalAngle += MOUSE_SPEED * deltaTime * float(height/2 - ypos);
+  if(verticalAngle > 3.14f/3.0f) {
+    verticalAngle = 3.14f/3.0f;
+  }
+  if(verticalAngle < -3.14f/3.0f) {
+    verticalAngle = -3.14f/3.0f;
+  }
   Vector3 direction(cos(verticalAngle) * sin(horizontalAngle),
 		    sin(verticalAngle),
 		    cos(verticalAngle) * cos(horizontalAngle)

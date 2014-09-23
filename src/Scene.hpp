@@ -8,12 +8,13 @@
 class Renderer;
 class Printer;
 class LightNode;
+class Wumpus;
 
 class Scene
 {
 public:
   Scene(int width, int height);
-  ~Scene() {root->release();}
+  ~Scene();
 
   bool load(std::string file);
   void render(Renderer &renderer);
@@ -24,9 +25,7 @@ private:
   Camera camera;
   World world;
   LightNode *light;
-  
-  TransformNode *wumpusPosition;
-  MaterialNode *wumpusMaterial;
-  ModelNode *wumpus;
+
+  Wumpus *wumpus;
 };
 #endif
