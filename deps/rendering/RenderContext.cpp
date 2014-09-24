@@ -29,3 +29,15 @@ void RenderContext::setModel(Matrix4x4 model)
 {
   this->modelTransformation = model;
 }
+
+Vector3 RenderContext::getCameraPosition() const
+{
+  const std::vector<float> viewValues = viewTransformation.getValues();
+  float xPos = viewValues[12];
+  float yPos = viewValues[13];
+  float zPos = viewValues[14];
+  //Matrix4x4 test(viewTransformation);
+  //std::cout << "view: " << test << std::endl;
+  //std::cout << "camera pos at: " << xPos << ", " << yPos << ", " << zPos << std::endl;
+  return Vector3(xPos, yPos, zPos);
+}

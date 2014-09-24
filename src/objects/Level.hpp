@@ -1,15 +1,20 @@
-#ifndef WORLD_HPP
-#define WORLD_HPP
+#ifndef LEVEL_HPP
+#define LEVEL_HPP
+
+#include <vector>
 
 #include "TransformNode.hpp"
 #include "MaterialNode.hpp"
 #include "ModelNode.hpp"
+#include "jsoncpp-forwards.h"
 
-class WorldPart
+const int CELL_SIZE = 12;
+
+class LevelPart
 {
 public:
-  WorldPart() {}
-  ~WorldPart() { transform->release(); material->release(); model->release(); scaleTrafo->release();}
+  LevelPart() {}
+  ~LevelPart() { transform->release(); material->release(); model->release(); scaleTrafo->release();}
 
   virtual bool linkPart(SceneNode &link) = 0;
   
@@ -20,7 +25,7 @@ protected:
   TransformNode *scaleTrafo;
 };
 
-class WallSegment: public WorldPart
+class WallSegment: public LevelPart
 {
 public:
   WallSegment(matc::Vector3 position, matc::Vector3 rotation);
@@ -29,7 +34,7 @@ public:
   virtual bool linkPart(SceneNode &link);
 };
 
-class Floor: public WorldPart
+class Floor: public LevelPart
 {
 public:
   Floor();
@@ -38,14 +43,14 @@ public:
   virtual bool linkPart(SceneNode &link);
 };
 
-class World
+class Level
 {
 public:
-  World();
-  ~World();
+  Level(int width, int height, std::vector<Json::Value> pitValues);
+  ~Level();
 
-  bool linkWorld(SceneNode &link);
-  bool loadFile(std::string file);
+  bool linkLevel(SceneNode &link);
+  //bool loadFile(std::string file);
 
 private:
   TransformNode *transform;
@@ -53,5 +58,4 @@ private:
   Floor floor;
 };
 
-//World loadWorld(std::string file);
 #endif

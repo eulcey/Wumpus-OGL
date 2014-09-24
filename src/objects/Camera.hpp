@@ -10,7 +10,10 @@ class TransformNode;
 class CameraNode;
 
 const double MOUSE_SPEED = 0.0005;
-const double MOVE_SPEED = 0.02;
+const double MOVE_SPEED = 0.05;
+const matc::Vector3 startPosition(20.0, 85.0, 50.0);
+const float START_HORIZONTAL_ANGLE = 3.14f*1.12;
+const float START_VERTICAL_ANGLE = -3.14f/3;
 
 namespace movement
 {
@@ -34,19 +37,25 @@ Camera(std::string name, int screenWidth, int screenHeight);
   void update(float deltaTime);
   void changeView(double xpos, double ypos, float deltaTime);
 
+  bool switchMouseLook();
+
   void activate();
   void deactivate();
+  void reset();
+
+  TransformNode* getTransform() { return rotation; }
+  TransformNode *position;
   
 private:
   int width, height;
   CameraNode *camera;
-  TransformNode *position;
   TransformNode *rotation;
-  float horizontalAngle = 3.14f;
-  float verticalAngle = 0.0f;
+  float horizontalAngle = START_HORIZONTAL_ANGLE;
+  float verticalAngle = START_VERTICAL_ANGLE;
   matc::Vector3 direction;
   matc::Vector3 right;
 
+  bool mouseLookEnabled = true;
   bool move_pressed[4] = {false, false, false, false};
 };
 #endif

@@ -1,0 +1,31 @@
+{
+  "WorldName": "Original",
+  "Width": 4,
+  "Height": 4,
+  "Wumpus": {
+    "xpos": 1,
+    "zpos": 3
+  },
+  "Agent": {
+    "xpos": 1,
+    "zpos": 1
+  },
+  "Treasure": {
+    "xpos": 2,
+    "zpos": 3
+  },
+  "Pits": [
+    {"Pit1": {
+      "xpos": 3,
+      "zpos": 1
+    }},
+    {"Pit2": {
+      "xpos": 3,
+      "zpos": 3
+    }},
+    {"Pit3": {
+      "xpos": 4,
+      "zpos": 4
+    }}
+  ]
+}

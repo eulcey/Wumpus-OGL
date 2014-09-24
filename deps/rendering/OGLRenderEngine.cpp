@@ -17,9 +17,9 @@ using namespace matc;
 #define SHADER_PATH "../shader/"
 #define TEXTURE_PATH "../assets/"
 
-OGLRenderEngine::OGLRenderEngine(UserInput* user)
+OGLRenderEngine::OGLRenderEngine(int width, int height, std::string title, UserInput* user)
 {
-  init(user);
+  init(width, height, title, user);
 }
 
 bool OGLRenderEngine::render(RenderContext& context, ModelNode& model) {
@@ -99,15 +99,21 @@ bool OGLRenderEngine::render(RenderContext& context, ModelNode& model) {
   GLuint lightAmbientID = glGetUniformLocation(programID, "gDirectionalLight.ambientIntensity");
   GLuint diffuseID = glGetUniformLocation(programID, "gDirectionalLight.diffuseIntensity");
   GLuint directionID = glGetUniformLocation(programID, "gDirectionalLight.direction");
+  GLuint specularPowerID = glGetUniformLocation(programID, "gSpecularPower");
+  GLuint specularIntensityID = glGetUniformLocation(programID, "gSpecularIntensity");
+  GLuint eyeWorldID = glGetUniformLocation(programID, "gEyeWorldPos");
+  
   Light light = context.getLight();
   Vector3 lightDirection = light.direction.normalize();
-
-  //std::cout << lightDirection << std::endl;
   
   glUniform3f(lightColorID, light.color.x, light.color.y, light.color.z);
   glUniform1f(lightAmbientID, light.ambientIntensity);
   glUniform1f(diffuseID, light.diffuseIntensity);
   glUniform3f(directionID, lightDirection.x, lightDirection.y, lightDirection.z);
+  Vector3 cameraPosition = context.getCameraPosition();
+  glUniform3f(eyeWorldID, cameraPosition.x, cameraPosition.y, cameraPosition.z);
+  glUniform1f(specularPowerID, context.specularPower);
+  glUniform1f(specularIntensityID, context.specularIntensity);
 
   GLuint vertexbuffer = (it->second).vertex;
   if (vertexbuffer == -1) {
@@ -376,7 +382,7 @@ bool OGLRenderEngine::initModel(CubeNode& cube)
   return true;
 }
 
-bool OGLRenderEngine::init(UserInput* user)
+bool OGLRenderEngine::init(int width, int height, std::string title, UserInput* user)
 {
   
   if(!glfwInit()){
@@ -390,7 +396,7 @@ bool OGLRenderEngine::init(UserInput* user)
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //We don't want the old OpenGL
  
-  window = glfwCreateWindow(1024, 768, "Tutorial 01", NULL, NULL);
+  window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
   if(window == NULL) {
     std::cerr << "Failed to open GLFW window" << std::endl;
     glfwTerminate();

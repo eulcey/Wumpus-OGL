@@ -28,7 +28,7 @@ struct BufferValues {
 class OGLRenderEngine
 {
 public:
-  OGLRenderEngine(UserInput* user);
+  OGLRenderEngine(int width, int height, std::string title, UserInput* user);
   ~OGLRenderEngine() { }
 
   bool render(RenderContext& context, CubeNode& cube);
@@ -41,7 +41,7 @@ public:
   void close();
   bool isRunning();
 private:
-  bool init(UserInput* user);
+  bool init(int width, int height, std::string title, UserInput* user);
   GLFWwindow* window;
   std::map<std::string, BufferValues> bufferMap;
   std::map<std::string, GLuint> shaderMap;

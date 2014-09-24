@@ -10,6 +10,7 @@ FILE(GLOB RENDER_FILES deps/rendering/*.cpp)
 FILE(GLOB UTIL_FILES deps/utils/*.cpp)
 FILE(GLOB INPUT_FILES deps/input/*.cpp)
 FILE(GLOB OBJECT_FILES src/objects/*.cpp)
+FILE(GLOB JSON_FILES deps/jsoncpp/*.cpp)
 
 
 find_package(OpenGL REQUIRED)
@@ -24,6 +25,7 @@ add_executable(
     ${RENDER_FILES}
     ${INPUT_FILES}
     ${OBJECT_FILES}
+    ${JSON_FILES}
     )
 
 include_directories(deps/mathcore)
@@ -34,6 +36,7 @@ include_directories(deps/rendering)
 include_directories(deps/utils)
 include_directories(deps/input)
 include_directories(src/objects)
+include_directories(deps/jsoncpp)
 
 target_link_libraries(
     wumpus_ogl

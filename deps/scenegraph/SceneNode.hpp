@@ -1,6 +1,7 @@
 #ifndef SCENENODE_HPP
 #define SCENENODE_HPP
 
+#include <iostream>
 #include <list>
 #include <string>
 class NodeVisitor;
@@ -39,6 +40,22 @@ public:
   void addChild(SceneNode* node)
   {
     lstChildren.push_back(node);
+  }
+
+  bool removeChild(SceneNode &node)
+  {
+    std::list<SceneNode*>::iterator iter;
+    for(iter = lstChildren.begin();
+	iter != lstChildren.end();
+	iter++)
+      {
+	if ((*iter) == &node) {
+	  std::cout << "SCENENODE: erased: " << node << std::endl;
+	  lstChildren.erase(iter);
+	  return true;
+	}
+      }
+    return false;
   }
 
   std::string getName() { return this->name; }

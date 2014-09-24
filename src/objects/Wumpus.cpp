@@ -9,7 +9,9 @@ using namespace matc;
 Wumpus::Wumpus()
 {
   wumpusPosition = new TransformNode("Wumpus Position", translate(Matrix4x4(), Vector3(0.0, 4.0, 0.0)));
-  wumpusMaterial = new MaterialNode("Wumpus Material", "wumpus", "ambientShader");
+  wumpusMaterial = new MaterialNode("Wumpus Material", "wumpus", "phongShader");
+  wumpusMaterial->specularIntensity = 0.3f;
+  wumpusMaterial->specularPower = 1.0f;
   wumpus = new ModelNode("Wumpus", "../assets/monkey.obj");
   //root->addChild(wumpusPosition);
   wumpusPosition->addChild(wumpusMaterial);
@@ -30,5 +32,5 @@ bool Wumpus::link(SceneNode &node)
 
 bool Wumpus::setPosition(float xpos, float zpos)
 {
-  wumpusPosition->setTransform(translate(Matrix4x4(), Vector3(xpos, 2.0, zpos)));
+  wumpusPosition->setTransform(translate(Matrix4x4(), Vector3(xpos, 1.0, zpos)));
 }

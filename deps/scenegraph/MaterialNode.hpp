@@ -17,6 +17,9 @@ public:
   std::string getTexture() const { return textureName; }
   std::string getShader() const { return shaderName; }
   
+  float specularIntensity = 0.0f;
+  int specularPower = 0.0f;
+  
 private:
   std::string textureName;
   std::string shaderName;

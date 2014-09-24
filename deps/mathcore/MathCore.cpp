@@ -136,7 +136,7 @@ void Matrix4x4::setIdentity()
   p[3*MAT_DIM + 3] = 1.0f;
 }
 
-const std::vector<float> Matrix4x4::getValues()
+const std::vector<float> Matrix4x4::getValues() const
 {
   return this->values;
 }

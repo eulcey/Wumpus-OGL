@@ -30,7 +30,7 @@ namespace matc
     
     void setIdentity();
     
-    const std::vector<float> getValues();
+    const std::vector<float> getValues() const;
     const float* asArray() const;
     std::string toString();
     void set(int row, int col, float v);

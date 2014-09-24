@@ -41,6 +41,7 @@ bool Renderer::visit(CameraNode& cNode)
     Matrix4x4 view = matrixStack.top().invert();
     context.setView(view);
     context.setProjection(cNode.getProjection());
+    //context.setCameraPosition(cNode.getPosition());
   }
   //std::cout << "rendering camera" << std::endl;
   return true;
@@ -62,6 +63,8 @@ bool Renderer::visit(MaterialNode& material)
 {
   context.setTexture(material.getTexture());
   context.setShader(material.getShader());
+  context.specularIntensity = material.specularIntensity;
+  context.specularPower = material.specularPower;
   //context.setVertexShader(material.getVertexShader());
   //context.setFragmentShader(material.getFragmentShader());
   return true;

@@ -32,5 +32,6 @@
 /assets/*
 
 # temp files
-*.*~
+*~
 \#*.*\#
+TODO

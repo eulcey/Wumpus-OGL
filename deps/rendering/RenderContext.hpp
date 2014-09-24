@@ -27,6 +27,7 @@ public:
   void setTexture(std::string texture) { this->texture = texture; }
   void setShader(std::string shader) { this->shader = shader; }
   void setLight(Light light) { this->light = light; }
+  //void setCameraPosition(matc::Vector3 pos) { this->cameraPosition = pos; }
 
   
   matc::Matrix4x4 getProjection() const { return projectionTransformation; }
@@ -35,6 +36,10 @@ public:
   std::string getTexture() const { return texture; }
   std::string getShader() const { return shader; }
   Light getLight() const { return light; }
+  matc::Vector3 getCameraPosition() const;
+
+  float specularPower = 0.0f;
+  float specularIntensity = 0.0f;
 private:
   Light light;
   std::string texture;
@@ -42,6 +47,7 @@ private:
   matc::Matrix4x4 projectionTransformation;
   matc::Matrix4x4 viewTransformation;
   matc::Matrix4x4 modelTransformation = matc::Matrix4x4();
+  matc::Vector3 cameraPosition;
 };
 
 #endif
