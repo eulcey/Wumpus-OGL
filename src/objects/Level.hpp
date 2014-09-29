@@ -43,6 +43,7 @@ public:
   virtual bool linkPart(SceneNode &link);
 };
 
+
 class Level
 {
 public:

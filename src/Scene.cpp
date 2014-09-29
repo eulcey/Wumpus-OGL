@@ -15,7 +15,9 @@
 #include "Cursor.hpp"
 #include "UserInput.hpp"
 #include "Treasure.hpp"
+#include "Agent.hpp"
 #include "Hud.hpp"
+#include "Rotor.hpp"
 
 using namespace matc;
 
@@ -23,6 +25,7 @@ Scene::Scene(int width, int height, UserInput *user):
   camera(Camera("SceneCamera", width, height)), user(user), width(width), height(height)
 {
   root = new TransformNode("SceneRoot", Matrix4x4());
+
   camera.link(*root);
   light = new LightNode("Light 1", DirectionLight);
   light->ambientIntensity = 0.6f;
@@ -51,6 +54,8 @@ Scene::~Scene()
   root->release();
   light->release();
   delete wumpus;
+  delete agent;
+  delete treasure;
 }
 
 bool Scene::load(std::string file)
@@ -75,6 +80,11 @@ bool Scene::load(std::string file)
    * ==============
    * Agent, Wumpus, Treasure initialize here
    */
+  agent = new Agent(agentValue["xpos"].asFloat(), agentValue["zpos"].asFloat());
+  agent->link(*root);
+  
+  // Rotor *rotor = new Rotor("Rotor", 3.14f/100, Vector3(0, 1, 0), 4);
+  
   wumpus = new Wumpus();
   wumpus->link(*root);
   wumpus->setPosition(wumpusValue["xpos"].asFloat(), wumpusValue["zpos"].asFloat());
@@ -101,6 +111,10 @@ bool Scene::load(std::string file)
 void Scene::render(Renderer &renderer)
 {
   root->accept(renderer);
+  // maybe switch to agent vision here
+  
+  // update here?
+  root->update(glfwGetTime());
 }
 
 void Scene::print(Printer &printer)

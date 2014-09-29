@@ -10,17 +10,17 @@ class SceneNode
 {
 public:
   SceneNode(std::string newName): name(newName) {}
-  virtual ~SceneNode() {}//TODO how to: destroy(); }
+  virtual ~SceneNode() { lstChildren.clear(); }//TODO how to: destroy(); }
 
   void release() { delete this; }
 
-  virtual void update()
+  virtual void update(float actualTime)
   {
      for(std::list<SceneNode*>::iterator i = lstChildren.begin();
 	i != lstChildren.end();
 	i++)
       {
-	(*i)->update();
+	(*i)->update(actualTime);
       }
   }
 

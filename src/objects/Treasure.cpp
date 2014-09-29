@@ -8,8 +8,9 @@
 
 using namespace matc;
 
-Treasure::Treasure(float xPos, float zPos): GameObject(xPos, zPos)
+Treasure::Treasure(float xPos, float zPos): GameObject("Treasure", xPos, zPos)
 {
+  /*
   transform = new TransformNode("Treasure-Position", translate(Matrix4x4(), Vector3(xPos, zPos, 0.0)));
   material = new MaterialNode("Treasure-Material", "chest", "phongShader");
   material->specularIntensity = 3.0f;
@@ -17,6 +18,8 @@ Treasure::Treasure(float xPos, float zPos): GameObject(xPos, zPos)
   model = new ModelNode("Treasure-Model", "../assets/ball.obj");
   transform->addChild(material);
   material->addChild(model);
+  */
+  init("../assets/ball.obj", "chest", "phongShader");
 }
 
 Treasure::~Treasure()
@@ -29,11 +32,6 @@ bool Treasure::setPosition(float xPos, float yPos)
   transform->setTransform(translate(Matrix4x4(), Vector3(xPos, yPos, 0)));
   this->xPosition = xPos;
   this->zPosition = yPos;
-}
-
-bool Treasure::init()
-{
-  
 }
 
 bool Treasure::release()

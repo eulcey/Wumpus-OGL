@@ -24,8 +24,6 @@ public:
   
 protected:
   virtual void doStream(std::ostream&);
-  
-private:
   matc::Matrix4x4 transform;
 };
 #endif

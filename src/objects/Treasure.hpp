@@ -14,7 +14,6 @@ public:
   ~Treasure();
 
   virtual bool setPosition(float xPos, float yPos);
-  virtual bool init();
   virtual bool release();
 
 };

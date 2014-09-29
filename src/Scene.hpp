@@ -13,6 +13,7 @@ class Cursor;
 class UserInput;
 class Treasure;
 class Hud;
+class Agent;
 
 class Scene
 {
@@ -34,13 +35,22 @@ private:
   Level *level;
   LightNode *light;
 
+  // places of objects
   Wumpus *wumpus;
   Treasure *treasure;
+  Agent *agent;
+  //  std::vector<Pit*> pits;
+  
   Cursor *cursor;
 
   Hud *hud;
 
   //test
   float lastTime;
+
+  // !!!!!
+  // maybe GameState class needed, practical?
+  // saves position of all objects, and status of agent (sensor data)
+  // !!!!!
 };
 #endif

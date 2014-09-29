@@ -4,10 +4,12 @@
 #include "MaterialNode.hpp"
 #include "ModelNode.hpp"
 
-bool Agent::init()
+bool Agent::release()
 {
 }
 
-bool Agent::release()
+Agent::~Agent()
 {
+  //  root->release();
+  // border.clear();
 }

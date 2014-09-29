@@ -90,7 +90,7 @@ void Camera::update(float deltaTime)
   //Vector3 posChange = direction * deltaTime * MOVE_SPEED;
   Matrix4x4 oldPosition = Matrix4x4(position->getTransform());
   float actualYChange = 0;
-  if (mouseLookEnabled) actualYChange = posChange.y;
+  if (mouseLookEnabled) actualYChange = posChange.y; // not actual desired movement if mouselook=false
   Matrix4x4 newPosition = translate(oldPosition, Vector3(posChange.x, actualYChange, posChange.z));
   position->setTransform(newPosition);
 }
