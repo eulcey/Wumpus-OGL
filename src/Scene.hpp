@@ -14,13 +14,7 @@ class UserInput;
 class Treasure;
 class Hud;
 class Agent;
-class AgentAI;
-
-struct place
-{
-  int x;
-  int y;
-};
+class AgentLogic;
 
 class Scene
 {
@@ -74,10 +68,8 @@ private:
   // maybe GameState class needed, practical?
   // saves position of all objects, and status of agent (sensor data)
   // !!!!!
-  AgentAI *ai;
+  AgentLogic *ai;
   // Sensordata
   
-  // Border: places not yet visited, but safe to visit
-  std::vector<place> border;
 };
 #endif

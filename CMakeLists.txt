@@ -11,12 +11,14 @@ FILE(GLOB UTIL_FILES deps/utils/*.cpp)
 FILE(GLOB INPUT_FILES deps/input/*.cpp)
 FILE(GLOB OBJECT_FILES src/objects/*.cpp)
 FILE(GLOB JSON_FILES deps/jsoncpp/*.cpp)
+FILE(GLOB AI_FILES src/logic/*.cpp)
 
 find_package(OpenGL REQUIRED)
 
 add_executable(
     wumpus_ogl
     ${SOURCE_FILES}
+    ${AI_FILES}
     deps/lodepng/lodepng.cpp
     deps/mathcore/MathCore.cpp
     ${UTIL_FILES}
@@ -36,6 +38,7 @@ include_directories(deps/utils)
 include_directories(deps/input)
 include_directories(src/objects)
 include_directories(deps/jsoncpp)
+include_directories(src/logic)
 
 target_link_libraries(
     wumpus_ogl

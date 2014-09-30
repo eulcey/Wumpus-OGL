@@ -18,6 +18,7 @@
 #include "Agent.hpp"
 #include "Hud.hpp"
 #include "Rotor.hpp"
+#include "AgentLogic.hpp"
 
 using namespace matc;
 
@@ -113,6 +114,8 @@ bool Scene::load(std::string file)
   int treasureZ = treasureValue["zpos"].asInt() - 1;
   treasure = new Treasure(gridToPos(treasureX), -gridToPos(treasureZ));
   treasure->link(*worldTransform);
+
+  ai = new AgentLogic(width, height);
  
   return true;
 }
