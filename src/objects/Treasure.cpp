@@ -19,7 +19,11 @@ Treasure::Treasure(float xPos, float zPos): GameObject("Treasure", xPos, zPos)
   transform->addChild(material);
   material->addChild(model);
   */
-  init("../assets/ball.obj", "chest", "phongShader");
+  init("../assets/treasure.obj", "chest", "phongShader");
+  delete scale;
+  scale = new TransformNode("Treasure Scale", matc::scale(Matrix4x4(), 2.5f, 2.5f, 2.5f));
+  scale->addChild(model);
+  material->specularIntensity = 0.9f;
 }
 
 Treasure::~Treasure()

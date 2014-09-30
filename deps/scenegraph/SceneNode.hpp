@@ -10,7 +10,7 @@ class SceneNode
 {
 public:
   SceneNode(std::string newName): name(newName) {}
-  virtual ~SceneNode() { lstChildren.clear(); }//TODO how to: destroy(); }
+  virtual ~SceneNode() { destroy(); } //lstChildren.clear(); }
 
   void release() { delete this; }
 
@@ -32,7 +32,8 @@ public:
 	i != lstChildren.end();
 	i++)
       {
-      	(*i)->release();
+	//if(*i != NULL)
+	// (*i)->release();
       }
     lstChildren.clear();
   }

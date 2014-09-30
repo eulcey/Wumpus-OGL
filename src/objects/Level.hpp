@@ -10,6 +10,9 @@
 
 const int CELL_SIZE = 12;
 
+#define gridToPos(x) (x*CELL_SIZE)+CELL_SIZE/2
+#define posToGrid(x) (x-CELL_SIZE/2)/CELL_SIZE
+
 class LevelPart
 {
 public:
@@ -34,15 +37,23 @@ public:
   virtual bool linkPart(SceneNode &link);
 };
 
-class Floor: public LevelPart
+class FloorTile: public LevelPart
 {
 public:
-  Floor();
-  ~Floor() {}
+  FloorTile(matc::Vector3 position);
+  ~FloorTile() {}
 
   virtual bool linkPart(SceneNode &link);
 };
 
+class PitTile: public LevelPart
+{
+public:
+  PitTile(matc::Vector3 position);
+  ~PitTile() {}
+
+  virtual bool linkPart(SceneNode &link);
+};
 
 class Level
 {
@@ -50,13 +61,15 @@ public:
   Level(int width, int height, std::vector<Json::Value> pitValues);
   ~Level();
 
+  
   bool linkLevel(SceneNode &link);
   //bool loadFile(std::string file);
 
 private:
   TransformNode *transform;
   std::vector<WallSegment*> walls;
-  Floor floor;
+  std::vector<FloorTile*> floor;
+  std::vector<PitTile*> pits;
 };
 
 #endif

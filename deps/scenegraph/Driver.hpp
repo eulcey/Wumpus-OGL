@@ -21,7 +21,9 @@ public:
 
   void update(float deltaTime);
 
-  void setDirection(Direction direction);
+  //  void setDirection(Direction direction);
+  void changeHorizAngle(float horizAngle);
+  void changeVertAngle(float vertAngle);
 
 private:
   matc::Matrix4x4 position;

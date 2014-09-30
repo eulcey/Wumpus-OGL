@@ -16,6 +16,7 @@ public:
   bool setPosition(float xpos, float zpos);
 private:
   TransformNode *wumpusPosition;
+  TransformNode *wumpusScale;
   MaterialNode *wumpusMaterial;
   ModelNode *wumpus;
 };

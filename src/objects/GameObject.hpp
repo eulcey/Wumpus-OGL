@@ -23,6 +23,7 @@ protected:
   float xPosition;
   float zPosition;
   TransformNode *transform;
+  TransformNode *scale;
   MaterialNode *material;
   ModelNode *model;
 };

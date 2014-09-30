@@ -9,17 +9,20 @@ using namespace matc;
 Wumpus::Wumpus()
 {
   wumpusPosition = new TransformNode("Wumpus Position", translate(Matrix4x4(), Vector3(0.0, 4.0, 0.0)));
+  wumpusScale = new TransformNode("Wumpus Scale", scale(Matrix4x4(), 4, 4, 4));
   wumpusMaterial = new MaterialNode("Wumpus Material", "wumpus", "phongShader");
   wumpusMaterial->specularIntensity = 0.3f;
   wumpusMaterial->specularPower = 1.0f;
   wumpus = new ModelNode("Wumpus", "../assets/monkey.obj");
   //root->addChild(wumpusPosition);
   wumpusPosition->addChild(wumpusMaterial);
-  wumpusMaterial->addChild(wumpus);
+  wumpusMaterial->addChild(wumpusScale);
+  wumpusScale->addChild(wumpus);
 }
 
 Wumpus::~Wumpus()
-{ 
+{
+  wumpusScale->release();
   wumpusPosition->release();
   wumpusMaterial->release();
   wumpus->release();
@@ -32,5 +35,5 @@ bool Wumpus::link(SceneNode &node)
 
 bool Wumpus::setPosition(float xpos, float zpos)
 {
-  wumpusPosition->setTransform(translate(Matrix4x4(), Vector3(xpos, 1.0, zpos)));
+  wumpusPosition->setTransform(translate(Matrix4x4(), Vector3(xpos, 4.0, zpos)));
 }

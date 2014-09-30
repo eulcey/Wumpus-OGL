@@ -14,6 +14,13 @@ class UserInput;
 class Treasure;
 class Hud;
 class Agent;
+class AgentAI;
+
+struct place
+{
+  int x;
+  int y;
+};
 
 class Scene
 {
@@ -27,7 +34,22 @@ public:
   Camera* getCamera() { return &camera; }
   void switchMouseLook();
   void resetCamera();
-private:
+
+  void nextStep();
+
+private:  
+  // gets data from current field, maybe invoke getSensorData(x, y) from Scene/Level
+  // maybe: adds safe fields to "border"
+  void agentSense();
+
+  // act appropriate to KI and Sensordata
+  //   1. collects treasure if on field
+  //   2. shoot wumpus if avaible
+  //   3. goes to next safe field
+  // order not sure
+  void agentAct();
+
+  
   int width, height;
   TransformNode *root;
   Camera camera;
@@ -52,5 +74,10 @@ private:
   // maybe GameState class needed, practical?
   // saves position of all objects, and status of agent (sensor data)
   // !!!!!
+  AgentAI *ai;
+  // Sensordata
+  
+  // Border: places not yet visited, but safe to visit
+  std::vector<place> border;
 };
 #endif

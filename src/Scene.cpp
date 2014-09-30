@@ -52,7 +52,7 @@ Scene::Scene(int width, int height, UserInput *user):
 Scene::~Scene()
 {
   root->release();
-  light->release();
+  //light->release();
   delete wumpus;
   delete agent;
   delete treasure;
@@ -76,21 +76,6 @@ bool Scene::load(std::string file)
   Json::Value wumpusValue = rootValue["Wumpus"];
   Json::Value agentValue = rootValue["Agent"];
   Json::Value treasureValue = rootValue["Treasure"];
-  /*
-   * ==============
-   * Agent, Wumpus, Treasure initialize here
-   */
-  agent = new Agent(agentValue["xpos"].asFloat(), agentValue["zpos"].asFloat());
-  agent->link(*root);
-  
-  // Rotor *rotor = new Rotor("Rotor", 3.14f/100, Vector3(0, 1, 0), 4);
-  
-  wumpus = new Wumpus();
-  wumpus->link(*root);
-  wumpus->setPosition(wumpusValue["xpos"].asFloat(), wumpusValue["zpos"].asFloat());
-
-  treasure = new Treasure(treasureValue["xpos"].asFloat(), treasureValue["zpos"].asFloat());
-  treasure->link(*root);
   
 
   Json::Value pitsValue = rootValue["Pits"];
@@ -100,11 +85,35 @@ bool Scene::load(std::string file)
   }
   
   this->level= new Level(width, height, pitValues);
-  if(!this->level->linkLevel(*root)) {
+  TransformNode *worldTransform = new TransformNode("WorldTransform", translate(Matrix4x4(), Vector3(-20, 5, 20)));
+  root->addChild(worldTransform);
+  if(!this->level->linkLevel(*worldTransform)) {
     std::cout << "Couldn't link level to scene" << std::endl;
     return false;
   }
+   /*
+   * ==============
+   * Agent, Wumpus, Treasure initialize here
+   */
+  int agentX = agentValue["xpos"].asInt() - 1;
+  int agentZ = agentValue["zpos"].asInt() - 1;
+  agent = new Agent(gridToPos(agentX), -gridToPos(agentZ));
+  agent->link(*worldTransform);
   
+  // Rotor *rotor = new Rotor("Rotor", 3.14f/100, Vector3(0, 1, 0), 4);
+  
+  wumpus = new Wumpus();
+  wumpus->link(*worldTransform);
+  int wumpusX = (wumpusValue["xpos"].asInt()-1);
+  int wumpusZ = (wumpusValue["zpos"].asInt()-1);
+
+  wumpus->setPosition(gridToPos(wumpusX), -gridToPos(wumpusZ));
+
+  int treasureX = treasureValue["xpos"].asInt() - 1;
+  int treasureZ = treasureValue["zpos"].asInt() - 1;
+  treasure = new Treasure(gridToPos(treasureX), -gridToPos(treasureZ));
+  treasure->link(*worldTransform);
+ 
   return true;
 }
 
