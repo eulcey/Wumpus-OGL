@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 project(wumpus_ogl)
 
@@ -11,7 +11,6 @@ FILE(GLOB UTIL_FILES deps/utils/*.cpp)
 FILE(GLOB INPUT_FILES deps/input/*.cpp)
 FILE(GLOB OBJECT_FILES src/objects/*.cpp)
 FILE(GLOB JSON_FILES deps/jsoncpp/*.cpp)
-
 
 find_package(OpenGL REQUIRED)
 
