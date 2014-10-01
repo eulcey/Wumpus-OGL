@@ -19,26 +19,28 @@
 #include "Hud.hpp"
 #include "Rotor.hpp"
 #include "AgentLogic.hpp"
+#include "LevelLogic.hpp"
 
 using namespace matc;
 
 Scene::Scene(int width, int height, UserInput *user):
-  camera(Camera("SceneCamera", width, height)), user(user), width(width), height(height)
+  width(width), height(height), user(user), camera(Camera("SceneCamera", width, height)), camera2(Camera("SceneCamera2", width, height))
 {
   root = new TransformNode("SceneRoot", Matrix4x4());
 
   camera.link(*root);
   light = new LightNode("Light 1", DirectionLight);
-  light->ambientIntensity = 0.6f;
-  light->diffuseIntensity = 0.8f;
+  light->ambientIntensity = 0.5f;
+  light->diffuseIntensity = 0.7f;
   light->direction = Vector3(-1.0, -1.0, 1.0);
   root->addChild(light);
 
   cursor = new Cursor();
   hud = new Hud(this);
-  //  cursor->link(*camera.getTransform());
+  //cursor->link(*camera.getTransform());
   lastTime = glfwGetTime();
 
+  hud->linkToCamera(*camera.getTransform());
   /*
   ModelNode skybox_sky("Skybox_sky", "../assets/skybox_sky.obj");
   MaterialNode skybox_sky_material("Skybox Sky Material", "Skybox_sky", "texturedShader");
@@ -52,19 +54,27 @@ Scene::Scene(int width, int height, UserInput *user):
 
 Scene::~Scene()
 {
-  root->release();
-  //light->release();
+  /*root->release();
+  light->release();
+  */
   delete wumpus;
   delete agent;
   delete treasure;
+  delete cursor;
+  delete hud;
 }
 
-bool Scene::load(std::string file)
+bool Scene::load(const std::string &file)
 {
   
   Json::Value rootValue;
   Json::Reader reader;
-  bool parsingSuccessful = reader.parse(file_read(file.c_str()), rootValue);
+  char* filecontent = file_read(file.c_str());
+  if (filecontent == NULL) {
+    //std::cerr << "Error: Couldn't load file: " << file << std::endl;
+    return false;
+  }
+  bool parsingSuccessful = reader.parse(filecontent, rootValue);
   if(!parsingSuccessful) {
     std::cerr << "parsing error: " << reader.getFormattedErrorMessages() << std::endl;
   }
@@ -81,7 +91,7 @@ bool Scene::load(std::string file)
 
   Json::Value pitsValue = rootValue["Pits"];
   std::vector<Json::Value> pitValues;
-  for(int index = 0; index < pitsValue.size(); index++) {
+  for(u_int index = 0; index < pitsValue.size(); index++) {
     pitValues.push_back(pitsValue[index]);
   }
   
@@ -112,12 +122,23 @@ bool Scene::load(std::string file)
 
   int treasureX = treasureValue["xpos"].asInt() - 1;
   int treasureZ = treasureValue["zpos"].asInt() - 1;
+  //std::cout << "grid: " << treasureX << ", " << treasureZ << std::endl;
+  //std::cout << "world: " << gridToPos(treasureX) << ", " << -gridToPos(treasureZ) << std::endl;
   treasure = new Treasure(gridToPos(treasureX), -gridToPos(treasureZ));
   treasure->link(*worldTransform);
 
-  ai = new AgentLogic(width, height);
+  ai = new AgentLogic();
+  levelLogic = new LevelLogic(rootValue);
  
   return true;
+}
+
+void Scene::deleteScene()
+{
+  if(camera.mouseLookActive()) {
+    // cursor root delete
+  }
+  root->release();
 }
 
 void Scene::render(Renderer &renderer)
@@ -138,9 +159,9 @@ void Scene::switchMouseLook()
 {
   if(camera.switchMouseLook()) {
     cursor->unlink(*camera.getTransform());
-      user->setMousePosAction([&] (double xpos, double ypos) {
-      camera.changeView(xpos, ypos, float(glfwGetTime()-lastTime));
-    });
+    user->setMousePosAction([&] (double xpos, double ypos) {
+	camera.changeView(xpos, ypos, float(glfwGetTime()-lastTime));
+      });
   } else {
     cursor->link(*camera.getTransform());
     user->setMousePosAction([&] (double xpos, double ypos) {
@@ -154,4 +175,55 @@ void Scene::switchMouseLook()
 void Scene::resetCamera()
 {
   camera.reset();
+}
+
+void Scene::switchCamera()
+{
+  camera.unlink(*root);
+  camera2.link(*root);
+}
+
+void Scene::update(float deltaTime)
+{
+  camera.update(deltaTime);
+}
+
+void Scene::clickCursor()
+{
+  Vector3 cursorPos = cursor->getPosition();
+  float x_diff = cursorPos.x - NEXT_STEP_BUTTON_X;
+  float y_diff = cursorPos.y - NEXT_STEP_BUTTON_Y;
+  float distance = sqrt(x_diff * x_diff + y_diff * y_diff);
+  if (distance <= NEXT_STEP_BUTTON_R) {
+    std::cout << "Next Step Button clicked" << std::endl;
+    nextStep();
+  }
+}
+
+void Scene::nextStep()
+{
+  // ask levellogic
+  std::vector<Senses> senses = levelLogic->getSensorData();
+  // input to agentlogic
+  ai->inputNewSenses(senses);
+  // ask agentlogic for new action
+  Action nextAction = ai->getNextAction();
+  //nextAction = Forward;
+  // ask levelLogic if action is possible, and update it if it's possible
+  bool actionWasSuccessful = levelLogic->isActionPossible(nextAction);
+
+  // tell agent if action was successful
+  ai->actionSucceeded(nextAction, actionWasSuccessful);
+
+  //std::cout << "Action sucess: " << actionWasSuccessful << std::endl;
+  /*
+  // update levelLogic
+  if (levelLogic->moveAgentTo(Vector2i(agentX, agentZ))) {
+    // reposition model;
+    agent->setPosition(gridToPos(agentX), -gridToPos(agentZ));
+  }
+  */
+  Vector2i agentPos = levelLogic->getAgentPos();
+  //  std::cout << "newAgentPos: " << agentPos << std::endl;
+  agent->setPosition(gridToPos(agentPos.x), -gridToPos(agentPos.y));
 }

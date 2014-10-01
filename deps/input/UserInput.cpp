@@ -52,10 +52,13 @@ void UserInput::mouseButtonCallback(int button, int action, int mods)
   //std::string input = "Mouse" + ss.str();
   std::map<int, std::function<void (void)>>::iterator it = mouseMap.find(button);
   
-  if(it != mouseMap.end()) {
-    (it->second)();
-  } else {
-    std::cerr << "Mouse " <<  button << " not found in config UserInput" << std::endl;
+  // only activate action if mouse button is release
+  if(action == 0) {
+    if(it != mouseMap.end()) {
+      (it->second)();
+    } else {
+      std::cerr << "Mouse " <<  button << " not found in config UserInput" << std::endl;
+    }
   }
 }
 

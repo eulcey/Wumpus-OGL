@@ -10,9 +10,9 @@ class GameObject
 {
 public:
   GameObject(std::string name, float xPos, float zPos): name(name), xPosition(xPos), zPosition(zPos) {}
-  ~GameObject() {}
+  virtual ~GameObject() {}
 
-  virtual bool setPosition(float xPos, float zPos) { this->xPosition = xPos; this->zPosition = zPos; }
+  virtual void setPosition(float xPos, float zPos);
   virtual bool init(std::string model, std::string texture, std::string shader);
   virtual bool release() = 0;
 

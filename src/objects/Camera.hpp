@@ -32,12 +32,14 @@ Camera(std::string name, int screenWidth, int screenHeight);
 ~Camera();
 
   bool link(SceneNode &link);
+  bool unlink(SceneNode &link);
   bool addSkybox(SceneNode &skybox);
   void onKeyboard(int key, int action);
   void update(float deltaTime);
   void changeView(double xpos, double ypos, float deltaTime);
 
   bool switchMouseLook();
+  bool mouseLookActive() { return mouseLookEnabled; }
 
   void activate();
   void deactivate();

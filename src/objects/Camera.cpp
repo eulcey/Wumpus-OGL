@@ -53,6 +53,11 @@ bool Camera::link(SceneNode& node)
   return true;
 }
 
+bool Camera::unlink(SceneNode& link)
+{
+  return link.removeChild(*this->position);
+}
+
 bool Camera::addSkybox(SceneNode& skybox)
 {
   position->addChild(&skybox);

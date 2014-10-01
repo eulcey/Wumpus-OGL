@@ -2,6 +2,7 @@
 #define AGENTLOGIC_HPP
 
 #include <vector>
+#include "MathCore.hpp"
 
 enum Senses {
   Breeze,
@@ -13,7 +14,9 @@ enum Action {
   TurnLeft,
   TurnRight,
   Forward,
-  Shoot
+  Shoot,
+  Grab,
+  Leave
 };
 
 struct Room
@@ -26,13 +29,21 @@ struct Room
 class AgentLogic
 {
 public:
-  AgentLogic(int width, int height);
+  AgentLogic();
   ~AgentLogic();
 
-   
+  void inputNewSenses(const std::vector<Senses> &newSenses);
+  Action getNextAction();
+  void actionSucceeded(Action action, bool wasSuccessful);
 
 private:
-  std::vector<std::vector<Room*>> rooms;
+  // relative position to starting position
+  matc::Vector2i ownRelPos;
+  //std::vector<std::vector<Room*>> rooms;
+
+  bool haveArrow = true;
+  bool haveTreasure = false;
+  
 };
 
 #endif

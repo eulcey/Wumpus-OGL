@@ -14,6 +14,8 @@ bool TransformNode::accept(NodeVisitor& visitor)
 	}
       }
     return visitor.leave(*this);
+  } else {
+    return false;
   }
 }
 

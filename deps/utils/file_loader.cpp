@@ -19,6 +19,7 @@ char* file_read(const char* filename)
   FILE* input = fopen(filename, "rb");
   if(input == NULL) return NULL;
 
+  
   if(fseek(input, 0, SEEK_END) == -1) return NULL;
   long size = ftell(input);
   if(size == -1) return NULL;
@@ -140,7 +141,7 @@ GLuint loadDDS(const char *imagepath)
   fread(buffer, 1, bufsize, fp);
   fclose(fp);
 
-  unsigned int components = (fourCC == FOURCC_DXT1)? 3 : 4;
+  //unsigned int components = (fourCC == FOURCC_DXT1)? 3 : 4;
   unsigned int format;
   switch(fourCC)
     {
@@ -231,7 +232,7 @@ GLuint loadPNG(const char *imagepath)
   glGenTextures(1, &textureID);
   glBindTexture(GL_TEXTURE_2D, textureID);
   
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
   glGenerateMipmap(GL_TEXTURE_2D);

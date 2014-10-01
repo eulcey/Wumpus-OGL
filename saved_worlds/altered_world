@@ -3,21 +3,21 @@
   "Width": 4,
   "Height": 4,
   "Wumpus": {
-    "xpos": 4,
+    "xpos": 1,
     "zpos": 3
   },
   "Agent": {
-    "xpos": 1,
-    "zpos": 1
+    "xpos": 2,
+    "zpos": 3
   },
   "Treasure": {
-    "xpos": 4,
+    "xpos": 2,
     "zpos": 3
   },
   "Pits": [
     {
-      "xpos": 4,
-      "zpos": 2
+      "xpos": 3,
+      "zpos": 1
     },
     {
       "xpos": 3,

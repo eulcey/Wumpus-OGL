@@ -31,9 +31,11 @@ Wumpus::~Wumpus()
 bool Wumpus::link(SceneNode &node)
 {
   node.addChild(wumpusPosition);
+  return true;
 }
 
 bool Wumpus::setPosition(float xpos, float zpos)
 {
   wumpusPosition->setTransform(translate(Matrix4x4(), Vector3(xpos, 4.0, zpos)));
+  return true;
 }

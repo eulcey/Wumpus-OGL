@@ -61,7 +61,7 @@ bool OGLRenderEngine::render(RenderContext& context, ModelNode& model) {
    * ============ TEXTURE =========
    */
   std::string name = model.getName();
-  GLuint textureBuffer;
+  GLint textureBuffer;
   std::string texture = context.getTexture();
   //std::cout << "load texture: " << texture << std::endl;
 
@@ -115,7 +115,7 @@ bool OGLRenderEngine::render(RenderContext& context, ModelNode& model) {
   glUniform1f(specularPowerID, context.specularPower);
   glUniform1f(specularIntensityID, context.specularIntensity);
 
-  GLuint vertexbuffer = (it->second).vertex;
+  GLint vertexbuffer = (it->second).vertex;
   if (vertexbuffer == -1) {
     std::cerr << "No Vertex information found" << std::endl;
     return false;
@@ -156,7 +156,7 @@ bool OGLRenderEngine::render(RenderContext& context, ModelNode& model) {
 			(void*)0
 			);
 
-  GLuint normalBuffer = (it->second).normal;
+  GLint normalBuffer = (it->second).normal;
   if(normalBuffer == -1) {
       std::cerr << "No normal information found" << std::endl;
       return false;
@@ -172,7 +172,7 @@ bool OGLRenderEngine::render(RenderContext& context, ModelNode& model) {
 			(void*)0
 			);
 
-  GLuint elementBuffer = (it->second).element;
+  GLint elementBuffer = (it->second).element;
   if(elementBuffer == -1) {
     // std::cout << "rendering triangles: " << model.getTrianglesCount() << std::endl;
     glDrawArrays(GL_TRIANGLES, 0, model.getTrianglesCount()*3);
@@ -222,7 +222,7 @@ bool OGLRenderEngine::render(RenderContext& context, CubeNode& cube)
   glUniformMatrix4fv(viewMatrixID, 1, GL_FALSE, context.getView().asArray());
   glUniformMatrix4fv(modelMatrixID, 1, GL_FALSE, context.getModel().asArray());
 
-  GLuint vertexbuffer = (it->second).vertex;
+  GLint vertexbuffer = (it->second).vertex;
   if (vertexbuffer == -1) {
     std::cerr << "No Vertex information found" << std::endl;
     return false;
@@ -252,7 +252,7 @@ bool OGLRenderEngine::render(RenderContext& context, CubeNode& cube)
 
 			
 
-  GLuint elementbuffer = (it->second).element;
+  GLint elementbuffer = (it->second).element;
   if (elementbuffer != -1) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
     glDrawElements(
@@ -364,7 +364,7 @@ bool OGLRenderEngine::initModel(CubeNode& cube)
 
   
   std::vector<Vector4> col = cube.getColors();
-  Vector4 *colors = col.data();
+  //Vector4 *colors = col.data();
   GLuint colorBuffer;
   glGenBuffers(1, &colorBuffer);
   glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
@@ -423,7 +423,7 @@ bool OGLRenderEngine::init(int width, int height, std::string title, UserInput* 
   glGenVertexArrays(1, &VertexArrayID);
   glBindVertexArray(VertexArrayID);
 
-  user->init(window);
+  return user->init(window);
 }
 
 void OGLRenderEngine::update()

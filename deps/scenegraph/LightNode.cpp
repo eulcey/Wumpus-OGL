@@ -11,5 +11,5 @@ LightNode::LightNode(std::string name, LightingType type): SceneNode(name), type
 
 bool LightNode::accept(NodeVisitor &visitor)
 {
-  visitor.visit(*this);
+  return visitor.visit(*this);
 }

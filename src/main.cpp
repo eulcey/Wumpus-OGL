@@ -26,12 +26,25 @@ const float speed = 0.01;
 Vector3 globalDirection;
 Vector3 globalRight;
 
-int main(void)
+int main(int argc, char** argv)
 {
   
   UserInput user;
   Scene scene(screen_width, screen_height, &user);
-  scene.load("../saved_worlds/original_world");
+  //  scene.load("../saved_worlds/original_world");
+  //std::cout << "loading: " << argv[1] << std::endl;
+  std::string filepath;
+  
+  if(argc >= 2) {
+    filepath = argv[1];
+  } else {
+    filepath = "../saved_worlds/original_world";
+  }
+  
+  if(!scene.load(filepath)) {
+    std::cerr << "Error while loading: " << filepath << std::endl;
+    return -1;
+  }
 
   Camera *camera = scene.getCamera();
   
@@ -39,7 +52,7 @@ int main(void)
   
   OGLRenderEngine engine(screen_width, screen_height, "Wumpuse-OGL", &user);
   
-  user.setMouseInputAction(GLFW_MOUSE_BUTTON_LEFT, [] { std::cout << "left mouse button clicked" << std::endl; });
+  user.setMouseInputAction(GLFW_MOUSE_BUTTON_LEFT, [&] { scene.clickCursor(); });
   user.setMouseInputAction(GLFW_MOUSE_BUTTON_RIGHT, [] { std::cout << "right mouse button clicked" << std::endl; });
 
 
@@ -66,10 +79,13 @@ int main(void)
 
   // main loop
   do {
-    camera->update(float(glfwGetTime()-lastTime));
+    //camera->update(float(glfwGetTime()-lastTime));
+    scene.update(float(glfwGetTime()-lastTime));
     scene.render(renderer);
-    engine.update();
+    engine.update(); // here swapping buffers
   } while(engine.isRunning());
 
+  //scene.deleteScene();
+  std::cout << "Scene deleted" << std::endl;
 }
 

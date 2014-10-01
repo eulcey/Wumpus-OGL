@@ -7,7 +7,7 @@
 
 bool ModelNode::accept(NodeVisitor& visitor)
 {
-  visitor.visit(*this);
+  return visitor.visit(*this);
 }
 
 void ModelNode::update()

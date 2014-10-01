@@ -15,6 +15,11 @@ class Treasure;
 class Hud;
 class Agent;
 class AgentLogic;
+class LevelLogic;
+
+const float NEXT_STEP_BUTTON_X = 2.86f;
+const float NEXT_STEP_BUTTON_Y = -2.43f;
+const float NEXT_STEP_BUTTON_R = 0.36f;
 
 class Scene
 {
@@ -22,13 +27,18 @@ public:
   Scene(int width, int height, UserInput *user);
   ~Scene();
 
-  bool load(std::string file);
+  void update(float deltaTime);
+
+  bool load(const std::string &file);
+  void deleteScene();
   void render(Renderer &renderer);
   void print(Printer &printer);
   Camera* getCamera() { return &camera; }
   void switchMouseLook();
   void resetCamera();
+  void switchCamera();
 
+  void clickCursor();
   void nextStep();
 
 private:  
@@ -45,21 +55,23 @@ private:
 
   
   int width, height;
-  TransformNode *root;
-  Camera camera;
   UserInput *user;
-  Level *level;
-  LightNode *light;
+  Camera camera;
+  Camera camera2;
+
+  TransformNode *root = 0;
+  Level *level = 0;
+  LightNode *light = 0;
 
   // places of objects
-  Wumpus *wumpus;
-  Treasure *treasure;
-  Agent *agent;
+  Wumpus *wumpus = 0;
+  Treasure *treasure = 0;
+  Agent *agent = 0;
   //  std::vector<Pit*> pits;
   
-  Cursor *cursor;
+  Cursor *cursor = 0;
 
-  Hud *hud;
+  Hud *hud = 0;
 
   //test
   float lastTime;
@@ -68,6 +80,7 @@ private:
   // maybe GameState class needed, practical?
   // saves position of all objects, and status of agent (sensor data)
   // !!!!!
+  LevelLogic *levelLogic;
   AgentLogic *ai;
   // Sensordata
   

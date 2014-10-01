@@ -312,6 +312,8 @@ float& Vector4::operator[](int pos)
       break;
     case 3: return w;
     }
+  // not sure what to do if out of bounds
+  return x;
 }
 
 Vector4 Vector4::operator-(const Vector4 &other) const
@@ -355,6 +357,47 @@ std::ostream& matc::operator<<(std::ostream &out, Vector2 &v)
 {
   out << v.toString() << "\n";
   return out;
+}
+
+//==================================
+//-----------Vector2i----------------
+//==================================
+
+Vector2i::Vector2i(const Vector2i &v)
+{
+  this->x = v.x;
+  this->y = v.y;
+}
+
+Vector2i::Vector2i(int *arr)
+{
+  this->x = arr[0];
+  this->y = arr[1];
+}
+
+std::string Vector2i::toString()
+{
+  std::string s = "[ ";
+  s += std::to_string(x);
+  s += " ";
+  s += std::to_string(y);
+  s += " ]";
+  return s;
+}
+
+std::ostream& matc::operator<<(std::ostream &out, Vector2i &v)
+{
+  out << v.toString() << "\n";
+  return out;
+}
+
+bool matc::operator==(Vector2i &v1, Vector2i &v2)
+{
+  return (v1.x == v2.x && v1.y == v2.y);
+}
+bool matc::operator!= (Vector2i &v1, Vector2i &v2)
+{
+  return !(v1 == v2);
 }
 //==================================
 //---Matrix Construction functions--

@@ -18,9 +18,10 @@ public:
   bool linkToCamera(SceneNode& node);
 
 private:
-  Scene *scene;
-  TransformNode *transform;
-  MaterialNode *material;
-  ModelNode *model;
+  Scene *scene = 0;
+  TransformNode *scale = 0;
+  TransformNode *position = 0;
+  MaterialNode *material = 0;
+  ModelNode *model = 0;
 };
 #endif

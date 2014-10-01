@@ -6,7 +6,7 @@ using namespace matc;
 
 bool CameraNode::accept(NodeVisitor& visitor)
 {
-  visitor.visit(*this);
+  return visitor.visit(*this);
 }
 
 Matrix4x4 CameraNode::getProjection()

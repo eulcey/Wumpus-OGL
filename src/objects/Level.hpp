@@ -17,7 +17,7 @@ class LevelPart
 {
 public:
   LevelPart() {}
-  ~LevelPart() { transform->release(); material->release(); model->release(); scaleTrafo->release();}
+  virtual ~LevelPart() { transform->release(); material->release(); model->release(); scaleTrafo->release();}
 
   virtual bool linkPart(SceneNode &link) = 0;
   

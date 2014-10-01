@@ -13,7 +13,7 @@ public:
   Treasure(float xPos, float yPos);
   ~Treasure();
 
-  virtual bool setPosition(float xPos, float yPos);
+  virtual void setPosition(float xPos, float yPos);
   virtual bool release();
 
 };

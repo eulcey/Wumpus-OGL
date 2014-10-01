@@ -31,11 +31,11 @@ Treasure::~Treasure()
   this->release();
 }
 
-bool Treasure::setPosition(float xPos, float yPos)
+void Treasure::setPosition(float xPos, float zPos)
 {
-  transform->setTransform(translate(Matrix4x4(), Vector3(xPos, yPos, 0)));
+  transform->setTransform(translate(Matrix4x4(), Vector3(xPos, 3.5f, zPos)));
   this->xPosition = xPos;
-  this->zPosition = yPos;
+  this->zPosition = zPos;
 }
 
 bool Treasure::release()
@@ -43,4 +43,5 @@ bool Treasure::release()
   model->release();
   material->release();
   transform->release();
+  return true;
 }

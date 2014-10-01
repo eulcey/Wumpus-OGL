@@ -22,6 +22,7 @@ TransformNode* Agent::getAgentVision()
 
 bool Agent::release()
 {
+  return true;
 }
 
 Agent::~Agent()

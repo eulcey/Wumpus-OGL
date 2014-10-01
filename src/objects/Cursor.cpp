@@ -48,3 +48,12 @@ bool Cursor::unlink(SceneNode &node)
 {
   return node.removeChild(*position);
 }
+
+Vector3 Cursor::getPosition()
+{
+  const float* values = position->getTransform().asArray();
+  float x = values[MAT_DIM * (MAT_DIM-1) + 0];
+  float y = values[MAT_DIM * (MAT_DIM-1) + 1];
+  float z = values[MAT_DIM * (MAT_DIM-1) + 2];
+  return Vector3(x, y, z);
+}

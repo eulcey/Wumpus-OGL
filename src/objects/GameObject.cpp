@@ -21,3 +21,10 @@ bool GameObject::init(std::string modelPath, std::string texture, std::string sh
 
   return true;
 }
+
+void GameObject::setPosition(float xPos, float zPos)
+{
+  this->xPosition = xPos; this->zPosition = zPos;
+
+  transform->setTransform(translate(Matrix4x4(), Vector3(xPosition, 3.5f, zPosition)));
+}

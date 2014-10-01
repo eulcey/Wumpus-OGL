@@ -108,6 +108,26 @@ namespace matc
     friend std::ostream& operator<<(std::ostream &out, Vector2 &v);
 
   };
+
+  class Vector2i
+  {
+  public:
+    Vector2i(int n_x, int n_y): x(n_x), y(n_y) {}
+    Vector2i():Vector2i(0, 0) {}
+    Vector2i(const Vector2i &v);
+    Vector2i(int *arr);
+    ~Vector2i() {}
+
+    int x;
+    int y;
+
+    std::string toString();
+    friend std::ostream& operator<<(std::ostream &out, Vector2i &v);
+    friend bool operator== (Vector2i &v1, Vector2i &v2);
+    friend bool operator!= (Vector2i &v1, Vector2i &v2);
+  };
+  bool operator== (Vector2i &v1, Vector2i &v2);
+  bool operator!= (Vector2i &v1, Vector2i &v2);
   
   Matrix4x4 translate(const Matrix4x4 &m, const Vector3 &v);
   Matrix4x4 lookAt(const Vector3 &eye, const Vector3 &center, const Vector3 &up);

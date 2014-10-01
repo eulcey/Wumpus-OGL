@@ -1,6 +1,8 @@
 #ifndef CURSOR_HPP
 #define CURSOR_HPP
 
+#include "MathCore.hpp"
+
 class SceneNode;
 class TransformNode;
 class MaterialNode;
@@ -15,6 +17,7 @@ public:
   ~Cursor();
 
   void translatePosition(float xPos, float yPos);
+  matc::Vector3 getPosition();
 
   bool link(SceneNode& node);
   bool unlink(SceneNode& node);
