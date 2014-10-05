@@ -22,7 +22,15 @@ OGLRenderEngine::OGLRenderEngine(int width, int height, std::string title, UserI
   init(width, height, title, user);
 }
 
+OGLRenderEngine::~OGLRenderEngine()
+{
+  /**
+   * TODO: delete all buffers
+   */
+}
+
 bool OGLRenderEngine::render(RenderContext& context, ModelNode& model) {
+  
   std::map<std::string, BufferValues>::iterator it;
   
   it = bufferMap.find(model.getName());
@@ -49,6 +57,11 @@ bool OGLRenderEngine::render(RenderContext& context, ModelNode& model) {
     std::string fragmentShader = SHADER_PATH + shader + ".f.glsl";
     programID = LoadShaders(vertexShader.c_str(), fragmentShader.c_str());
     shaderMap[shader] = programID;
+
+    std::cout << "for shader: " << shader << std::endl;
+    GLuint shadowMapID = glGetUniformLocation(programID, "shadowMap");
+    std::cout << shadowMapID << std::endl;
+    
     //std::cerr << "No shaderProgram found for model" << std::endl;
     //return false;
   } else {
@@ -56,6 +69,7 @@ bool OGLRenderEngine::render(RenderContext& context, ModelNode& model) {
   }
   
   glUseProgram(programID);
+
 
   /*
    * ============ TEXTURE =========
@@ -142,6 +156,26 @@ bool OGLRenderEngine::render(RenderContext& context, ModelNode& model) {
   GLint uniform_texture = glGetUniformLocation(programID, "myTextureSampler");
   //std::cout << "textureID " << uniform_texture << std::endl;
   glUniform1i(uniform_texture, 0);
+
+  /*
+   * =========== Shadow =============
+   */
+  // Only if shadowInit() successful
+  if(shader == "SimpleShadowShader"){//(renderWithShadows) {
+    
+    Matrix4x4 biasMatrix = translate(scale(Matrix4x4(), 0.5, 0.5, 0.5), Vector3(0.5, 0.5, 0.5));
+    Matrix4x4 depthBiasMVP = biasMatrix * depthMVP;
+
+    GLuint depthBiasID = glGetUniformLocation(programID, "depthBiasMVP");
+    GLint shadowMapID = glGetUniformLocation(programID, "shadowMap");
+    //std::cout << shadowMapID << std::endl;
+
+    glUniformMatrix4fv(depthBiasID, 1, GL_FALSE, depthBiasMVP.asArray());
+
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, depthTexture);
+    glUniform1i(shadowMapID, 1);
+  }
   
   GLuint uvBuffer = (it->second).uv;
   glEnableVertexAttribArray(1);
@@ -183,14 +217,6 @@ bool OGLRenderEngine::render(RenderContext& context, ModelNode& model) {
 
 bool OGLRenderEngine::render(RenderContext& context, CubeNode& cube)
 {
-  /*
-    if "cube" already in "map": vlt id oder name vom cube?
-        only render it, with saved buffers
-    else:
-        init gl_buffers
-	save "cube" in "map"
-	render saved buffers
-  */
   std::map<std::string, BufferValues>::iterator it;
   
   it = bufferMap.find(cube.getName());
@@ -274,12 +300,7 @@ bool OGLRenderEngine::render(RenderContext& context, CubeNode& cube)
 bool OGLRenderEngine::initModel(ModelNode& model)
 {
   std::string name = model.getName();
-  // shader hier laden?
-  //GLuint programID = LoadShaders("../shader/texturedVertexShader.glsl", "../shader/texturedFragmentShader.glsl");
-  //shaderMap[name] = programID;
-  
-  //std::vector<Vector4> verts = cube.getVertices();
-  //std::vector<float> verts = model.getVertices();
+
   std::vector<matc::Vector3> verts = model.getVertices();
   GLuint vbo_cube_vertices;
   glGenBuffers(1, &vbo_cube_vertices);
@@ -294,47 +315,12 @@ bool OGLRenderEngine::initModel(ModelNode& model)
   glBufferData(GL_ARRAY_BUFFER, uvs.size()*sizeof(matc::Vector2), uvs.data(), GL_STATIC_DRAW);
 
   std::vector<matc::Vector3> normals = model.getNormals();
-  //std::cout << "normals: " << normals.size() << std::endl;
-  /*
-  for(int i = 0; i < normals.size(); i++) {
-    float test = normals[i].normalize().dot(Vector3(0, -1, -1));
-    std::cout << test << std::endl;
-  }
-  */
+
   GLuint normalBuffer;
   glGenBuffers(1, &normalBuffer);
   glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
   glBufferData(GL_ARRAY_BUFFER, normals.size()*sizeof(matc::Vector3), normals.data(), GL_STATIC_DRAW);
 
-  /*
-  std::string texturePath = "../assets/" + name + ".png";
-  GLuint textureBuffer;
-  if(name == "ModelCube 1") {
-    std::cout << "cube 1" << std::endl;
-    textureBuffer = loadDDS("../assets/uvtemplate.DDS");
-  } else {
-    textureBuffer = loadDDS("../assets/uvmap.DDS");
-  }
-  */
-  /*
-  GLuint textureBuffer;
-  if(name == "ModelCube 1") {
-    textureBuffer = loadPNG("../assets/cube.png");
-  } else if(name == "Skybox_ground") {
-    textureBuffer = loadPNG("../assets/Skybox_ground.png");
-  } else if(name == "Skybox_sky") {
-    textureBuffer = loadPNG("../assets/Skybox_sky.png");
-  }else {
-    textureBuffer = loadPNG("../assets/sample.png");
-  }
-  */
-  //GLuint textureBuffer = loadPNG(texturePath.c_str());
-  // if(name == "Skybox_sky") textureBuffer = 2;
-  
-  //std::cout << "texid for " << name << ": " << textureBuffer << std::endl;
-  
-  
-  
   BufferValues buffers;
   buffers.vertex = vbo_cube_vertices;
   buffers.uv = uvBuffer;
@@ -384,7 +370,8 @@ bool OGLRenderEngine::initModel(CubeNode& cube)
 
 bool OGLRenderEngine::init(int width, int height, std::string title, UserInput* user)
 {
-  
+  this->width = width;
+  this->height = height;
   if(!glfwInit()){
     std::cerr << "Failed to initialize GLFW" << std::endl;
     return false;
@@ -423,8 +410,38 @@ bool OGLRenderEngine::init(int width, int height, std::string title, UserInput* 
   glGenVertexArrays(1, &VertexArrayID);
   glBindVertexArray(VertexArrayID);
 
+
   return user->init(window);
 }
+
+bool OGLRenderEngine::shadowInit()
+{
+  depthProgramID = LoadShaders("../shader/DepthRTT.v.glsl", "../shader/DepthRTT.f.glsl");
+  depthMatrixID = glGetUniformLocation(depthProgramID, "depthMVP");
+  
+  framebufferName = 0;
+  glGenFramebuffers(1, &framebufferName);
+  glBindFramebuffer(GL_FRAMEBUFFER, framebufferName);
+  
+  glGenTextures(1, &depthTexture);
+  glBindTexture(GL_TEXTURE_2D, depthTexture);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
+  glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthTexture, 0);
+  glDrawBuffer(GL_NONE);
+  if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    return false;
+
+  renderWithShadows = true;
+  
+  return true;
+}
+
 
 void OGLRenderEngine::update()
 {
@@ -442,4 +459,86 @@ bool OGLRenderEngine::isRunning()
 {
   //return (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(window) == 0);
   return glfwWindowShouldClose(window) == 0;
+}
+
+
+bool OGLRenderEngine::renderShadow(RenderContext& context, CubeNode& cube)
+{
+  return true;
+}
+
+void OGLRenderEngine::startRender()
+{
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  // Render on the whole framebuffer, complete from the lower left corner to the upper right
+  glViewport(0,0,width,height);
+  
+  glEnable(GL_CULL_FACE);
+  glCullFace(GL_BACK); // Cull back-facing triangles -> draw only front-facing triangles
+
+  // Clear the screen
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void OGLRenderEngine::startShadowRender()
+{
+  glBindFramebuffer(GL_FRAMEBUFFER, framebufferName);
+  glViewport(0, 0, 1024, 1024);
+
+  glEnable(GL_CULL_FACE);
+  glCullFace(GL_BACK);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glUseProgram(depthProgramID);
+
+}
+
+bool OGLRenderEngine::renderShadow(RenderContext& context, ModelNode& model)
+{
+    
+  Vector3 lightInvDir = context.getLight().direction * -1;
+  Matrix4x4 projection = context.getProjection();
+  Matrix4x4 view = context.getView();
+  Matrix4x4 modelIdent = context.getModel();
+  depthMVP = projection * view * modelIdent;
+
+  glUniformMatrix4fv(depthMatrixID, 1, GL_FALSE, depthMVP.asArray());
+
+  std::map<std::string, BufferValues>::iterator it;
+  
+  it = bufferMap.find(model.getName());
+  if (it == bufferMap.end()) {
+    // std::cout << "need to init model" << std::endl;
+    if(!initModel(model)) {
+      std::cerr << "Error in init model" << std::endl;
+      return false;
+      }
+    //    std::cout << "model initialized" << std::endl;
+    it = bufferMap.find(model.getName());
+  }
+  
+  GLint vertexbuffer = (it->second).vertex;
+  if (vertexbuffer == -1) {
+    std::cerr << "No Vertex information found" << std::endl;
+    return false;
+  }
+  
+  glEnableVertexAttribArray(0);
+  glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+ 
+  glVertexAttribPointer(
+			0,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			//0,
+			//(void*)0
+			sizeof(matc::Vector3),
+			(void*)0
+			);
+  
+  glDrawArrays(GL_TRIANGLES, 0, model.getTrianglesCount()*3);
+
+  glDisableVertexAttribArray(0);
+  
+  return true;
 }

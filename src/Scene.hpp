@@ -6,6 +6,7 @@
 #include "Level.hpp"
 
 class Renderer;
+class ShadowRenderer;
 class Printer;
 class LightNode;
 class Wumpus;
@@ -13,6 +14,7 @@ class Cursor;
 class UserInput;
 class Treasure;
 class Hud;
+class Hud_Text;
 class Agent;
 class AgentLogic;
 class LevelLogic;
@@ -32,6 +34,7 @@ public:
   bool load(const std::string &file);
   void deleteScene();
   void render(Renderer &renderer);
+  void render(ShadowRenderer &renderer);
   void print(Printer &printer);
   Camera* getCamera() { return &camera; }
   void switchMouseLook();
@@ -62,7 +65,7 @@ private:
   TransformNode *root = 0;
   Level *level = 0;
   LightNode *light = 0;
-
+  TransformNode *worldTransform;
   // places of objects
   Wumpus *wumpus = 0;
   Treasure *treasure = 0;
@@ -72,6 +75,7 @@ private:
   Cursor *cursor = 0;
 
   Hud *hud = 0;
+  Hud_Text *hud_text = 0;
 
   //test
   float lastTime;

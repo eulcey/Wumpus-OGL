@@ -8,6 +8,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "MathCore.hpp"
+
 class UserInput;
 
 class RenderContext;
@@ -29,10 +31,17 @@ class OGLRenderEngine
 {
 public:
   OGLRenderEngine(int width, int height, std::string title, UserInput* user);
-  ~OGLRenderEngine() { }
+  ~OGLRenderEngine();
 
+  bool shadowInit();
+
+  void startRender();
   bool render(RenderContext& context, CubeNode& cube);
   bool render(RenderContext& context, ModelNode& model);
+
+  void startShadowRender();
+  bool renderShadow(RenderContext& context, CubeNode& cube);
+  bool renderShadow(RenderContext& context, ModelNode& model);
 
   bool initModel(ModelNode& model);
   bool initModel(CubeNode& cube);
@@ -42,9 +51,18 @@ public:
   bool isRunning();
 private:
   bool init(int width, int height, std::string title, UserInput* user);
+  int width, height;
   GLFWwindow* window;
   std::map<std::string, BufferValues> bufferMap;
   std::map<std::string, GLuint> shaderMap;
   std::map<std::string, GLuint> textureMap;
+
+  matc::Matrix4x4 depthMVP;
+  GLuint depthTexture;
+  GLuint depthProgramID;
+  GLuint depthMatrixID;
+  GLuint framebufferName;
+
+  bool renderWithShadows = false;
 };
 #endif

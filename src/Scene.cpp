@@ -4,6 +4,7 @@
 #include "MathCore.hpp"
 #include "Printer.hpp"
 #include "Renderer.hpp"
+#include "ShadowRenderer.hpp"
 #include "OGLRenderEngine.hpp"
 #include "Camera.hpp"
 #include "Printer.hpp"
@@ -17,6 +18,7 @@
 #include "Treasure.hpp"
 #include "Agent.hpp"
 #include "Hud.hpp"
+#include "Hud_Text.hpp"
 #include "Rotor.hpp"
 #include "AgentLogic.hpp"
 #include "LevelLogic.hpp"
@@ -30,17 +32,19 @@ Scene::Scene(int width, int height, UserInput *user):
 
   camera.link(*root);
   light = new LightNode("Light 1", DirectionLight);
-  light->ambientIntensity = 0.5f;
+  light->ambientIntensity = 0.6f;
   light->diffuseIntensity = 0.7f;
-  light->direction = Vector3(-1.0, -1.0, 1.0);
+  light->direction = Vector3(0, -3.0, -1.0);
   root->addChild(light);
 
   cursor = new Cursor();
   hud = new Hud(this);
+  hud_text = new Hud_Text(this);
   //cursor->link(*camera.getTransform());
   lastTime = glfwGetTime();
 
   hud->linkToCamera(*camera.getTransform());
+  hud_text->linkToCamera(*camera.getTransform());
   /*
   ModelNode skybox_sky("Skybox_sky", "../assets/skybox_sky.obj");
   MaterialNode skybox_sky_material("Skybox Sky Material", "Skybox_sky", "texturedShader");
@@ -91,12 +95,12 @@ bool Scene::load(const std::string &file)
 
   Json::Value pitsValue = rootValue["Pits"];
   std::vector<Json::Value> pitValues;
-  for(u_int index = 0; index < pitsValue.size(); index++) {
+  for(unsigned int index = 0; index < pitsValue.size(); index++) {
     pitValues.push_back(pitsValue[index]);
   }
   
   this->level= new Level(width, height, pitValues);
-  TransformNode *worldTransform = new TransformNode("WorldTransform", translate(Matrix4x4(), Vector3(-20, 5, 20)));
+  worldTransform = new TransformNode("WorldTransform", translate(Matrix4x4(), Vector3(-20, 5, 20)));
   root->addChild(worldTransform);
   if(!this->level->linkLevel(*worldTransform)) {
     std::cout << "Couldn't link level to scene" << std::endl;
@@ -147,7 +151,12 @@ void Scene::render(Renderer &renderer)
   // maybe switch to agent vision here
   
   // update here?
-  root->update(glfwGetTime());
+  //  root->update(glfwGetTime());
+}
+
+void Scene::render(ShadowRenderer &renderer)
+{
+  root->accept(renderer);
 }
 
 void Scene::print(Printer &printer)
@@ -205,12 +214,23 @@ void Scene::nextStep()
   // ask levellogic
   std::vector<Senses> senses = levelLogic->getSensorData();
   // input to agentlogic
-  ai->inputNewSenses(senses);
+  ai->inputNewSenses(std::set<Senses>(senses.begin(), senses.end()));
   // ask agentlogic for new action
   Action nextAction = ai->getNextAction();
+  std::cout << "next Action is: ";
+  if(nextAction == Forward)
+    std::cout << "Forward" << std::endl;
+  if(nextAction == TurnRight)
+    std::cout << "TurnRight" << std::endl;
   //nextAction = Forward;
   // ask levelLogic if action is possible, and update it if it's possible
   bool actionWasSuccessful = levelLogic->isActionPossible(nextAction);
+  if(nextAction == Shoot && actionWasSuccessful) {
+    wumpus->unlink(*worldTransform);
+  }
+  if(nextAction == Grab && actionWasSuccessful) {
+    treasure->unlink(*worldTransform);
+  }
 
   // tell agent if action was successful
   ai->actionSucceeded(nextAction, actionWasSuccessful);

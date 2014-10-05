@@ -10,7 +10,7 @@ Hud::Hud(Scene *scene): scene(scene)
 {
   position = new TransformNode("HUD-Position", translate(Matrix4x4(), Vector3(2.5f, -1.9f, -6)));
   scale = new TransformNode("HUD-Transform", matc::scale(Matrix4x4(), 1.5f, 1.5f, 1.0f));
-  material = new MaterialNode("HUD-Material", "hud", "ambientShader");
+  material = new MaterialNode("HUD-Material", "hud", "texturedShader"); //"ambientShader"); //"phongShader"); //
   model = new ModelNode("HUD-Model", "../assets/hud.obj");
 
   position->addChild(material);

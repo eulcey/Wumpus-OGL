@@ -10,7 +10,7 @@ Wumpus::Wumpus()
 {
   wumpusPosition = new TransformNode("Wumpus Position", translate(Matrix4x4(), Vector3(0.0, 4.0, 0.0)));
   wumpusScale = new TransformNode("Wumpus Scale", scale(Matrix4x4(), 4, 4, 4));
-  wumpusMaterial = new MaterialNode("Wumpus Material", "wumpus", "phongShader");
+  wumpusMaterial = new MaterialNode("Wumpus Material", "wumpus", "phongShader");//"shadowShader");//
   wumpusMaterial->specularIntensity = 0.3f;
   wumpusMaterial->specularPower = 1.0f;
   wumpus = new ModelNode("Wumpus", "../assets/monkey.obj");
@@ -32,6 +32,11 @@ bool Wumpus::link(SceneNode &node)
 {
   node.addChild(wumpusPosition);
   return true;
+}
+
+bool Wumpus::unlink(SceneNode& link)
+{
+  return link.removeChild(*this->wumpusPosition);
 }
 
 bool Wumpus::setPosition(float xpos, float zpos)

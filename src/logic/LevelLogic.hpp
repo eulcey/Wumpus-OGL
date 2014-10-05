@@ -21,11 +21,11 @@ public:
 
   //  bool moveAgentTo(const matc::Vector2i &newPos);
   matc::Vector2i getAgentPos() { return agentPos; }
-  bool isOnTreasure() { return agentPos == treasurePos; }
-  bool isOnWumpus() { return agentPos == wumpusPos; }
+  bool isOnTreasure() { return agentPos == treasurePos && !treasureFound; }
+  bool isOnWumpus() { return agentPos == wumpusPos && wumpusAlive; }
   bool isOnExit() { return agentPos == exitPos; }
   bool isOnPit() {
-    for (u_int i = 0; i < pitsPos.size(); i++) {
+    for (unsigned int i = 0; i < pitsPos.size(); i++) {
       if (pitsPos[i] == agentPos) return true;
     }
     return false;

@@ -15,7 +15,7 @@ WallSegment::WallSegment(Vector3 position, Vector3 rotation)
   Matrix4x4 zyxRotation = rotate(yxRotation, rotation.z, Vector3(0.0, 0.0, 1.0));
   Matrix4x4 transformMatrix = translate(zyxRotation, position);
   transform = new TransformNode("WallSegment-Transform", transformMatrix);
-  material = new MaterialNode("WallSegment-Material", "wall_segment", "phongShader");//"texturedShader");
+  material = new MaterialNode("WallSegment-Material", "wall_segment", "phongShader"); // "shadowShader");
   //material->specularIntensity = 0.1f;
   //material->specularPower = 1.0f;
   model = new ModelNode("WallSegment-Model", "../assets/wall_segment.obj");
@@ -36,7 +36,7 @@ bool WallSegment::linkPart(SceneNode& node)
 FloorTile::FloorTile(Vector3 position)
 {
   transform = new TransformNode("Floor", translate(Matrix4x4(), position));
-  material = new MaterialNode("Floor-Material", "floor", "phongShader");//"texturedShader");
+  material = new MaterialNode("Floor-Material", "floor", "phongShader");//"shadowShader");//"texturedShader");
   //material->specularIntensity = 0.1f;
   //material->specularPower = 1.0f;
   model = new ModelNode("Floor-Model", "../assets/floor.obj");
@@ -100,7 +100,7 @@ Level::Level(int width, int height, std::vector<Json::Value> pitValues)
     Vector3 pos(x*CELL_SIZE+CELL_SIZE/2, 0, minZ + CELL_SIZE);
     walls.push_back(new WallSegment(pos, Vector3(0.0, 0, 0.0)));
   }
-  for(u_int i = 0; i < walls.size(); i++) {
+  for(unsigned int i = 0; i < walls.size(); i++) {
     walls[i]->linkPart(*transform);
   }
 
@@ -110,11 +110,11 @@ Level::Level(int width, int height, std::vector<Json::Value> pitValues)
       floor.push_back(new FloorTile(Vector3(gridToPos(x), 0, -gridToPos(z))));//x*CELL_SIZE + CELL_SIZE/2, 0, -z*CELL_SIZE + CELL_SIZE/2)));
     }
   }
-  for(u_int i = 0; i < floor.size(); i++) {
+  for(unsigned int i = 0; i < floor.size(); i++) {
     floor[i]->linkPart(*transform);
   }
 
-  for(u_int i = 0; i < pitValues.size(); i++) {
+  for(unsigned int i = 0; i < pitValues.size(); i++) {
     //std::cout << pitValues[i]["xpos"] << std::endl;
     int x = pitValues[i]["xpos"].asInt()-1;
     int z = pitValues[i]["zpos"].asInt()-1;
@@ -128,15 +128,15 @@ Level::Level(int width, int height, std::vector<Json::Value> pitValues)
 Level::~Level()
 {
   transform->release();
-  for(u_int i = 0; i < walls.size(); i++) {
+  for(unsigned int i = 0; i < walls.size(); i++) {
     delete walls[i];
   }
-  for(u_int i = 0; i < floor.size(); i++) {
+  for(unsigned int i = 0; i < floor.size(); i++) {
     delete floor[i];
   }
   walls.clear();
   floor.clear();
-  for(u_int i = 0; i < pits.size(); i++) {
+  for(unsigned int i = 0; i < pits.size(); i++) {
     delete pits[i];
   }
   pits.clear();

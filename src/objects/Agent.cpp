@@ -7,7 +7,7 @@
 
 Agent::Agent(float xPos, float zPos): GameObject("Agent", xPos, zPos)
 {
-  init("../assets/agent.obj", "agent", "phongShader");
+  init("../assets/agent.obj", "agent", "phongShader");//"shadowShader");//
 }
 
 bool Agent::init(std::string model, std::string texture, std::string shader)

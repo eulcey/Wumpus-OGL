@@ -3,6 +3,7 @@
 
 #include "Printer.hpp"
 #include "Renderer.hpp"
+#include "ShadowRenderer.hpp"
 //#include "CubeNode.hpp"
 //#include "ModelNode.hpp"
 //#include "CameraNode.hpp"
@@ -52,6 +53,12 @@ int main(int argc, char** argv)
   
   OGLRenderEngine engine(screen_width, screen_height, "Wumpuse-OGL", &user);
   
+  if(!engine.shadowInit()) {
+    std::cout << "Error in Shadow init" << std::endl;
+  } else {
+    std::cout << "Shadow Init successful" << std::endl;
+  }
+  
   user.setMouseInputAction(GLFW_MOUSE_BUTTON_LEFT, [&] { scene.clickCursor(); });
   user.setMouseInputAction(GLFW_MOUSE_BUTTON_RIGHT, [] { std::cout << "right mouse button clicked" << std::endl; });
 
@@ -74,6 +81,7 @@ int main(int argc, char** argv)
     });
   
   Renderer renderer(&engine);
+  ShadowRenderer shadowRenderer(&engine);
   Printer printer;
   //scene.print(printer);
 
@@ -81,7 +89,13 @@ int main(int argc, char** argv)
   do {
     //camera->update(float(glfwGetTime()-lastTime));
     scene.update(float(glfwGetTime()-lastTime));
+    
+    engine.startShadowRender();
+    scene.render(shadowRenderer);
+    
+    engine.startRender();
     scene.render(renderer);
+    
     engine.update(); // here swapping buffers
   } while(engine.isRunning());
 

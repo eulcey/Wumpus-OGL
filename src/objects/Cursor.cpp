@@ -15,7 +15,7 @@ Cursor::Cursor()
 					      scale(Matrix4x4(), 0.3f, 0.3f, 0.3f),
 					      -3.14f/4, Vector3(0.0f, 0.0f, 1.0f)),
 				       -3.14f/4, Vector3(0.0f, 1.0f, 0.0f)));
-  material = new MaterialNode("Cursor-Material", "cursor", "ambientShader");
+  material = new MaterialNode("Cursor-Material", "cursor", "phongShader"); //"ambientShader");
   model = new ModelNode("Cursor-Model", "../assets/cursor.obj");
 
   position->addChild(material);

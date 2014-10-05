@@ -1,24 +1,20 @@
 {
   "WorldName": "Original",
-  "Width": 4,
-  "Height": 4,
+  "Width": 5,
+  "Height": 5,
   "Wumpus": {
-    "xpos": 1,
-    "zpos": 3
+    "xpos": 2,
+    "zpos": 4
   },
   "Agent": {
-    "xpos": 2,
-    "zpos": 3
+    "xpos": 1,
+    "zpos": 1
   },
   "Treasure": {
     "xpos": 2,
     "zpos": 3
   },
   "Pits": [
-    {
-      "xpos": 3,
-      "zpos": 1
-    },
     {
       "xpos": 3,
       "zpos": 3

@@ -13,6 +13,7 @@ public:
   ~Wumpus();
 
   bool link(SceneNode &node);
+  bool unlink(SceneNode &node);
   bool setPosition(float xpos, float zpos);
 private:
   TransformNode *wumpusPosition;

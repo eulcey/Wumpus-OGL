@@ -15,7 +15,7 @@ LevelLogic::LevelLogic(Json::Value &rootValue)
   Json::Value treasureValue = rootValue["Treasure"];
 
   Json::Value pitsValue = rootValue["Pits"];
-  for(u_int index = 0; index < pitsValue.size(); index++) {
+  for(unsigned int index = 0; index < pitsValue.size(); index++) {
     int pitX = pitsValue[index]["xpos"].asInt() - 1;
     int pitZ = pitsValue[index]["zpos"].asInt() - 1;
     Vector2i pit(pitX, pitZ);
@@ -59,13 +59,13 @@ std::vector<Senses> LevelLogic::getSensorData() {
   Vector2i east(agentPos.x-1, agentPos.y);
   Vector2i west(agentPos.x+1, agentPos.y);
   
-  if (wumpusPos == north || wumpusPos == south || wumpusPos == east || wumpusPos == west) {
+  if (wumpusAlive &&(wumpusPos == north || wumpusPos == south || wumpusPos == east || wumpusPos == west)) {
     senses.push_back(Stench);
   }
-  if (treasurePos == agentPos) {
+  if (treasurePos == agentPos && !treasureFound) {
     senses.push_back(Glitter);
   }
-  for(u_int i = 0; i < pitsPos.size(); i++) {
+  for(unsigned int i = 0; i < pitsPos.size(); i++) {
     if (pitsPos[i] == north || pitsPos[i] == south || pitsPos[i] == east || pitsPos[i] == west) {
       senses.push_back(Breeze);
       break;
@@ -125,6 +125,19 @@ bool LevelLogic::isActionPossible(Action nextAction)
       return true;
     } else
       return false;
+  } else if(nextAction == Shoot) {
+    Vector2i shootPos = agentPos+agentDir; // until now only 1 space shoot
+    if(shootPos == wumpusPos) {
+      std::cout << " Gratz you shot the Wumpus" << std::endl;
+      wumpusAlive = false;
+      arrowAvaible = false;
+      agentPoints += WUMPUS_POINTS;
+      return true;
+    } else {
+      std::cout << "to bad you shot in the dark" << std::endl;
+      arrowAvaible = false;
+      return false;
+    }
   }
 
   std::cout << "LEVELLOGIC: Action: " << nextAction << " not implemented" << std::endl;
@@ -135,7 +148,7 @@ bool LevelLogic::testDeath() {
   if(agentPos == wumpusPos) {
     return true;
   }
-  for(u_int i = 0; i < pitsPos.size(); i++) {
+  for(unsigned int i = 0; i < pitsPos.size(); i++) {
     if (agentPos == pitsPos[i]) {
       return true;
     }
