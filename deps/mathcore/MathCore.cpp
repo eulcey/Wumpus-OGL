@@ -401,12 +401,12 @@ Vector2i Vector2i::operator*(const int &other) const
   return Vector2i(this->x * other, this->y * other);
 }
 
-bool matc::operator==(Vector2i &v1, Vector2i &v2)
+bool matc::operator==(const Vector2i &v1, const Vector2i &v2)
 {
   return (v1.x == v2.x && v1.y == v2.y);
 }
 
-bool matc::operator!= (Vector2i &v1, Vector2i &v2)
+bool matc::operator!= (const Vector2i &v1, const Vector2i &v2)
 {
   return !(v1 == v2);
 }

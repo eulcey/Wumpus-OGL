@@ -26,7 +26,7 @@
 using namespace matc;
 
 Scene::Scene(int width, int height, UserInput *user):
-  width(width), height(height), user(user), camera(Camera("SceneCamera", width, height)), camera2(Camera("SceneCamera2", width, height))
+  width(width), height(height), user(user), camera(Camera("SceneCamera", width, height)) //camera2(Camera("SceneCamera2", width, height))
 {
   root = new TransformNode("SceneRoot", Matrix4x4());
 
@@ -70,7 +70,7 @@ Scene::~Scene()
 
 bool Scene::load(const std::string &file)
 {
-  
+  levelFile = std::string(file);
   Json::Value rootValue;
   Json::Reader reader;
   char* filecontent = file_read(file.c_str());
@@ -189,7 +189,7 @@ void Scene::resetCamera()
 void Scene::switchCamera()
 {
   camera.unlink(*root);
-  camera2.link(*root);
+  //camera2.link(*root);
 }
 
 void Scene::update(float deltaTime)
@@ -204,46 +204,74 @@ void Scene::clickCursor()
   float y_diff = cursorPos.y - NEXT_STEP_BUTTON_Y;
   float distance = sqrt(x_diff * x_diff + y_diff * y_diff);
   if (distance <= NEXT_STEP_BUTTON_R) {
-    std::cout << "Next Step Button clicked" << std::endl;
+    //std::cout << "Next Step Button clicked" << std::endl;
     nextStep();
   }
 }
 
 void Scene::nextStep()
 {
-  // ask levellogic
-  std::vector<Senses> senses = levelLogic->getSensorData();
-  // input to agentlogic
-  ai->inputNewSenses(std::set<Senses>(senses.begin(), senses.end()));
-  // ask agentlogic for new action
-  Action nextAction = ai->getNextAction();
-  std::cout << "next Action is: ";
-  if(nextAction == Forward)
-    std::cout << "Forward" << std::endl;
-  if(nextAction == TurnRight)
-    std::cout << "TurnRight" << std::endl;
-  //nextAction = Forward;
-  // ask levelLogic if action is possible, and update it if it's possible
-  bool actionWasSuccessful = levelLogic->isActionPossible(nextAction);
-  if(nextAction == Shoot && actionWasSuccessful) {
-    wumpus->unlink(*worldTransform);
-  }
-  if(nextAction == Grab && actionWasSuccessful) {
-    treasure->unlink(*worldTransform);
-  }
+  if(running) {
+    // ask levellogic
+    std::vector<Senses> senses = levelLogic->getSensorData();
+    // input to agentlogic
+    ai->inputNewSenses(std::set<Senses>(senses.begin(), senses.end()));
+    // ask agentlogic for new action
+    Action nextAction = ai->getNextAction();
+    
+    std::cout << "next Action is: ";
+    if(nextAction == Forward)
+      std::cout << "Forward" << std::endl;
+    if(nextAction == TurnLeft)
+      std::cout << "TurnLeft" << std::endl;
+    if(nextAction == TurnRight)
+      std::cout << "TurnRight" << std::endl;
+    if(nextAction == Grab)
+      std::cout << "Grab" << std::endl;
+    if(nextAction == Shoot)
+      std::cout << "Shoot" << std::endl;
+    if(nextAction == Leave)
+      std::cout << "Leave" << std::endl;
+    //nextAction = Forward;
+    // ask levelLogic if action is possible, and update it if it's possible
+    bool actionWasSuccessful = levelLogic->isActionPossible(nextAction);
+    if(nextAction == Shoot && actionWasSuccessful) {
+      wumpus->unlink(*worldTransform);
+    }
+    if(nextAction == Grab && actionWasSuccessful) {
+      treasure->unlink(*worldTransform);
+    }
 
-  // tell agent if action was successful
-  ai->actionSucceeded(nextAction, actionWasSuccessful);
+    if(nextAction == Leave && actionWasSuccessful) {
+      running = false;
+    }
 
-  //std::cout << "Action sucess: " << actionWasSuccessful << std::endl;
-  /*
-  // update levelLogic
-  if (levelLogic->moveAgentTo(Vector2i(agentX, agentZ))) {
+    if(levelLogic->isLevelFinished()) {
+      running = false;
+      if(levelLogic->isAgentDead()) {
+      } else {
+      }
+    }
+
+    // tell agent if action was successful
+    ai->actionSucceeded(nextAction, actionWasSuccessful);
+
+    //std::cout << "Action sucess: " << actionWasSuccessful << std::endl;
+    /*
+    // update levelLogic
+    if (levelLogic->moveAgentTo(Vector2i(agentX, agentZ))) {
     // reposition model;
     agent->setPosition(gridToPos(agentX), -gridToPos(agentZ));
+    }
+    */
+    Vector2i agentPos = levelLogic->getAgentPos();
+    //  std::cout << "newAgentPos: " << agentPos << std::endl;
+    agent->setPosition(gridToPos(agentPos.x), -gridToPos(agentPos.y));
   }
-  */
-  Vector2i agentPos = levelLogic->getAgentPos();
-  //  std::cout << "newAgentPos: " << agentPos << std::endl;
-  agent->setPosition(gridToPos(agentPos.x), -gridToPos(agentPos.y));
+}
+
+void Scene::resetScene() {
+  running = true;
+  load(levelFile);
+  resetCamera();
 }

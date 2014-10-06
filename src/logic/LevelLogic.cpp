@@ -121,20 +121,20 @@ bool LevelLogic::isActionPossible(Action nextAction)
   }
   else if(nextAction == Leave) {
     if(agentPos == exitPos) {
-      // leave
+      levelFinished = true;
       return true;
     } else
       return false;
   } else if(nextAction == Shoot) {
     Vector2i shootPos = agentPos+agentDir; // until now only 1 space shoot
     if(shootPos == wumpusPos) {
-      std::cout << " Gratz you shot the Wumpus" << std::endl;
+      std::cout << "Congratulation you shot the Wumpus" << std::endl;
       wumpusAlive = false;
       arrowAvaible = false;
       agentPoints += WUMPUS_POINTS;
       return true;
     } else {
-      std::cout << "to bad you shot in the dark" << std::endl;
+      std::cout << "To bad you shot in the dark" << std::endl;
       arrowAvaible = false;
       return false;
     }
@@ -145,11 +145,15 @@ bool LevelLogic::isActionPossible(Action nextAction)
 }
 
 bool LevelLogic::testDeath() {
-  if(agentPos == wumpusPos) {
+  if(agentPos == wumpusPos && wumpusAlive) {
+    levelFinished = true;
+    agentAlive = false;
     return true;
   }
   for(unsigned int i = 0; i < pitsPos.size(); i++) {
     if (agentPos == pitsPos[i]) {
+      levelFinished = true;
+      agentAlive = false;
       return true;
     }
   }

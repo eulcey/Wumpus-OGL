@@ -1,6 +1,7 @@
 #include "AgentLogic.hpp"
 
 #include <cstdlib>
+#include <queue>
 
 using namespace matc;
 
@@ -48,19 +49,29 @@ void AgentLogic::inputNewSenses(const std::set<Senses> &newSenses)
 	Vector2i toFind = Vector2i(*itWumpus);
 	auto pFound = save.find(toFind);
 	if(pFound != save.end()) {
-	  std::cout << "Wumpus idea smaller: " << toFind << std::endl;
-	  newWumpus.insert(toFind);
+	  auto pSaveWumpus = saveWumpusRooms.find(toFind);
+	  if(pSaveWumpus == saveWumpusRooms.end()) {
+	    std::cout << "Wumpus idea smaller: " << toFind << std::endl;
+	    newWumpus.insert(toFind);
+	  }
 	}
       }
       wumpusGuesses = newWumpus;
     } else {
-      wumpusGuesses.insert(save.begin(), save.end());
+      for(auto itSave = save.begin(); itSave != save.end(); itSave++) {
+	Vector2i toFind = Vector2i(*itSave);
+	auto pSaveWumpus = saveWumpusRooms.find(toFind);
+	if(pSaveWumpus == saveWumpusRooms.end()) {
+	  wumpusGuesses.insert(toFind);
+	}
+      }
       // save.clear();
     }
   } else {
     for(auto itSave = save.begin(); itSave != save.end(); itSave++) {
       Vector2i noWumpus = Vector2i(*itSave);
       wumpusGuesses.erase(noWumpus);
+      saveWumpusRooms.insert(noWumpus);
     }
   }
   for(auto itVisited = completed.begin(); itVisited != completed.end(); itVisited++) {
@@ -92,38 +103,69 @@ void AgentLogic::inputNewSenses(const std::set<Senses> &newSenses)
   
   //std::cout << "inserted in saveRooms for example: " << ex << std::endl;
   saveRooms.insert(save.begin(), save.end());
-  
+  /*
   std::cout << "SaveRooms:" << std::endl;
   for(auto it = saveRooms.begin(); it != saveRooms.end(); it++) {
     Vector2i res = Vector2i(*it);
-    std::cout << res << std::endl;
+    auto itBorder = borderRooms.find(res);
+    if(itBorder == borderRooms.end()) {
+      std::cout << res << std::endl;
+    }
   }
   std::cout << std::endl;
+  */
 }
 
 // only shoots at wumpus if neighboured
 Action AgentLogic::getNextAction()
 {
+  if(hasTreasure && wumpusDead) {
+    if(pos == Vector2i(0,0)) {
+      return Leave;
+    } else {
+      auto nextRoom = getNextToSaveRoom(Vector2i(0,0));
+      if (nextRoom == pos) {
+	return goToNeighbourRoom(Vector2i(0,0));
+      } else {
+	return goToNeighbourRoom(nextRoom);
+      }
+    }
+  }
+  
   // if on Treasure
   Encounter thisField = testPosition(pos);
-  //std::cout << "Guess for pos" << pos << " was " << thisField << std::endl;
   if(thisField == TreasureEncounter && !hasTreasure) {
     return Grab;
   }
+  
   Encounter nextField = testPosition(pos + dir);
   Vector2i next = pos+dir;
-  std::cout << "nextField " << next << " was = " << nextField << std::endl;
+  //std::cout << "nextField " << next << " was = " << nextField << std::endl;
   if(nextField == WumpusEncounter && hasArrow) {
     return Shoot;
   }
-  if(nextField == FreeEncounter && lastTimeSuccesful[Forward]) {
-    //    std::cout << "yeah forward!!!" << std::endl;
-    return Forward;
+
+  // find svae room without wumpus guess
+  Vector2i nextSaveRoom;
+  for(auto itSave = saveRooms.begin(); itSave != saveRooms.end(); itSave++) {
+    auto wumpusGuess = wumpusGuesses.find(*itSave);
+    if(wumpusGuess == wumpusGuesses.end()){
+      auto itBorder = borderRooms.find(*itSave);
+      if(itBorder == borderRooms.end()) {
+	nextSaveRoom = *itSave;
+      }
+    }
   }
-  //return TurnRight;
-  int action = rand()%2;
-  std::cout << "special action " << action << std::endl;
-  return static_cast<Action>(action);
+  // else explore unvisited save rooms
+  
+  //std::cout << "Next Save Rooms is: " << nextSaveRoom << std::endl;
+  auto nextRoom = getNextToSaveRoom(nextSaveRoom);
+  //std::cout << "Go To Room " << nextRoom << std::endl;
+  if (nextRoom == pos) {
+    return goToNeighbourRoom(nextSaveRoom);
+  } else {
+    return goToNeighbourRoom(nextRoom);
+  }
 }
 
 void AgentLogic::actionSucceeded(Action action, bool wasSuccessfull)
@@ -133,7 +175,7 @@ void AgentLogic::actionSucceeded(Action action, bool wasSuccessfull)
     int conversion;
     int newX;
     int newY;
-    Vector2i lastWumpusPos;
+    Vector2i lastTestedPos;
     switch(action) {
     case Forward:
       pos = pos + dir;
@@ -144,7 +186,7 @@ void AgentLogic::actionSucceeded(Action action, bool wasSuccessfull)
       newX = dir.y * conversion;
       newY = dir.x * conversion;
       dir = Vector2i(newX, newY);
-      std::cout << "TurnLeft to " << dir << std::endl;
+      //std::cout << "TurnLeft to " << dir << std::endl;
       break;
     case TurnRight:
       conversion = 1;
@@ -152,7 +194,7 @@ void AgentLogic::actionSucceeded(Action action, bool wasSuccessfull)
       newX = dir.y * conversion;
       newY = dir.x * conversion;
       dir = Vector2i(newX, newY);
-      std::cout << "TurnRight to " << dir << std::endl;
+      //std::cout << "TurnRight to " << dir << std::endl;
       break;
     case Grab:
       hasTreasure = true;
@@ -160,19 +202,25 @@ void AgentLogic::actionSucceeded(Action action, bool wasSuccessfull)
       treasureRoom = 0;
       break;
     case Shoot:
-      lastWumpusPos = pos + dir;
-      saveRooms.insert(lastWumpusPos);
+      lastTestedPos = pos + dir;
+      saveRooms.insert(lastTestedPos);
       wumpusGuesses.clear();
       hasArrow = false;
+      wumpusDead = true;
+      break;
+    case Leave:
       break;
     default:
       std::cout << "Action success not yet implemented" << std::endl;
       break;
     }
   } else { // action was NOT successful
+    Vector2i lastTestedPos;
     switch(action) {
     case Forward:
       lastTimeSuccesful[Forward] = false;
+      lastTestedPos = pos + dir;
+      borderRooms.insert(lastTestedPos);
       break;
     case Shoot:
       hasArrow = false;
@@ -186,9 +234,8 @@ void AgentLogic::actionSucceeded(Action action, bool wasSuccessfull)
 
 Encounter AgentLogic::testPosition(Vector2i room)
 {
-  // std::cout << "testing pos: " << room << std::endl;
-
   Encounter encounter = UnknownEncounter;
+  
   auto itSaveRooms = saveRooms.find(room);
   if(itSaveRooms != saveRooms.end()) {
     encounter = FreeEncounter;
@@ -197,6 +244,12 @@ Encounter AgentLogic::testPosition(Vector2i room)
       encounter = UnknownEncounter;
     }
   }
+  
+  auto itOutside = borderRooms.find(room);
+  if(itOutside != borderRooms.end()) {
+    encounter = UnknownEncounter;
+  }
+  
   auto itVisited = completed.find(room);
   if(itVisited != completed.end()) {
     encounter = FreeEncounter;
@@ -218,48 +271,70 @@ Encounter AgentLogic::testPosition(Vector2i room)
   return encounter;
 }
 
-/*
-void AgentLogic::insertSaveToGraph(Vector2i position, std::set<Vector2i> save)
+Action AgentLogic::goToNeighbourRoom(Vector2i targetRoom)
 {
-  RoomNode *actualRoom = startRoom;
-
-}
-*/
-
-std::vector<matc::Vector2i> AgentLogic::getPathToSaveRoom(matc::Vector2i targetRoom)
-{
-  std::vector<matc::Vector2i> path;
-  matc::Vector2i room;
-
-  return path;
-}
-
-std::vector<Vector2i> AgentLogic:: getPathRec(std::vector<Vector2i> oldPath,
-					      Vector2i target)
-{ 
-  if(oldPath.back() == target) {
-    return oldPath;
+  if(pos + dir == targetRoom) {
+    return Forward;
   } else {
-    std::vector<Vector2i> neighbours = getNeighbours(oldPath.back());
-    if(neighbours.size() == 0) {
-      return std::vector<matc::Vector2i>();
-    }
-    return std::vector<matc::Vector2i>();
+    return TurnRight;
   }
 }
 
-std::vector<Vector2i> AgentLogic::getNeighbours(Vector2i room)
+std::map<Vector2i,Vector2i> AgentLogic::getPathFromTo(const Vector2i &start, const Vector2i &goal)
 {
-  std::vector<matc::Vector2i> neighbours;
+  std::map<Vector2i, Vector2i> foundBy;
+  std::set<Vector2i> visited;
+  std::queue<Vector2i> border;
+  border.push(start);
+  visited.insert(start);
+  while(!border.empty()) {
+    Vector2i node = border.front();
+    border.pop();
+    if(node == goal) {
+      return foundBy;
+    }
+    auto children = getNeighbours(node);
+    for(auto itChild = children.begin(); itChild != children.end(); itChild++) {
+      auto child = *itChild;
+      auto itVisited = visited.find(child);
+      if(itVisited == visited.end()) {
+	foundBy[child] = node;
+	border.push(child);
+	visited.insert(child);
+      }
+    }
+  }
+  return foundBy;
+}
+
+matc::Vector2i AgentLogic::getNextToSaveRoom(const matc::Vector2i &targetRoom)
+{
+  //std::vector<matc::Vector2i> path;
+
+  auto foundBy = getPathFromTo(targetRoom, pos);
+
+  return foundBy[pos];
+}
+
+std::set<Vector2i> AgentLogic::getNeighbours(Vector2i room)
+{
+  std::set<matc::Vector2i> neighbours;
   std::set<matc::Vector2i> test = {Vector2i(room) + Vector2i(0,1),
 				   Vector2i(room) + Vector2i(0,-1),
 				   Vector2i(room) + Vector2i(1,0),
 				   Vector2i(room) + Vector2i(-1,0) };
   for(auto itTest = test.begin(); itTest != test.end(); itTest++) {
     Vector2i toFind = Vector2i(*itTest);
-    auto found = saveRooms.find(toFind);
-    if(found != saveRooms.end()) {
-      neighbours.push_back(toFind);
+    auto wumpusGuess = wumpusGuesses.find(toFind);
+    if(wumpusGuess == wumpusGuesses.end()) {
+      auto found = saveRooms.find(toFind);
+      if(found != saveRooms.end()) {
+	neighbours.insert(toFind);
+      }
+    }
+    auto foundComplete = completed.find(toFind);
+    if(foundComplete != completed.end()) {
+      neighbours.insert(toFind);
     }
   }
   return neighbours;

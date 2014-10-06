@@ -44,23 +44,26 @@ public:
   void clickCursor();
   void nextStep();
 
+  void resetScene();
+
 private:  
   // gets data from current field, maybe invoke getSensorData(x, y) from Scene/Level
   // maybe: adds safe fields to "border"
-  void agentSense();
+  //void agentSense();
 
   // act appropriate to KI and Sensordata
   //   1. collects treasure if on field
   //   2. shoot wumpus if avaible
   //   3. goes to next safe field
   // order not sure
-  void agentAct();
+  //void agentAct();
 
   
   int width, height;
+  std::string levelFile;
   UserInput *user;
   Camera camera;
-  Camera camera2;
+  //  Camera camera2;
 
   TransformNode *root = 0;
   Level *level = 0;
@@ -86,6 +89,8 @@ private:
   // !!!!!
   LevelLogic *levelLogic;
   AgentLogic *ai;
+
+  bool running = true;
   // Sensordata
   
 };

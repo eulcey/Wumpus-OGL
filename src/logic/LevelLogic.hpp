@@ -35,6 +35,8 @@ public:
   bool isActionPossible(Action nextAction);
 
   int getPoints() { return agentPoints; }
+  bool isLevelFinished() { return levelFinished; }
+  bool isAgentDead() { return !agentAlive; }
   
 private:
   matc::Vector2i agentDir = matc::Vector2i(0,1);
@@ -51,6 +53,7 @@ private:
   bool arrowAvaible = true;
 
   int agentPoints = 0;
+  bool levelFinished = false;
 
   bool testDeath();
 };

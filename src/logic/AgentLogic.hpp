@@ -63,22 +63,28 @@ private:
   std::set<matc::Vector2i> completed;
 
   std::set<matc::Vector2i> saveRooms;
+  std::set<matc::Vector2i> saveWumpusRooms;
+
+  // rooms which are outside the playing field
+  std::set<matc::Vector2i> borderRooms;
 
   // Agent assumes starting point is (1,1)
   matc::Vector2i pos = matc::Vector2i(0,0);
   // Agent assumes starting direction is north
   matc::Vector2i dir = matc::Vector2i(0,1);
 
-  //  RoomNode *startRoom;
-
   //  void insertSaveToGraph(matc::Vector2i position, std::set<matc::Vector2i> save);
   Encounter testPosition(matc::Vector2i room);
 
-  std::vector<matc::Vector2i> getPathToSaveRoom(matc::Vector2i targetRoom);
-  std::vector<matc::Vector2i> getPathRec(std::vector<matc::Vector2i> oldPath,
-					 matc::Vector2i target);
+  Action goToNeighbourRoom(matc::Vector2i targetRoom);
 
-  std::vector<matc::Vector2i> getNeighbours(matc::Vector2i room);
+  std::map<matc::Vector2i, matc::Vector2i> getPathFromTo(const matc::Vector2i &start, const matc::Vector2i &goal);
+
+  matc::Vector2i getNextToSaveRoom(const matc::Vector2i &targetRoom);
+  //  std::vector<matc::Vector2i> getPathRec(std::vector<matc::Vector2i> oldPath,
+  //					 matc::Vector2i target);
+
+  std::set<matc::Vector2i> getNeighbours(matc::Vector2i room);
 
   std::vector<std::set<matc::Vector2i>> pitGuesses;
   std::set<matc::Vector2i> wumpusGuesses;
@@ -90,6 +96,7 @@ private:
 
   bool hasArrow = true;
   bool hasTreasure = false;
+  bool wumpusDead = false;
   
   // was last time this action successful
   std::vector<bool> lastTimeSuccesful = {true, true, true, true, true, true};

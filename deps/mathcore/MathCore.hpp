@@ -126,12 +126,12 @@ namespace matc
     Vector2i operator+(const Vector2i &other) const;
     Vector2i operator*(const int &other) const;
     friend std::ostream& operator<<(std::ostream &out, Vector2i &v);
-    friend bool operator== (Vector2i &v1, Vector2i &v2);
-    friend bool operator!= (Vector2i &v1, Vector2i &v2);
+    friend bool operator== (const Vector2i &v1, const Vector2i &v2);
+    friend bool operator!= (const Vector2i &v1, const Vector2i &v2);
     friend bool operator<(const Vector2i &v1, const Vector2i &v2);
   };
-  bool operator== (Vector2i &v1, Vector2i &v2);
-  bool operator!= (Vector2i &v1, Vector2i &v2);
+  bool operator== (const Vector2i &v1, const Vector2i &v2);
+  bool operator!= (const Vector2i &v1, const Vector2i &v2);
   bool operator< (const Vector2i &v1, const Vector2i &v2);
   
   Matrix4x4 translate(const Matrix4x4 &m, const Vector3 &v);
