@@ -13,7 +13,7 @@ Wumpus::Wumpus()
   wumpusMaterial = new MaterialNode("Wumpus Material", "wumpus", "phongShader");//"shadowShader");//
   wumpusMaterial->specularIntensity = 0.3f;
   wumpusMaterial->specularPower = 1.0f;
-  wumpus = new ModelNode("Wumpus", "../assets/monkey.obj");
+  wumpus = new ModelNode("Wumpus", "../assets/wumpus.obj");
   //root->addChild(wumpusPosition);
   wumpusPosition->addChild(wumpusMaterial);
   wumpusMaterial->addChild(wumpusScale);

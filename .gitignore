@@ -30,6 +30,10 @@
 
 # Assets
 /assets/*
+!/assets/*.png
+!/assets/*.obj
+/assets/sky*
+/assets/Sky*
 
 # temp files
 *~
