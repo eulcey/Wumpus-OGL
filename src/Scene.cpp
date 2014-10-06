@@ -11,6 +11,7 @@
 #include "Wumpus.hpp"
 #include "jsoncpp.h"
 #include "file_loader.h"
+#include "TextRenderer.hpp"
 
 #include "LightNode.hpp"
 #include "Cursor.hpp"
@@ -45,6 +46,8 @@ Scene::Scene(int width, int height, UserInput *user):
 
   hud->linkToCamera(*camera.getTransform());
   hud_text->linkToCamera(*camera.getTransform());
+
+  // init text renderer
   /*
   ModelNode skybox_sky("Skybox_sky", "../assets/skybox_sky.obj");
   MaterialNode skybox_sky_material("Skybox Sky Material", "Skybox_sky", "texturedShader");
@@ -133,8 +136,18 @@ bool Scene::load(const std::string &file)
 
   ai = new AgentLogic();
   levelLogic = new LevelLogic(rootValue);
- 
+
+  displayText.push_back("POINTS: ");
+  displayText.push_back("");
+  displayText.push_back("LAST ACTION: ");
+  displayText.push_back("");
+   
   return true;
+}
+
+void Scene::initTextRender()
+{
+  initText2D("../assets/ExportedFont.png", "textShader");
 }
 
 void Scene::deleteScene()
@@ -194,8 +207,13 @@ void Scene::switchCamera()
 
 void Scene::update(float deltaTime)
 {
-  if(running)
+  if(running) {
+    //printText2D("ABCDEF", 300, 300, 60);
     camera.update(deltaTime);
+  }
+    for(size_t i = 0; i < displayText.size(); i++) { 
+      printText2D(displayText[i], 10, 560 - 30*i, 18);
+    }
 }
 
 void Scene::clickCursor()
@@ -225,20 +243,22 @@ void Scene::nextStep()
     ai->inputNewSenses(std::set<Senses>(senses.begin(), senses.end()));
     // ask agentlogic for new action
     Action nextAction = ai->getNextAction();
-    
-    std::cout << "next Action is: ";
+
+    std::string actionSt = "";
     if(nextAction == Forward)
-      std::cout << "Forward" << std::endl;
+      actionSt = "FORWARD";
     if(nextAction == TurnLeft)
-      std::cout << "TurnLeft" << std::endl;
+      actionSt = "TURNLEFT";
     if(nextAction == TurnRight)
-      std::cout << "TurnRight" << std::endl;
+      actionSt = "TURNRIGHT";
     if(nextAction == Grab)
-      std::cout << "Grab" << std::endl;
+      actionSt = "GRAB";
     if(nextAction == Shoot)
-      std::cout << "Shoot" << std::endl;
+     actionSt = "SHOOT";
     if(nextAction == Leave)
-      std::cout << "Leave" << std::endl;
+      actionSt = "LEAVE";
+    
+    displayText[3] = actionSt;
     // ask levelLogic if action is possible, and update it if it's possible
     bool actionWasSuccessful = levelLogic->isActionPossible(nextAction);
     if(nextAction == Shoot && actionWasSuccessful) {
@@ -256,6 +276,8 @@ void Scene::nextStep()
       running = false;
       if(levelLogic->isAgentDead()) {
       } else {
+	displayText.push_back("GAME OVER");
+	displayText.push_back("PRESS RESET");
       }
     }
 
@@ -266,8 +288,13 @@ void Scene::nextStep()
     agent->setPosition(gridToPos(agentPos.x), -gridToPos(agentPos.y));
 
     int points = levelLogic->getPoints();
-    std::cout << "Agent Points: " << points << std::endl;
+    //std::cout << "Agent Points: " << points << std::endl;
+    displayText[1] = std::to_string(points);
   }
+}
+
+void Scene::addTextToDisplay(std::string text)
+{
 }
 
 void Scene::resetScene() {
@@ -275,6 +302,7 @@ void Scene::resetScene() {
   wumpus->unlink(*worldTransform);
   treasure->unlink(*worldTransform);
   agent->unlink(*worldTransform);
+  displayText.clear();
   delete wumpus;
   delete agent;
   delete treasure;

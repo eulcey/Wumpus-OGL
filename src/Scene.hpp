@@ -36,6 +36,7 @@ public:
   void update(float deltaTime);
 
   bool load(const std::string &file);
+  void initTextRender();
   void deleteScene();
   void render(Renderer &renderer);
   void render(ShadowRenderer &renderer);
@@ -96,6 +97,9 @@ private:
 
   bool running = true;
   // Sensordata
-  
+
+
+  void addTextToDisplay(std::string text);
+  std::vector<std::string> displayText;
 };
 #endif

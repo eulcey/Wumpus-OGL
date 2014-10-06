@@ -11,6 +11,7 @@
 #include "UserInput.hpp"
 
 #include "lodepng.h"
+#include "TextRenderer.hpp"
 
 using namespace matc;
 

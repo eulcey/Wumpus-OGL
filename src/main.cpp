@@ -81,15 +81,16 @@ int main(int argc, char** argv)
   Printer printer;
   //scene.print(printer);
 
+  scene.initTextRender();
   // main loop
   do {
-    scene.update(float(glfwGetTime()-lastTime));
     
-    engine.startShadowRender();
-    scene.render(shadowRenderer);
+    // engine.startShadowRender();
+    //scene.render(shadowRenderer);
     
     engine.startRender();
     scene.render(renderer);
+    scene.update(float(glfwGetTime()-lastTime));
     
     engine.update(); // here swapping buffers
   } while(engine.isRunning());
