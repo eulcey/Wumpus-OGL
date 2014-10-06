@@ -59,7 +59,7 @@ bool OGLRenderEngine::render(RenderContext& context, ModelNode& model) {
     programID = LoadShaders(vertexShader.c_str(), fragmentShader.c_str());
     shaderMap[shader] = programID;
 
-    std::cout << "for shader: " << shader << std::endl;
+    // std::cout << "for shader: " << shader << std::endl;
     GLuint shadowMapID = glGetUniformLocation(programID, "shadowMap");
     std::cout << shadowMapID << std::endl;
     
@@ -410,7 +410,6 @@ bool OGLRenderEngine::init(int width, int height, std::string title, UserInput* 
   GLuint VertexArrayID;
   glGenVertexArrays(1, &VertexArrayID);
   glBindVertexArray(VertexArrayID);
-
 
   return user->init(window);
 }

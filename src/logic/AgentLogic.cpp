@@ -51,7 +51,7 @@ void AgentLogic::inputNewSenses(const std::set<Senses> &newSenses)
 	if(pFound != save.end()) {
 	  auto pSaveWumpus = saveWumpusRooms.find(toFind);
 	  if(pSaveWumpus == saveWumpusRooms.end()) {
-	    std::cout << "Wumpus idea smaller: " << toFind << std::endl;
+	    //    std::cout << "Wumpus idea smaller: " << toFind << std::endl;
 	    newWumpus.insert(toFind);
 	  }
 	}
