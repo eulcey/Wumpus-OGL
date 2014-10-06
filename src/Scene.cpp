@@ -194,18 +194,26 @@ void Scene::switchCamera()
 
 void Scene::update(float deltaTime)
 {
-  camera.update(deltaTime);
+  if(running)
+    camera.update(deltaTime);
 }
 
 void Scene::clickCursor()
 {
   Vector3 cursorPos = cursor->getPosition();
+  std::cout << "Cursor: " << cursorPos << std::endl;
   float x_diff = cursorPos.x - NEXT_STEP_BUTTON_X;
   float y_diff = cursorPos.y - NEXT_STEP_BUTTON_Y;
   float distance = sqrt(x_diff * x_diff + y_diff * y_diff);
   if (distance <= NEXT_STEP_BUTTON_R) {
     //std::cout << "Next Step Button clicked" << std::endl;
     nextStep();
+  }
+  x_diff = cursorPos.x - RESET_BUTTON_X;
+  y_diff = cursorPos.y - RESET_BUTTON_Y;
+  distance = sqrt(x_diff * x_diff + y_diff * y_diff);
+  if(distance <= RESET_BUTTON_R) {
+    resetScene();
   }
 }
 
@@ -271,7 +279,14 @@ void Scene::nextStep()
 }
 
 void Scene::resetScene() {
-  running = true;
+  running = false;
+  wumpus->unlink(*worldTransform);
+  treasure->unlink(*worldTransform);
+  agent->unlink(*worldTransform);
+  delete wumpus;
+  delete agent;
+  delete treasure;
   load(levelFile);
   resetCamera();
+  running = true;
 }

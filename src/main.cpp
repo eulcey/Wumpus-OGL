@@ -65,16 +65,12 @@ int main(int argc, char** argv)
 
   user.setKeyboardInputAction(GLFW_KEY_F, [&] (int action) { if(action) scene.switchMouseLook(); });
 
-  /*
-  user.setMousePosAction([&] (double xpos, double ypos) {
-      camera->changeView(xpos, ypos, float(glfwGetTime()-lastTime));
-    });
-  */
+
   user.setKeyboardInputAction(GLFW_KEY_W, [&] (int action) { camera->onKeyboard(movement::FORWARD, action); });
   user.setKeyboardInputAction(GLFW_KEY_A, [&] (int action) { camera->onKeyboard(movement::LEFT, action); });
   user.setKeyboardInputAction(GLFW_KEY_S, [&] (int action) { camera->onKeyboard(movement::BACKWARD, action); });
   user.setKeyboardInputAction(GLFW_KEY_D, [&] (int action) { camera->onKeyboard(movement::RIGHT, action); });
-  user.setKeyboardInputAction(GLFW_KEY_SPACE, [&] (int action) {  });
+  user.setKeyboardInputAction(GLFW_KEY_SPACE, [&] (int action) { });
   user.setKeyboardInputAction(GLFW_KEY_ESCAPE, [&] (int action) {engine.close();});
   user.setKeyboardInputAction(GLFW_KEY_L, [&] (int action) {
       scene.resetCamera();
@@ -87,7 +83,6 @@ int main(int argc, char** argv)
 
   // main loop
   do {
-    //camera->update(float(glfwGetTime()-lastTime));
     scene.update(float(glfwGetTime()-lastTime));
     
     engine.startShadowRender();
@@ -100,6 +95,6 @@ int main(int argc, char** argv)
   } while(engine.isRunning());
 
   //scene.deleteScene();
-  std::cout << "Scene deleted" << std::endl;
+  //std::cout << "Scene deleted" << std::endl;
 }
 
