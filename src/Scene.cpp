@@ -201,7 +201,6 @@ void Scene::update(float deltaTime)
 void Scene::clickCursor()
 {
   Vector3 cursorPos = cursor->getPosition();
-  std::cout << "Cursor: " << cursorPos << std::endl;
   float x_diff = cursorPos.x - NEXT_STEP_BUTTON_X;
   float y_diff = cursorPos.y - NEXT_STEP_BUTTON_Y;
   float distance = sqrt(x_diff * x_diff + y_diff * y_diff);
@@ -240,7 +239,6 @@ void Scene::nextStep()
       std::cout << "Shoot" << std::endl;
     if(nextAction == Leave)
       std::cout << "Leave" << std::endl;
-    //nextAction = Forward;
     // ask levelLogic if action is possible, and update it if it's possible
     bool actionWasSuccessful = levelLogic->isActionPossible(nextAction);
     if(nextAction == Shoot && actionWasSuccessful) {
@@ -264,17 +262,11 @@ void Scene::nextStep()
     // tell agent if action was successful
     ai->actionSucceeded(nextAction, actionWasSuccessful);
 
-    //std::cout << "Action sucess: " << actionWasSuccessful << std::endl;
-    /*
-    // update levelLogic
-    if (levelLogic->moveAgentTo(Vector2i(agentX, agentZ))) {
-    // reposition model;
-    agent->setPosition(gridToPos(agentX), -gridToPos(agentZ));
-    }
-    */
     Vector2i agentPos = levelLogic->getAgentPos();
-    //  std::cout << "newAgentPos: " << agentPos << std::endl;
     agent->setPosition(gridToPos(agentPos.x), -gridToPos(agentPos.y));
+
+    int points = levelLogic->getPoints();
+    std::cout << "Agent Points: " << points << std::endl;
   }
 }
 

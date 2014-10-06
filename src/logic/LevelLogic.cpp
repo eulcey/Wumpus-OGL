@@ -115,6 +115,7 @@ bool LevelLogic::isActionPossible(Action nextAction)
 	agentAlive = false;
 	agentPoints += DEATH_POINTS;
       }
+      agentPoints += STEP_POINTS;
       return true;
     }
     return false;
@@ -131,10 +132,12 @@ bool LevelLogic::isActionPossible(Action nextAction)
       std::cout << "Congratulation you shot the Wumpus" << std::endl;
       wumpusAlive = false;
       arrowAvaible = false;
+      agentPoints += SHOOT_POINTS;
       agentPoints += WUMPUS_POINTS;
       return true;
     } else {
       std::cout << "To bad you shot in the dark" << std::endl;
+      agentPoints += SHOOT_POINTS;
       arrowAvaible = false;
       return false;
     }
