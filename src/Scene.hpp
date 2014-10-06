@@ -27,6 +27,10 @@ const float RESET_BUTTON_X = 2.97f;
 const float RESET_BUTTON_Y = -1.54f;
 const float RESET_BUTTON_R = 0.32f;
 
+const int TEXT_SIZE = 18;
+const int TEXT_POS_X = 12;
+const int TEXT_POS_Y = 560;
+
 class Scene
 {
 public:
@@ -51,18 +55,8 @@ public:
 
   void resetScene();
 
-private:  
-  // gets data from current field, maybe invoke getSensorData(x, y) from Scene/Level
-  // maybe: adds safe fields to "border"
-  //void agentSense();
-
-  // act appropriate to KI and Sensordata
-  //   1. collects treasure if on field
-  //   2. shoot wumpus if avaible
-  //   3. goes to next safe field
-  // order not sure
-  //void agentAct();
-
+private:
+  bool mutexFree;
   
   int width, height;
   std::string levelFile;

@@ -212,7 +212,7 @@ void Scene::update(float deltaTime)
     camera.update(deltaTime);
   }
     for(size_t i = 0; i < displayText.size(); i++) { 
-      printText2D(displayText[i], 10, 560 - 30*i, 18);
+      printText2D(displayText[i], TEXT_POS_X, TEXT_POS_Y - (1.5*TEXT_SIZE)*i, TEXT_SIZE);
     }
 }
 
@@ -288,13 +288,13 @@ void Scene::nextStep()
     agent->setPosition(gridToPos(agentPos.x), -gridToPos(agentPos.y));
 
     int points = levelLogic->getPoints();
-    //std::cout << "Agent Points: " << points << std::endl;
     displayText[1] = std::to_string(points);
   }
 }
 
 void Scene::addTextToDisplay(std::string text)
 {
+  displayText.push_back(text);
 }
 
 void Scene::resetScene() {
@@ -307,6 +307,6 @@ void Scene::resetScene() {
   delete agent;
   delete treasure;
   load(levelFile);
-  resetCamera();
+  //resetCamera();
   running = true;
 }
