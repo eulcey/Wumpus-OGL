@@ -29,6 +29,10 @@ using namespace matc;
 Scene::Scene(int width, int height, UserInput *user):
   width(width), height(height), user(user), camera(Camera("SceneCamera", width, height)) //camera2(Camera("SceneCamera2", width, height))
 {
+  user->setWindowSizeAction([&] (int width, int height) {
+      this->applyWindowSizeChange(Vector2i(width, height));
+      });
+  
   root = new TransformNode("SceneRoot", Matrix4x4());
 
   camera.link(*root);
@@ -205,15 +209,21 @@ void Scene::switchCamera()
   //camera2.link(*root);
 }
 
+void Scene::applyWindowSizeChange(const Vector2i &newSize)
+{
+  this->width = newSize.x;
+  this->height = newSize.y;
+  camera.changeScreen(newSize);
+}
+
 void Scene::update(float deltaTime)
 {
-  if(running) {
-    //printText2D("ABCDEF", 300, 300, 60);
-    camera.update(deltaTime);
+  // if(running) {
+  camera.update(deltaTime);
+  // }
+  for(size_t i = 0; i < displayText.size(); i++) { 
+    printText2D(displayText[i], TEXT_POS_X, TEXT_POS_Y - (1.5*TEXT_SIZE)*i, TEXT_SIZE);
   }
-    for(size_t i = 0; i < displayText.size(); i++) { 
-      printText2D(displayText[i], TEXT_POS_X, TEXT_POS_Y - (1.5*TEXT_SIZE)*i, TEXT_SIZE);
-    }
 }
 
 void Scene::clickCursor()
@@ -276,8 +286,8 @@ void Scene::nextStep()
       running = false;
       if(levelLogic->isAgentDead()) {
       } else {
-	displayText.push_back("GAME OVER");
-	displayText.push_back("PRESS RESET");
+        addTextToDisplay("GAME OVER");
+        addTextToDisplay("PRESS RESET");
       }
     }
 

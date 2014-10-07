@@ -6,7 +6,7 @@
 
 #define GLFW_INCLUDE_GLU
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include <glfw3.h>
 
 #include "MathCore.hpp"
 

@@ -18,6 +18,9 @@ public:
 
   void setActive() { this->active = true; }
   void setInactive() { this->active = false; }
+
+  void changeFOV(float fov) { this->fov = fov; }
+  void changeAspectRatio(float aspectRatio) { this->aspectRatio = aspectRatio; }
   
 private:
   bool active = true;

@@ -37,5 +37,9 @@
 
 # temp files
 *~
+*.swp
 \#*.*\#
 TODO
+
+#old files
+/logicOLD/*

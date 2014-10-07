@@ -49,6 +49,7 @@ public:
   void switchMouseLook();
   void resetCamera();
   void switchCamera();
+  void applyWindowSizeChange(const matc::Vector2i &newSize);
 
   void clickCursor();
   void nextStep();

@@ -114,14 +114,22 @@ Level::Level(int width, int height, std::vector<Json::Value> pitValues)
     floor[i]->linkPart(*transform);
   }
 
+  PitTile *pit = new PitTile(Vector3());
+
   for(unsigned int i = 0; i < pitValues.size(); i++) {
     //std::cout << pitValues[i]["xpos"] << std::endl;
     int x = pitValues[i]["xpos"].asInt()-1;
     int z = pitValues[i]["zpos"].asInt()-1;
 
-    pits.push_back(new PitTile(Vector3(gridToPos(x), 0.1, -gridToPos(z))));
+    TransformNode *node = new TransformNode("Pit Transform", translate(Matrix4x4(), Vector3(gridToPos(x), 0.1, -gridToPos(z))));
+
+    transform->addChild(node);
+
+    pit->linkPart(*node);
+
+    // pits.push_back(new PitTile(Vector3(gridToPos(x), 0.1, -gridToPos(z))));
 				       //x*CELL_SIZE+CELL_SIZE/2, 0.1, -z*CELL_SIZE + CELL_SIZE/2)));
-    pits[i]->linkPart(*transform);
+    //pits[i]->linkPart(*transform);
   }
 }
 

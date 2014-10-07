@@ -70,6 +70,18 @@ bool Camera::switchMouseLook()
   return mouseLookEnabled;
 }
 
+void Camera::changeScreen(Vector2i newSize)
+{
+  this->width = newSize.x;
+  this->height = newSize.y;
+  camera->changeAspectRatio(1.0f*width/height);
+}
+
+void Camera::changeFOV(float fov)
+{
+  camera->changeFOV(fov);
+}
+
 void Camera::onKeyboard(int move, int action)
 {
   move_pressed[move] = action;

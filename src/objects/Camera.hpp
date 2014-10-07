@@ -41,6 +41,9 @@ Camera(std::string name, int screenWidth, int screenHeight);
   bool switchMouseLook();
   bool mouseLookActive() { return mouseLookEnabled; }
 
+  void changeScreen(matc::Vector2i newSize);
+  void changeFOV(float newFOV);
+
   void activate();
   void deactivate();
   void reset();

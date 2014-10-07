@@ -1,5 +1,5 @@
 #include "UserInput.hpp"
-#include <GLFW/glfw3.h>
+#include <glfw3.h>
 
 #include <iostream>
 #include <sstream>
@@ -14,6 +14,7 @@ bool UserInput::init(GLFWwindow *window)
   glfwSetMouseButtonCallback(window, mouseButtonCallbackImpl);
   glfwSetKeyCallback(window, keyCallbackImpl);
   glfwSetCursorPosCallback(window, mousePosCallbackImpl);
+  glfwSetWindowSizeCallback(window, windowSizeCallbackImpl);
   return true;
 }
 
@@ -33,6 +34,19 @@ void UserInput::mousePosCallback(double xpos, double ypos)
 {
   if(mousePosChange) {
     mousePosChange(xpos, ypos);
+  }
+}
+
+void UserInput::windowSizeCallbackImpl(GLFWwindow *window, int width, int height)
+{
+  UserInput* user = reinterpret_cast<UserInput*>(glfwGetWindowUserPointer(window));
+  user->windowSizeCallback(width, height);
+}
+
+void UserInput::windowSizeCallback(int width, int height)
+{
+  if(windowSizeChange) {
+    windowSizeChange(width, height);
   }
 }
   
@@ -92,5 +106,11 @@ bool UserInput::setMouseInputAction(int input, std::function<void (void)> action
 bool UserInput::setKeyboardInputAction(int input, std::function<void (int)> action)
 {
   keyboardMap[input] = action;
+  return true;
+}
+
+bool UserInput::setWindowSizeAction(std::function<void (int, int)> action)
+{
+  windowSizeChange = action;
   return true;
 }

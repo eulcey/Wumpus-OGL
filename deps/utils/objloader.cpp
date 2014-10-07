@@ -3,10 +3,10 @@
 #include <cstring>
 using namespace matc;
 
-#define GLM_FORCE_RADIANS
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/string_cast.hpp>
+//#define GLM_FORCE_RADIANS
+//#include <glm/glm.hpp>
+//#include <glm/gtc/matrix_transform.hpp>
+//#include <glm/gtx/string_cast.hpp>
 #include <iostream>
 
 bool loadOBJ(const char* path,
@@ -20,8 +20,8 @@ bool loadOBJ(const char* path,
 
   std::vector<Vector3> temp_vertices, temp_normals;
   std::vector<Vector2> temp_uvs;
-  std::vector<glm::vec3> glm_vertices, glm_normals;
-  std::vector<glm::vec2> glm_uvs;
+//  std::vector<glm::vec3> glm_vertices, glm_normals;
+//  std::vector<glm::vec2> glm_uvs;
   
   FILE *file = fopen(path, "r");
   if(file == NULL)

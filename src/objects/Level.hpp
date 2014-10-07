@@ -69,7 +69,8 @@ private:
   TransformNode *transform;
   std::vector<WallSegment*> walls;
   std::vector<FloorTile*> floor;
-  std::vector<PitTile*> pits;
+  //std::vector<PitTile*> pits;
+  std::vector<TransformNode*> pits;
 };
 
 #endif

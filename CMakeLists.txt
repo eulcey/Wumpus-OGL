@@ -28,6 +28,27 @@ add_executable(
     ${OBJECT_FILES}
     ${JSON_FILES}
     )
+ 
+#add_subdirectory(external)
+
+#include_directories(
+#	external/glfw-3.0.3/include/GLFW/
+#	external/glew-1.9.0/include/
+#)
+
+#set(ALL_LIBS
+#	${OPENGL_LIBRARY}
+#	GLFW_303
+#	GLEW_190
+#)
+
+#add_definitions(
+#	-DTW_STATIC
+#	-DTW_NO_LIB_PRAGMA
+#	-DTW_NO_DIRECT3D
+#	-DGLEW_STATIC
+#	-D_CRT_SECURE_NO_WARNINGS
+#)
 
 include_directories(deps/mathcore)
 include_directories(/usr/include/GLFW)
@@ -42,6 +63,7 @@ include_directories(src/logic)
 
 target_link_libraries(
     wumpus_ogl
+    #${ALL_LIBS}
     glfw
     GL
     GLEW
