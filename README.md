@@ -9,7 +9,10 @@ Additionally is the JSON Format used for World loading http://json.org/
 For that the JsonCpp library is used and included
 
 
-It uses GLFW3 and glew.
+It uses GLFW3 and glew as Submodules from:
+https://github.com/glfw/glfw
+https://github.com/omniavinco/glew-cmake
+
 
 Other tools and libs which are necessary:
 cmake
