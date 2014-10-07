@@ -9,7 +9,7 @@ bool UserInput::init(GLFWwindow *window)
   
   glfwSetWindowUserPointer(window, this);
 
-  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
   glfwSetMouseButtonCallback(window, mouseButtonCallbackImpl);
   glfwSetKeyCallback(window, keyCallbackImpl);
