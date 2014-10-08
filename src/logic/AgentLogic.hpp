@@ -58,9 +58,9 @@ public:
   Action getNextAction();
   void actionSucceeded(Action action, bool wasSuccessful);
 
-  std::vector<matc::Vector2i> getSaveRooms();
-  std::vector<matc::Vector2i> getStenchPositions();
-  std::vector<matc::Vector2i> getBreezePositions();
+  std::set<matc::Vector2i> getSaveRooms();
+  std::set<matc::Vector2i> getStenchPositions();
+  std::set<matc::Vector2i> getBreezePositions();
   matc::Vector2i getTreasurePos();
 
 private:

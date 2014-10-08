@@ -315,6 +315,8 @@ void Scene::nextStep()
     std::vector<Senses> senses = levelLogic->getSensorData();
     // input to agentlogic
     ai->inputNewSenses(std::set<Senses>(senses.begin(), senses.end()));
+    // output agent experience
+    outputAgentPercepts();
     // ask agentlogic for new action
     nextAction = ai->getNextAction();
 
@@ -382,5 +384,36 @@ void Scene::animateArrowShot()
     worldTransform->addChild(newArrowPos);
     arrow->link(*newArrowPos);
     arrow->shoot();
+  }
+}
+
+void Scene::outputAgentPercepts()
+{
+  auto save = ai->getSaveRooms();
+  auto stenches = ai->getStenchPositions();
+  auto breezes = ai->getBreezePositions();
+  auto treasurePos = ai->getTreasurePos();
+
+  std::cout << "Save Rooms:" << std::endl;
+  for(auto it  = save.begin(); it != save.end(); it++) {
+    Vector2i output = Vector2i(*it);
+    std::cout << output << std::endl;
+  }
+
+  std::cout << "Stenches found:" << std::endl;
+  for(auto it  = stenches.begin(); it != stenches.end(); it++) {
+    Vector2i output = Vector2i(*it);
+    std::cout << output << std::endl;
+  }
+
+  std::cout << "Breezes found:" << std::endl;
+  for(auto it  = breezes.begin(); it != breezes.end(); it++) {
+    Vector2i output = Vector2i(*it);
+    std::cout << output << std::endl;
+  }
+
+  std::cout << "Treasure Room:" << std::endl;
+  if(treasurePos != Vector2i(-1, -1)) {
+    std::cout << treasurePos << std::endl;
   }
 }

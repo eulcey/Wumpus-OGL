@@ -340,16 +340,16 @@ std::set<Vector2i> AgentLogic::getNeighbours(Vector2i room)
   return neighbours;
 }
 
-std::vector<Vector2i> AgentLogic::getSaveRooms()
+std::set<Vector2i> AgentLogic::getSaveRooms()
 {
-  std::vector<Vector2i> save;
+  std::set<Vector2i> save;
 
   return save;
 }
 
-std::vector<Vector2i> AgentLogic::getStenchPositions()
+std::set<Vector2i> AgentLogic::getStenchPositions()
 {
-  std::vector<Vector2i> stenches;
+  std::set<Vector2i> stenches;
   
   if(!wumpusDead) { // only stenches if Wumpus still alive
     
@@ -358,9 +358,9 @@ std::vector<Vector2i> AgentLogic::getStenchPositions()
   return stenches;
 }
 
-std::vector<Vector2i> AgentLogic::getBreezePositions()
+std::set<Vector2i> AgentLogic::getBreezePositions()
 {
-  std::vector<Vector2i> breezes;
+  std::set<Vector2i> breezes;
 
   return breezes;
 }

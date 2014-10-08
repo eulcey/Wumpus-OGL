@@ -106,5 +106,7 @@ private:
 
   void addTextToDisplay(std::string text);
   std::vector<std::string> displayText;
+
+  void outputAgentPercepts();
 };
 #endif
