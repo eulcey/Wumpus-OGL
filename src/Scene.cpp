@@ -18,6 +18,7 @@
 #include "UserInput.hpp"
 #include "Treasure.hpp"
 #include "Agent.hpp"
+#include "Arrow.hpp"
 #include "Hud.hpp"
 #include "Hud_Text.hpp"
 #include "Rotor.hpp"
@@ -121,6 +122,9 @@ bool Scene::load(const std::string &file)
   int agentZ = agentValue["zpos"].asInt() - 1;
   agent = new Agent(gridToPos(agentX), -gridToPos(agentZ));
   agent->link(*worldTransform);
+
+  arrow = new Arrow(0, 0);
+  arrow->link(*agent->getPose());
   
   // Rotor *rotor = new Rotor("Rotor", 3.14f/100, Vector3(0, 1, 0), 4);
   
@@ -220,6 +224,7 @@ void Scene::update(float deltaTime)
 {
   // if(running) {
   camera.update(deltaTime);
+  root->update(deltaTime);
   // }
   for(size_t i = 0; i < displayText.size(); i++) { 
     printText2D(displayText[i], TEXT_POS_X, TEXT_POS_Y - (1.5*TEXT_SIZE)*i, TEXT_SIZE);
@@ -271,18 +276,23 @@ void Scene::nextStep()
     displayText[3] = actionSt;
     // ask levelLogic if action is possible, and update it if it's possible
     bool actionWasSuccessful = levelLogic->isActionPossible(nextAction);
-    if(nextAction == Shoot && actionWasSuccessful) {
-      wumpus->unlink(*worldTransform);
+    if(nextAction == TurnLeft && actionWasSuccessful) {
+      agent->rotate90Left();
     }
-    if(nextAction == Grab && actionWasSuccessful) {
+    else if(nextAction == TurnRight && actionWasSuccessful) {
+      agent->rotate90Right();
+    }
+    else if(nextAction == Shoot && actionWasSuccessful) {
+      wumpus->unlink(*worldTransform);
+      animateArrowShot();
+    }
+    else if(nextAction == Grab && actionWasSuccessful) {
       treasure->unlink(*worldTransform);
     }
-
-    if(nextAction == Leave && actionWasSuccessful) {
+    else if(nextAction == Leave && actionWasSuccessful) {
       running = false;
     }
-
-    if(levelLogic->isLevelFinished()) {
+    else if(levelLogic->isLevelFinished()) {
       running = false;
       if(levelLogic->isAgentDead()) {
       } else {
@@ -313,10 +323,32 @@ void Scene::resetScene() {
   treasure->unlink(*worldTransform);
   agent->unlink(*worldTransform);
   displayText.clear();
+  if(arrowShot) {
+    arrow->unlink(*newArrowPos);
+    worldTransform->removeChild(*newArrowPos);
+    delete newArrowPos;
+    arrowShot = false;
+  } else {
+    arrow->unlink(*agent->getPose());
+  }
+  delete arrow;
   delete wumpus;
   delete agent;
   delete treasure;
   load(levelFile);
   //resetCamera();
   running = true;
+}
+
+void Scene::animateArrowShot()
+{
+  arrowShot = true;
+  if(arrow->unlink(*agent->getPose())) {
+    newArrowPos = new TransformNode("ArrowShot-Pos",
+						   translate(Matrix4x4(),
+							     arrow->getPosition() + agent->getPosition()));
+    worldTransform->addChild(newArrowPos);
+    arrow->link(*newArrowPos);
+    arrow->shoot();
+  }
 }

@@ -16,6 +16,7 @@ class Treasure;
 class Hud;
 class Hud_Text;
 class Agent;
+class Arrow;
 class AgentLogic;
 class LevelLogic;
 
@@ -73,6 +74,11 @@ private:
   Wumpus *wumpus = 0;
   Treasure *treasure = 0;
   Agent *agent = 0;
+  Arrow *arrow = 0;
+  TransformNode *newArrowPos = 0;
+  bool arrowShot = false;
+
+  void animateArrowShot();
   //  std::vector<Pit*> pits;
   
   Cursor *cursor = 0;

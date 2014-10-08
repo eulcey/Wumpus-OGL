@@ -2,6 +2,7 @@
 #define ARROW_HPP
 
 #include "GameObject.hpp"
+#include "MathCore.hpp"
 
 class Arrow: public GameObject
 {
@@ -12,8 +13,8 @@ public:
   virtual bool release();
   
   bool isAlive();
-  void getPosition(float &xPos, float zPos);
   bool collidesWithWall(float xPos, float zPos);
+  void shoot();
 
 private:
   bool alive = false;

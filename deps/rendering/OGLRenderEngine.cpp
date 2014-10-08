@@ -388,7 +388,7 @@ bool OGLRenderEngine::init(int width, int height, std::string title, UserInput* 
   //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_ANY_PROFILE); 
  
-  window = glfwCreateWindow(width, height, title.c_str(), glfwGetPrimaryMonitor(), NULL);
+  window = glfwCreateWindow(width, height, title.c_str(), NULL, /*glfwGetPrimaryMonitor(),*/ NULL);
   if(window == NULL) {
     std::cerr << "Failed to open GLFW window" << std::endl;
     glfwTerminate();

@@ -339,3 +339,38 @@ std::set<Vector2i> AgentLogic::getNeighbours(Vector2i room)
   }
   return neighbours;
 }
+
+std::vector<Vector2i> AgentLogic::getSaveRooms()
+{
+  std::vector<Vector2i> save;
+
+  return save;
+}
+
+std::vector<Vector2i> AgentLogic::getStenchPositions()
+{
+  std::vector<Vector2i> stenches;
+  
+  if(!wumpusDead) { // only stenches if Wumpus still alive
+    
+  }
+  
+  return stenches;
+}
+
+std::vector<Vector2i> AgentLogic::getBreezePositions()
+{
+  std::vector<Vector2i> breezes;
+
+  return breezes;
+}
+
+Vector2i AgentLogic::getTreasurePos()
+{
+  if(treasureRoom != 0) {
+    return Vector2i(treasureRoom->x, treasureRoom->y);
+  } else {
+    return Vector2i(-1, -1);
+  }
+}
+
