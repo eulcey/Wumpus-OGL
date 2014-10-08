@@ -25,9 +25,11 @@ OGLRenderEngine::OGLRenderEngine(int width, int height, std::string title, UserI
 
 OGLRenderEngine::~OGLRenderEngine()
 {
+  glfwDestroyWindow(window);
   /**
    * TODO: delete all buffers
    */
+  glfwTerminate();
 }
 
 bool OGLRenderEngine::render(RenderContext& context, ModelNode& model) {
@@ -380,11 +382,13 @@ bool OGLRenderEngine::init(int width, int height, std::string title, UserInput* 
     
   glfwWindowHint(GLFW_SAMPLES, 4);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 1);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+  glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+  //glfwWindowHint(GLFW_DECORATED, GL_FALSE);
   //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
-  //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //We don't want the old OpenGL
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_ANY_PROFILE); 
  
-  window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+  window = glfwCreateWindow(width, height, title.c_str(), glfwGetPrimaryMonitor(), NULL);
   if(window == NULL) {
     std::cerr << "Failed to open GLFW window" << std::endl;
     glfwTerminate();

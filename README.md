@@ -3,6 +3,16 @@ Wumpus-OGL
 
 A Wumpus game in OpenGL
 
+# Controls
+f     - activate/deactivate mouse look / cursor
+l     - reset camera position
+[ESC] - Exit program
+
+# command line arguments
+wumpus_ogl "path/to/worldfile" - loads a custom world
+
+# Used Libraries
+
 For Texture loading LodePNG is used and included: http://lodev.org/lodepng/
 
 Additionally is the JSON Format used for World loading http://json.org/

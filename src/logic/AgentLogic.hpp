@@ -91,8 +91,8 @@ private:
 
   matc::Vector2i *treasureRoom = 0;
 
-  int maxX = 0;
-  int maxY = 0;
+  //int maxX = 0;
+  //int maxY = 0;
 
   bool hasArrow = true;
   bool hasTreasure = false;

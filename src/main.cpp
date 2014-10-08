@@ -32,12 +32,13 @@ int main(int argc, char** argv)
   
   UserInput user;
   Scene scene(screen_width, screen_height, &user);
-  //  scene.load("../saved_worlds/original_world");
-  //std::cout << "loading: " << argv[1] << std::endl;
+  OGLRenderEngine engine(screen_width, screen_height, "Wumpuse-OGL", &user);
+  
   std::string filepath;
   
   if(argc >= 2) {
     filepath = argv[1];
+    std::cout << "loading: " << argv[1] << std::endl;
   } else {
     filepath = "../saved_worlds/original_world";
   }
@@ -51,7 +52,6 @@ int main(int argc, char** argv)
   
   float lastTime = glfwGetTime();
   
-  OGLRenderEngine engine(screen_width, screen_height, "Wumpuse-OGL", &user);
   
   if(!engine.shadowInit()) {
     std::cout << "Error in Shadow init" << std::endl;
