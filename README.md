@@ -1,11 +1,13 @@
 Wumpus-OGL
 ==========
 
-A Wumpus game in OpenGL
+A Wumpus AI in OpenGL
 
 # Controls
 f     - activate/deactivate mouse look / cursor
+
 l     - reset camera position
+
 [ESC] - Exit program
 
 # command line arguments
@@ -25,14 +27,14 @@ https://github.com/omniavinco/glew-cmake
 
 
 Other tools and libs which are necessary:
-cmake
-make
-g++
-libx11-dev
-libxi-dev
-libgl1-mesa-dev
-libglu1-mesa-dev
-libxrandr-dev
-libxext-dev
+- cmake
+- make
+- g++ 
+- libx11-dev
+- libxi-dev
+- libgl1-mesa-dev
+- libglu1-mesa-dev
+- libxrandr-dev
+- libxext-dev
 
 
