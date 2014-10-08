@@ -14,7 +14,7 @@ enum Senses {
   Glitter
 };
 
-enum Action {
+enum Action : short {
   TurnLeft,
   TurnRight,
   Forward,

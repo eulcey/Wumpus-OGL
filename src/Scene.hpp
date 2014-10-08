@@ -20,6 +20,8 @@ class Arrow;
 class AgentLogic;
 class LevelLogic;
 
+enum Action : short;
+
 const float NEXT_STEP_BUTTON_X = 1.94f;
 const float NEXT_STEP_BUTTON_Y = -2.48f;
 const float NEXT_STEP_BUTTON_R = 0.32f;
@@ -95,6 +97,8 @@ private:
   // !!!!!
   LevelLogic *levelLogic;
   AgentLogic *ai;
+
+  Action nextAction;
 
   bool running = true;
   // Sensordata

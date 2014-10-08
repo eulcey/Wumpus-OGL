@@ -147,9 +147,39 @@ bool Scene::load(const std::string &file)
 
   displayText.push_back("POINTS: ");
   displayText.push_back("");
-  displayText.push_back("LAST ACTION: ");
+  displayText.push_back("NEXT ACTION: ");
   displayText.push_back("");
-   
+
+  std::vector<Senses> senses = levelLogic->getSensorData();
+  // input to agentlogic
+  ai->inputNewSenses(std::set<Senses>(senses.begin(), senses.end()));
+  // ask agentlogic for new action
+  nextAction = ai->getNextAction();
+  
+  std::string actionSt = "";
+  if(nextAction == Forward)
+    actionSt = "FORWARD";
+  if(nextAction == TurnLeft)
+    actionSt = "TURNLEFT";
+  if(nextAction == TurnRight)
+    actionSt = "TURNRIGHT";
+  if(nextAction == Grab)
+    actionSt = "GRAB";
+  if(nextAction == Shoot)
+    actionSt = "SHOOT";
+  if(nextAction == Leave)
+    actionSt = "LEAVE";
+  
+  displayText[3] = actionSt;
+  // ask levelLogic if action is possible, and update it if it's possible
+  
+  
+  Vector2i agentPos = levelLogic->getAgentPos();
+  agent->setPosition(gridToPos(agentPos.x), -gridToPos(agentPos.y));
+  
+  int points = levelLogic->getPoints();
+  displayText[1] = std::to_string(points);
+
   return true;
 }
 
@@ -252,12 +282,41 @@ void Scene::clickCursor()
 void Scene::nextStep()
 {
   if(running) {
+     bool actionWasSuccessful = levelLogic->isActionPossible(nextAction);
+    if(nextAction == TurnLeft && actionWasSuccessful) {
+      agent->rotate90Left();
+    }
+    else if(nextAction == TurnRight && actionWasSuccessful) {
+      agent->rotate90Right();
+    }
+    else if(nextAction == Shoot && actionWasSuccessful) {
+      wumpus->unlink(*worldTransform);
+      animateArrowShot();
+    }
+    else if(nextAction == Grab && actionWasSuccessful) {
+      treasure->unlink(*worldTransform);
+    }
+    else if(nextAction == Leave && actionWasSuccessful) {
+      //running = false;
+    }
+
+    if(levelLogic->isLevelFinished()) {
+      running = false;
+      if(levelLogic->isAgentDead()) {
+      } else {
+        addTextToDisplay("GAME OVER");
+        addTextToDisplay("PRESS RESET");
+      }
+    }
+
+    // tell agent if action was successful
+    ai->actionSucceeded(nextAction, actionWasSuccessful);
     // ask levellogic
     std::vector<Senses> senses = levelLogic->getSensorData();
     // input to agentlogic
     ai->inputNewSenses(std::set<Senses>(senses.begin(), senses.end()));
     // ask agentlogic for new action
-    Action nextAction = ai->getNextAction();
+    nextAction = ai->getNextAction();
 
     std::string actionSt = "";
     if(nextAction == Forward)
@@ -275,34 +334,7 @@ void Scene::nextStep()
     
     displayText[3] = actionSt;
     // ask levelLogic if action is possible, and update it if it's possible
-    bool actionWasSuccessful = levelLogic->isActionPossible(nextAction);
-    if(nextAction == TurnLeft && actionWasSuccessful) {
-      agent->rotate90Left();
-    }
-    else if(nextAction == TurnRight && actionWasSuccessful) {
-      agent->rotate90Right();
-    }
-    else if(nextAction == Shoot && actionWasSuccessful) {
-      wumpus->unlink(*worldTransform);
-      animateArrowShot();
-    }
-    else if(nextAction == Grab && actionWasSuccessful) {
-      treasure->unlink(*worldTransform);
-    }
-    else if(nextAction == Leave && actionWasSuccessful) {
-      running = false;
-    }
-    else if(levelLogic->isLevelFinished()) {
-      running = false;
-      if(levelLogic->isAgentDead()) {
-      } else {
-        addTextToDisplay("GAME OVER");
-        addTextToDisplay("PRESS RESET");
-      }
-    }
-
-    // tell agent if action was successful
-    ai->actionSucceeded(nextAction, actionWasSuccessful);
+   
 
     Vector2i agentPos = levelLogic->getAgentPos();
     agent->setPosition(gridToPos(agentPos.x), -gridToPos(agentPos.y));
