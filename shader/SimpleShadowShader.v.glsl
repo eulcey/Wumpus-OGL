@@ -22,7 +22,8 @@ void main(){
 
 	// Output position of the vertex, in clip space : MVP * position
 	mat4 MVP = ProjMatrix * ViewMatrix * ModelMatrix;
-	gl_Position =  MVP * vec4(vertexPosition_modelspace,1);
+	//gl_Position =  MVP * vec4(vertexPosition_modelspace,1);
+	gl_Position = depthBiasMVP * vec4(vertexPosition_modelspace,1);
 	
 	ShadowCoord = depthBiasMVP * vec4(vertexPosition_modelspace,1);
 	

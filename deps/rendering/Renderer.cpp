@@ -42,6 +42,11 @@ bool Renderer::visit(CameraNode& cNode)
     context.setView(view);
     context.setProjection(cNode.getProjection());
     //context.setCameraPosition(cNode.getPosition());
+    const std::vector<float> viewValues = matrixStack.top().getValues();
+    float xPos = viewValues[12];
+    float yPos = viewValues[13];
+    float zPos = viewValues[14];
+    context.setCameraPosition(Vector3(xPos, yPos, zPos));
   }
   //std::cout << "rendering camera" << std::endl;
   return true;

@@ -5,7 +5,8 @@ in vec2 UV;
 in vec4 ShadowCoord;
 
 // Ouput data
-layout(location = 0) out vec3 color;
+//layout(location = 0) out vec3 color;
+layout(location = 0) out float fragmentdepth;
 
 // Values that stay constant for the whole mesh.
 uniform sampler2D myTextureSampler;
@@ -21,7 +22,7 @@ void main(){
 
 	float visibility = texture( shadowMap, vec3(ShadowCoord.xy, (ShadowCoord.z)/ShadowCoord.w));
 
-	color = visibility * MaterialDiffuseColor * LightColor;
+	vec3 color = visibility * MaterialDiffuseColor * LightColor;
 
 	if(visibility > 0)
 		color = vec3(1, 0, 0);
@@ -29,4 +30,6 @@ void main(){
 		color = vec3(0, 1, 0);
 	if(visibility == 0)
 		color = vec3(0, 0, 1);
+
+	fragmentdepth = gl_FragCoord.z;
 }

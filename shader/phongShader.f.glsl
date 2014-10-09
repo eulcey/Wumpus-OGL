@@ -37,13 +37,15 @@ void main() {
     diffuseColor = vec4(gDirectionalLight.color, 1.0f) * gDirectionalLight.diffuseIntensity * diffuseFactor;
 
     vec3 vertexToEye = normalize(gEyeWorldPos - worldPos0);
-    vec3 lightReflect = normalize(reflect(gDirectionalLight.direction, normal));
-    float specularFactor = dot(vertexToEye, lightReflect);
+    vec3 lightReflect = reflect(normalize(gDirectionalLight.direction), normal);
+    float specularFactor = clamp(dot(lightReflect, vertexToEye), 0, 1);
+    
     specularFactor = pow(specularFactor, gSpecularPower);
     if(specularFactor > 0.0) {
       specularColor = vec4(gDirectionalLight.color, 1.0f) * gSpecularIntensity * specularFactor;
     }
   }
-
+  
   color = texture2D(myTextureSampler, UV.xy) * (ambientColor + diffuseColor + specularColor);
+ //  color = texture2D(myTextureSampler, UV.xy) * specularColor;
 }
