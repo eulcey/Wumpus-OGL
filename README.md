@@ -2,25 +2,31 @@ Wumpus-OGL
 ==========
 
 A Wumpus AI in OpenGL
+-------
 
 This is an Implementation of the Wumpus world
-with an agent ai.
+with an agent ai and a 3D environment.
 
 The agent seeks the treasure and the wumpus,
 and after grabbing the treasure and killing the wumpus returns
 to its starting position to leave the world.
 
-# Controls
-f     - activate/deactivate mouse look / cursor
+Keyboard Controls
+-------
 
-l     - reset camera position
+[f]   - Activate/deactivate mouse look / cursor
+
+[l]   - Reset camera position
 
 [ESC] - Exit program
 
-# Command line arguments
+Command line arguments
+-------
+
 wumpus_ogl "path/to/worldfile" - loads a custom world
 
-# Creating Worlds
+Creating worlds
+-------
 
 Worlds are organized with JSON text files.
 Exemplary worlds are in ./saved_worlds.
@@ -31,22 +37,9 @@ In a world save there has to be:
 * one treasure position
 * variable count of pit positions
 
-==========
+Required tools and libraries
+-------
 
-# Used Libraries
-
-For Texture loading LodePNG is used and included: http://lodev.org/lodepng/
-
-Additionally is the JSON Format used for World loading http://json.org/
-For that the JsonCpp library is used and included
-
-
-It uses GLFW3 and glew as Submodules from:
-https://github.com/glfw/glfw
-https://github.com/omniavinco/glew-cmake
-
-
-Other tools and libs which are necessary:
 - cmake
 - make
 - g++ 
@@ -57,4 +50,15 @@ Other tools and libs which are necessary:
 - libxrandr-dev
 - libxext-dev
 
+Other used libraries
+-------
 
+For texture loading [LodePNG](http://lodev.org/lodepng/) is used and included.
+
+Additionally is the [JSON Format](http://json.org/) used for world loading.
+For that the amalgamated version of [JsonCpp](https://github.com/open-source-parsers/jsoncpp) library is used and included.
+
+
+It uses GLFW3 and glew as Submodules from:
+https://github.com/glfw/glfw
+https://github.com/omniavinco/glew-cmake
