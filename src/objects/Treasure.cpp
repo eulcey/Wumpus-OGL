@@ -23,8 +23,8 @@ Treasure::Treasure(float xPos, float zPos): GameObject("Treasure", xPos, zPos)
   delete scale;
   scale = new TransformNode("Treasure Scale", matc::scale(Matrix4x4(), 2.5f, 2.5f, 2.5f));
   scale->addChild(model);
-  material->specularIntensity = 0.9f;
-  material->specularPower = 32.0f;
+  material->specularIntensity = 1.0f;
+  material->specularPower = 4.0f;
 }
 
 Treasure::~Treasure()
