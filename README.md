@@ -59,6 +59,4 @@ Additionally is the [JSON Format](http://json.org/) used for world loading.
 For that the amalgamated version of [JsonCpp](https://github.com/open-source-parsers/jsoncpp) library is used and included.
 
 
-It uses GLFW3 and glew as Submodules from:
-https://github.com/glfw/glfw
-https://github.com/omniavinco/glew-cmake
+It uses [GLFW3](https://github.com/glfw/glfw) and [glew](https://github.com/omniavinco/glew-cmake) as Submodules.
