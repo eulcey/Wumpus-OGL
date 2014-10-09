@@ -12,7 +12,7 @@ public:
 
   virtual bool release();
   
-  bool isAlive();
+  bool isAlive() { return alive; }
   bool collidesWithWall(float xPos, float zPos);
   void shoot();
 

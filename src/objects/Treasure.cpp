@@ -24,6 +24,7 @@ Treasure::Treasure(float xPos, float zPos): GameObject("Treasure", xPos, zPos)
   scale = new TransformNode("Treasure Scale", matc::scale(Matrix4x4(), 2.5f, 2.5f, 2.5f));
   scale->addChild(model);
   material->specularIntensity = 0.9f;
+  material->specularPower = 32.0f;
 }
 
 Treasure::~Treasure()

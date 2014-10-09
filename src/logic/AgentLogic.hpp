@@ -64,6 +64,8 @@ public:
   matc::Vector2i getTreasurePos();
 
 private:
+  std::set<matc::Vector2i> stenchRooms;
+  std::set<matc::Vector2i> breezeRooms;
   // temp saving for visited places
   std::set<matc::Vector2i> completed;
 

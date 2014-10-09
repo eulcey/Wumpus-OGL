@@ -25,12 +25,8 @@ void AgentLogic::inputNewSenses(const std::set<Senses> &newSenses)
   if(pGlitter != newSenses.end()) {
     treasureRoom = new Vector2i(pos);
   }
-  auto pBreeze = newSenses.find(Breeze);
-  std::set<Vector2i> save;/* = {Vector2i(position) + Vector2i(0,1),
-				   Vector2i(position) + Vector2i(0,-1),
-				   Vector2i(position) + Vector2i(1,0),
-				   Vector2i(position) + Vector2i(-1,0) };
-			  */
+
+  std::set<Vector2i> save;
   Vector2i north = position + Vector2i(0,1);
   Vector2i south = position + Vector2i(0,-1);
   Vector2i east = position + Vector2i(1,0);
@@ -43,6 +39,7 @@ void AgentLogic::inputNewSenses(const std::set<Senses> &newSenses)
   
   auto pStench = newSenses.find(Stench);
   if(pStench != newSenses.end()) {
+    stenchRooms.insert(Vector2i(pos));
     if(wumpusGuesses.size() != 0) {
       std::set<Vector2i> newWumpus;
       for(auto itWumpus = wumpusGuesses.begin(); itWumpus != wumpusGuesses.end(); itWumpus++) {
@@ -77,7 +74,6 @@ void AgentLogic::inputNewSenses(const std::set<Senses> &newSenses)
   for(auto itVisited = completed.begin(); itVisited != completed.end(); itVisited++) {
     auto itSave = save.find(*itVisited);
     if(itSave != save.end()) {
-      // Vector2i already = Vector2i(*itSave);
       save.erase(itSave);
     }
   }
@@ -88,8 +84,10 @@ void AgentLogic::inputNewSenses(const std::set<Senses> &newSenses)
       save.erase(itSave);
     }
   }
-  
+ 
+  auto pBreeze = newSenses.find(Breeze);
   if(pBreeze != newSenses.end()) {
+    breezeRooms.insert(Vector2i(pos));
     pitGuesses.push_back(std::set<Vector2i>(save.begin(), save.end()));
     save.clear();
   } else {
@@ -343,6 +341,23 @@ std::set<Vector2i> AgentLogic::getNeighbours(Vector2i room)
 std::set<Vector2i> AgentLogic::getSaveRooms()
 {
   std::set<Vector2i> save;
+  for(auto it = saveRooms.begin(); it != saveRooms.end(); it++) {
+    Vector2i res = Vector2i(*it);
+    auto itBorder = borderRooms.find(res);
+    if(itBorder == borderRooms.end()) {
+      save.insert(res);
+    }
+  }
+
+  for(auto it = wumpusGuesses.begin(); it != wumpusGuesses.end(); it++) {
+    Vector2i res = Vector2i(*it);
+    save.erase(res);
+  } 
+
+  for(auto it = completed.begin(); it != completed.end(); it++) {
+    Vector2i res = Vector2i(*it);
+    save.insert(res);
+  }
 
   return save;
 }
@@ -352,7 +367,7 @@ std::set<Vector2i> AgentLogic::getStenchPositions()
   std::set<Vector2i> stenches;
   
   if(!wumpusDead) { // only stenches if Wumpus still alive
-    
+    stenches.insert(stenchRooms.begin(), stenchRooms.end());
   }
   
   return stenches;
@@ -361,6 +376,8 @@ std::set<Vector2i> AgentLogic::getStenchPositions()
 std::set<Vector2i> AgentLogic::getBreezePositions()
 {
   std::set<Vector2i> breezes;
+
+  breezes.insert(breezeRooms.begin(), breezeRooms.end());
 
   return breezes;
 }

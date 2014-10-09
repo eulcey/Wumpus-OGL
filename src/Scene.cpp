@@ -38,9 +38,9 @@ Scene::Scene(int width, int height, UserInput *user):
 
   camera.link(*root);
   light = new LightNode("Light 1", DirectionLight);
-  light->ambientIntensity = 0.6f;
+  light->ambientIntensity = 0.3f;
   light->diffuseIntensity = 0.7f;
-  light->direction = Vector3(0, -3.0, -1.0);
+  light->direction = Vector3(0, -2.0, -1.0);
   root->addChild(light);
 
   cursor = new Cursor();
