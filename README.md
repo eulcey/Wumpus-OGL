@@ -37,11 +37,15 @@ In a world save there has to be:
 * one treasure position
 * variable count of pit positions
 
-Required tools and libraries
+Building on Linux
 -------
 
-- cmake
+Required tools
+
+- CMake
 - make
+- 
+Required libraries
 - g++ 
 - libx11-dev
 - libxi-dev
@@ -50,6 +54,14 @@ Required tools and libraries
 - libxrandr-dev
 - libxext-dev
 
+Building on Windows
+-------
+
+Required tools
+
+- MinGW-w64
+- CMake
+
 Other used libraries
 -------
 
@@ -57,6 +69,5 @@ For texture loading [LodePNG](http://lodev.org/lodepng/) is used and included.
 
 Additionally is the [JSON Format](http://json.org/) used for world loading.
 For that the amalgamated version of [JsonCpp](https://github.com/open-source-parsers/jsoncpp) library is used and included.
-
 
 It uses [GLFW3](https://github.com/glfw/glfw) and [glew](https://github.com/omniavinco/glew-cmake) as Submodules.
