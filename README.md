@@ -44,7 +44,7 @@ Required tools
 
 - CMake
 - make
-- 
+
 Required libraries
 - g++ 
 - libx11-dev
