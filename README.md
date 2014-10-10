@@ -12,7 +12,8 @@ and after grabbing the treasure and killing the wumpus returns
 to its starting position to leave the world.
 
 ### OpenGL Version
-OpenGL version 3.3 is needed at least
+OpenGL version 3.3 is needed at least.
+
 The Shaders are also written for GLSL version 330 core.
 
 Keyboard Controls
