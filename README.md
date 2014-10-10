@@ -44,9 +44,9 @@ Required tools
 
 - CMake
 - make
+- g++ 
 
 Required libraries
-- g++ 
 - libx11-dev
 - libxi-dev
 - libgl1-mesa-dev
