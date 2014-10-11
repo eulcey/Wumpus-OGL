@@ -59,6 +59,11 @@ Required libraries
 - libxrandr-dev
 - libxext-dev
 
+On Ubuntu
+- xcursor-dev
+- libxcursor-dev
+might also be needed
+
 Building on Windows
 -------
 
@@ -66,6 +71,11 @@ Required tools
 
 - MinGW-w64
 - CMake
+
+ES Shader
+-------
+
+To use the es shaders instead of the core shaders, change the option with ccmake/cmake-gui.
 
 Other used libraries
 -------
