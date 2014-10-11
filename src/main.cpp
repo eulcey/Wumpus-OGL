@@ -10,8 +10,8 @@
 using namespace matc;
 using namespace std;
 
-const int target_width = 1200;
-const int target_height = 1024;
+const int target_width = 820; // 1200
+const int target_height = 700; // 1024
 const float mouseSpeed = 0.0005;
 const float speed = 0.01;
 
@@ -24,8 +24,8 @@ int main(int argc, char** argv)
   UserInput user;
   OGLRenderEngine engine(target_width, target_height, "Wumpus-OGL", &user);
   Vector2i win_size = engine.getRealWindowSize();
-  int screen_width = win_size.x;
-  int screen_height = win_size.y;
+  int screen_width = target_width;//win_size.x;
+  int screen_height = target_height;//win_size.y;
   Scene scene(screen_width, screen_height, &user);
   
   std::string filepath;

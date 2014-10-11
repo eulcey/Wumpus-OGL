@@ -46,11 +46,17 @@ Scene::Scene(int width, int height, UserInput *user):
   cursor = new Cursor();
   hud = new Hud(this);
   hud_text = new Hud_Text(this);
+  hud_percepts = new Hud_Text(this);
+  
+  hud_percepts->position->setTransform(translate(Matrix4x4(), Vector3(-2.1f, -2.8f, -6)));
+  hud_percepts->scale->setTransform(matc::scale(Matrix4x4(), 1.5f, 0.5f, 1.0f));
+
   //cursor->link(*camera.getTransform());
   lastTime = glfwGetTime();
 
   hud->linkToCamera(*camera.getTransform());
   hud_text->linkToCamera(*camera.getTransform());
+  hud_percepts->linkToCamera(*camera.getTransform());
 
   // init text renderer
   /*
@@ -149,6 +155,14 @@ bool Scene::load(const std::string &file)
   displayText.push_back("");
   displayText.push_back("NEXT ACTION: ");
   displayText.push_back("");
+
+
+  perceptText.push_back("STENCH FOUND IN:");
+  perceptText.push_back("");
+  perceptText.push_back("BREEZE FOUND IN");
+  perceptText.push_back("");
+  perceptText.push_back("SAVE ROOMS:");
+  perceptText.push_back("");
 
   std::vector<Senses> senses = levelLogic->getSensorData();
   // input to agentlogic
@@ -262,11 +276,18 @@ void Scene::update(float deltaTime)
   for(size_t i = 0; i < displayText.size(); i++) { 
     printText2D(displayText[i], textPosX, textPosY /*TEXT_POS_X, TEXT_POS_Y*/ - (1.5*TEXT_SIZE)*i, TEXT_SIZE);
   }
+  int perceptPosX = 12;
+  int perceptPosY = 200;
+  for(size_t i = 0; i < perceptText.size(); i++) {
+    printText2D(perceptText[i], perceptPosX, perceptPosY - (1.1*TEXT_SIZE)*i, TEXT_SIZE);
+  }
+  //cursor->drawCursor();
 }
 
 void Scene::clickCursor()
 {
   Vector3 cursorPos = cursor->getPosition();
+  std::cout << "click cursor: " << cursorPos << std::endl;
   float x_diff = cursorPos.x - NEXT_STEP_BUTTON_X;
   float y_diff = cursorPos.y - NEXT_STEP_BUTTON_Y;
   float distance = sqrt(x_diff * x_diff + y_diff * y_diff);
@@ -360,6 +381,7 @@ void Scene::resetScene() {
   treasure->unlink(*worldTransform);
   agent->unlink(*worldTransform);
   displayText.clear();
+  perceptText.clear();
   if(arrowShot) {
     arrow->unlink(*newArrowPos);
     worldTransform->removeChild(*newArrowPos);
@@ -395,28 +417,42 @@ void Scene::outputAgentPercepts()
   auto save = ai->getSaveRooms();
   auto stenches = ai->getStenchPositions();
   auto breezes = ai->getBreezePositions();
-  auto treasurePos = ai->getTreasurePos();
+  // auto treasurePos = ai->getTreasurePos();
 
-  std::cout << "Save Rooms:" << std::endl;
+  std::string saveString = "  ";
+  //std::cout << "Save Rooms:" << std::endl;
   for(auto it  = save.begin(); it != save.end(); it++) {
     Vector2i output = Vector2i(*it);
-    std::cout << output << std::endl;
+    //std::cout << output << std::endl;
+    saveString += "[" + std::to_string(output.x) + ", " + std::to_string(output.y) + "]";
+    saveString += " ";
   }
+  perceptText[5] = saveString;
 
-  std::cout << "Stenches found:" << std::endl;
+  std::string stenchString = "  ";
+  //std::cout << "Stenches found:" << std::endl;
   for(auto it  = stenches.begin(); it != stenches.end(); it++) {
     Vector2i output = Vector2i(*it);
-    std::cout << output << std::endl;
+    // std::cout << output << std::endl;
+    stenchString += "[" + std::to_string(output.x) + ", " + std::to_string(output.y) + "]";
+    stenchString += " ";
   }
+  perceptText[1] = stenchString;
 
-  std::cout << "Breezes found:" << std::endl;
+  std::string breezeString = "  ";
+  //std::cout << "Breezes found:" << std::endl;
   for(auto it  = breezes.begin(); it != breezes.end(); it++) {
     Vector2i output = Vector2i(*it);
-    std::cout << output << std::endl;
+    //std::cout << output << std::endl;
+    breezeString += "[" + std::to_string(output.x) + ", " + std::to_string(output.y) + "]";
+    breezeString += " ";
   }
+  perceptText[3] = breezeString;
 
+  /*
   std::cout << "Treasure Room:" << std::endl;
   if(treasurePos != Vector2i(-1, -1)) {
     std::cout << treasurePos << std::endl;
   }
+  */
 }

@@ -24,7 +24,7 @@ enum Action : short;
 
 const float NEXT_STEP_BUTTON_X = 1.94f;
 const float NEXT_STEP_BUTTON_Y = -2.48f;
-const float NEXT_STEP_BUTTON_R = 0.32f;
+const float NEXT_STEP_BUTTON_R =  0.32f;
 
 const float RESET_BUTTON_X = 2.97f;
 const float RESET_BUTTON_Y = -1.54f;
@@ -90,6 +90,7 @@ private:
 
   Hud *hud = 0;
   Hud_Text *hud_text = 0;
+  Hud_Text *hud_percepts = 0;
 
   //test
   float lastTime;
@@ -109,6 +110,7 @@ private:
 
   void addTextToDisplay(std::string text);
   std::vector<std::string> displayText;
+  std::vector<std::string> perceptText;
 
   void outputAgentPercepts();
 };

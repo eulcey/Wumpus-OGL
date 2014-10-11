@@ -18,11 +18,12 @@ public:
   bool displayText(std::string line);
   bool linkToCamera(SceneNode& node);
 
-private:
-  Scene *scene = 0;
+  
   TransformNode *scale = 0;
   TransformNode *position = 0;
-  MaterialNode *material = 0;
+
+private:
+  Scene *scene = 0;  MaterialNode *material = 0;
   ModelNode *model = 0;
 };
 #endif

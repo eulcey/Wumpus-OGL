@@ -11,7 +11,7 @@ class CameraNode;
 
 const double MOUSE_SPEED = 0.00005;
 const double MOVE_SPEED = 0.05;
-const matc::Vector3 startPosition(20.0, 85.0, 50.0);
+const matc::Vector3 startPosition(10.0, 75.0, 70.0);
 const float START_HORIZONTAL_ANGLE = 3.14f*1.12;
 const float START_VERTICAL_ANGLE = -3.14f/3;
 

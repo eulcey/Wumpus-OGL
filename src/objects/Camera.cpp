@@ -107,7 +107,10 @@ void Camera::update(float deltaTime)
   //Vector3 posChange = direction * deltaTime * MOVE_SPEED;
   Matrix4x4 oldPosition = Matrix4x4(position->getTransform());
   float actualYChange = 0;
-  if (mouseLookEnabled) actualYChange = posChange.y; // not actual desired movement if mouselook=false
+  if (mouseLookEnabled){ // not actual desired movement if mouselook=false
+    if(posChange.y > 0 || oldPosition.asArray()[13] > 23) // no lower than 23, to prevent clipping hud with world
+      actualYChange = posChange.y;
+  }
   Matrix4x4 newPosition = translate(oldPosition, Vector3(posChange.x, actualYChange, posChange.z));
   position->setTransform(newPosition);
 }
