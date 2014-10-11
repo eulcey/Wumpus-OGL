@@ -37,7 +37,7 @@ Worlds are organized with JSON text files.
 Exemplary worlds are in ./saved_worlds.
 
 In a world save there has to be:
-* one agent start position
+* one agent start position (has to be on (1,1) at the moment)
 * one wumpus position
 * one treasure position
 * variable count of pit positions
@@ -80,9 +80,11 @@ To use the es shaders instead of the core shaders, change the option with ccmake
 Other used libraries
 -------
 
+It uses [GLFW3](https://github.com/glfw/glfw) and [glew](https://github.com/omniavinco/glew-cmake) as Submodules.
+
+
+
 For texture loading [LodePNG](http://lodev.org/lodepng/) is used and included.
 
 Additionally is the [JSON Format](http://json.org/) used for world loading.
 For that the amalgamated version of [JsonCpp](https://github.com/open-source-parsers/jsoncpp) library is used and included.
-
-It uses [GLFW3](https://github.com/glfw/glfw) and [glew](https://github.com/omniavinco/glew-cmake) as Submodules.
