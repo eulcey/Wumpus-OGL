@@ -4,6 +4,8 @@
 #include "GameObject.hpp"
 #include "MathCore.hpp"
 
+class Spring;
+
 class Arrow: public GameObject
 {
 public:
@@ -12,12 +14,15 @@ public:
 
   virtual bool release();
   
-  bool isAlive() { return alive; }
+  bool isAlive();
   bool collidesWithWall(float xPos, float zPos);
-  void shoot();
+  void shoot(matc::Matrix4x4 pose);
+
+  void hide();
 
 private:
-  bool alive = false;
+  bool alive = true;
+  Spring *spring = 0;
 };
 
 #endif

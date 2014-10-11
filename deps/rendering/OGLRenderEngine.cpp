@@ -392,7 +392,7 @@ bool OGLRenderEngine::init(int width, int height, std::string title, UserInput* 
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 1);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-  //glfwWindowHint(GLFW_DECORATED, GL_FALSE);
+  glfwWindowHint(GLFW_DECORATED, GL_FALSE);
   //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_ANY_PROFILE); 
  
@@ -409,13 +409,13 @@ bool OGLRenderEngine::init(int width, int height, std::string title, UserInput* 
     std::cerr << "Failed to init GLEW" << std::endl;
     return false;
   }
-
+  /*
   GLint major;
   GLint minor;
   glGetIntegerv(GL_MAJOR_VERSION, &major);
   glGetIntegerv(GL_MINOR_VERSION, &minor);
   std::cout << "major: " << major << ", minor: " << minor << std::endl;
-  
+  */
   glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
   glEnable(GL_DEPTH_TEST);

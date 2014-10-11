@@ -14,6 +14,8 @@ public:
   virtual bool accept(NodeVisitor& visitor);
   virtual void update(float deltaTime);
 
+  float percentToEnd();
+
   bool isMoving = true;
 
 private:

@@ -282,12 +282,14 @@ void Scene::update(float deltaTime)
     printText2D(perceptText[i], perceptPosX, perceptPosY - (1.1*TEXT_SIZE)*i, TEXT_SIZE-1);
   }
   //cursor->drawCursor();
+  if(!arrow->isAlive()) {
+    newArrowPos->setTransform(translate(Matrix4x4(), Vector3(100, 100, 100)));
+  }
 }
 
 void Scene::clickCursor()
 {
   Vector3 cursorPos = cursor->getPosition();
-  std::cout << "click cursor: " << cursorPos << std::endl;
   float x_diff = cursorPos.x - NEXT_STEP_BUTTON_X;
   float y_diff = cursorPos.y - NEXT_STEP_BUTTON_Y;
   float distance = sqrt(x_diff * x_diff + y_diff * y_diff);
@@ -383,7 +385,6 @@ void Scene::resetScene() {
   displayText.clear();
   perceptText.clear();
   if(arrowShot) {
-    arrow->unlink(*newArrowPos);
     worldTransform->removeChild(*newArrowPos);
     delete newArrowPos;
     arrowShot = false;
@@ -408,7 +409,7 @@ void Scene::animateArrowShot()
 							     arrow->getPosition() + agent->getPosition()));
     worldTransform->addChild(newArrowPos);
     arrow->link(*newArrowPos);
-    arrow->shoot();
+    arrow->shoot(agent->getPose()->getTransform());
   }
 }
 
