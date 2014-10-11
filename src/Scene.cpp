@@ -28,7 +28,7 @@
 using namespace matc;
 
 Scene::Scene(int width, int height, UserInput *user):
-  width(width), height(height), user(user), camera(Camera("SceneCamera", width, height)) //camera2(Camera("SceneCamera2", width, height))
+  width(width), height(height), user(user), camera(Camera("SceneCamera", width, height)) 
 {
   user->setWindowSizeAction([&] (int width, int height) {
       this->applyWindowSizeChange(Vector2i(width, height));
@@ -48,10 +48,9 @@ Scene::Scene(int width, int height, UserInput *user):
   hud_text = new Hud_Text(this);
   hud_percepts = new Hud_Text(this);
   
-  hud_percepts->position->setTransform(translate(Matrix4x4(), Vector3(-2.1f, -2.8f, -6)));
+  hud_percepts->position->setTransform(translate(Matrix4x4(), Vector3(-2.0f, -2.6f, -6)));
   hud_percepts->scale->setTransform(matc::scale(Matrix4x4(), 1.5f, 0.5f, 1.0f));
 
-  //cursor->link(*camera.getTransform());
   lastTime = glfwGetTime();
 
   hud->linkToCamera(*camera.getTransform());
@@ -162,6 +161,7 @@ bool Scene::load(const std::string &file)
   perceptText.push_back("BREEZE FOUND IN");
   perceptText.push_back("");
   perceptText.push_back("SAVE ROOMS:");
+  perceptText.push_back("");
   perceptText.push_back("");
 
   std::vector<Senses> senses = levelLogic->getSensorData();
@@ -277,9 +277,9 @@ void Scene::update(float deltaTime)
     printText2D(displayText[i], textPosX, textPosY /*TEXT_POS_X, TEXT_POS_Y*/ - (1.5*TEXT_SIZE)*i, TEXT_SIZE);
   }
   int perceptPosX = 12;
-  int perceptPosY = 200;
+  int perceptPosY = 115;
   for(size_t i = 0; i < perceptText.size(); i++) {
-    printText2D(perceptText[i], perceptPosX, perceptPosY - (1.1*TEXT_SIZE)*i, TEXT_SIZE);
+    printText2D(perceptText[i], perceptPosX, perceptPosY - (1.1*TEXT_SIZE)*i, TEXT_SIZE-1);
   }
   //cursor->drawCursor();
 }
@@ -419,32 +419,37 @@ void Scene::outputAgentPercepts()
   auto breezes = ai->getBreezePositions();
   // auto treasurePos = ai->getTreasurePos();
 
-  std::string saveString = "  ";
+  std::string saveString = "";
   //std::cout << "Save Rooms:" << std::endl;
   for(auto it  = save.begin(); it != save.end(); it++) {
     Vector2i output = Vector2i(*it);
     //std::cout << output << std::endl;
-    saveString += "[" + std::to_string(output.x) + ", " + std::to_string(output.y) + "]";
+    saveString += "[" + std::to_string(output.x) + "," + std::to_string(output.y) + "]";
     saveString += " ";
   }
-  perceptText[5] = saveString;
+  if(saveString.size() > 24) {
+    perceptText[5] = saveString.substr(0, 24);
+    perceptText[6] = saveString.substr(24);
+  } else {
+    perceptText[5] = saveString;
+  }
 
-  std::string stenchString = "  ";
+  std::string stenchString = "";
   //std::cout << "Stenches found:" << std::endl;
   for(auto it  = stenches.begin(); it != stenches.end(); it++) {
     Vector2i output = Vector2i(*it);
     // std::cout << output << std::endl;
-    stenchString += "[" + std::to_string(output.x) + ", " + std::to_string(output.y) + "]";
+    stenchString += "[" + std::to_string(output.x) + "," + std::to_string(output.y) + "]";
     stenchString += " ";
   }
   perceptText[1] = stenchString;
 
-  std::string breezeString = "  ";
+  std::string breezeString = "";
   //std::cout << "Breezes found:" << std::endl;
   for(auto it  = breezes.begin(); it != breezes.end(); it++) {
     Vector2i output = Vector2i(*it);
     //std::cout << output << std::endl;
-    breezeString += "[" + std::to_string(output.x) + ", " + std::to_string(output.y) + "]";
+    breezeString += "[" + std::to_string(output.x) + "," + std::to_string(output.y) + "]";
     breezeString += " ";
   }
   perceptText[3] = breezeString;
