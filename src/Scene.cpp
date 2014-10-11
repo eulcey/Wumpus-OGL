@@ -49,7 +49,7 @@ Scene::Scene(int width, int height, UserInput *user):
   hud_percepts = new Hud_Text(this);
   
   hud_percepts->position->setTransform(translate(Matrix4x4(), Vector3(-2.0f, -2.6f, -6)));
-  hud_percepts->scale->setTransform(matc::scale(Matrix4x4(), 1.5f, 0.5f, 1.0f));
+  hud_percepts->scale->setTransform(matc::scale(Matrix4x4(), 2.3f, 0.5f, 1.0f));
 
   lastTime = glfwGetTime();
 
@@ -418,47 +418,41 @@ void Scene::outputAgentPercepts()
   auto save = ai->getSaveRooms();
   auto stenches = ai->getStenchPositions();
   auto breezes = ai->getBreezePositions();
-  // auto treasurePos = ai->getTreasurePos();
 
   std::string saveString = "";
-  //std::cout << "Save Rooms:" << std::endl;
   for(auto it  = save.begin(); it != save.end(); it++) {
     Vector2i output = Vector2i(*it);
-    //std::cout << output << std::endl;
     saveString += "[" + std::to_string(output.x) + "," + std::to_string(output.y) + "]";
     saveString += " ";
   }
-  if(saveString.size() > 24) {
-    perceptText[5] = saveString.substr(0, 24);
-    perceptText[6] = saveString.substr(24);
+  if(saveString.size() > 30) {
+    perceptText[5] = saveString.substr(0, 30);
+    if(saveString.size() > 60) {
+      perceptText[6] = saveString.substr(30, 30);
+    } else {  
+      perceptText[6] = saveString.substr(30);
+    }
   } else {
     perceptText[5] = saveString;
   }
 
   std::string stenchString = "";
-  //std::cout << "Stenches found:" << std::endl;
   for(auto it  = stenches.begin(); it != stenches.end(); it++) {
     Vector2i output = Vector2i(*it);
-    // std::cout << output << std::endl;
     stenchString += "[" + std::to_string(output.x) + "," + std::to_string(output.y) + "]";
     stenchString += " ";
   }
-  perceptText[1] = stenchString;
+
 
   std::string breezeString = "";
-  //std::cout << "Breezes found:" << std::endl;
   for(auto it  = breezes.begin(); it != breezes.end(); it++) {
     Vector2i output = Vector2i(*it);
-    //std::cout << output << std::endl;
     breezeString += "[" + std::to_string(output.x) + "," + std::to_string(output.y) + "]";
     breezeString += " ";
   }
-  perceptText[3] = breezeString;
-
-  /*
-  std::cout << "Treasure Room:" << std::endl;
-  if(treasurePos != Vector2i(-1, -1)) {
-    std::cout << treasurePos << std::endl;
+  if(breezeString.size() > 30) {
+    perceptText[1] = breezeString.substr(0, 30);
+  } else {
+    perceptText[1] = breezeString;
   }
-  */
 }

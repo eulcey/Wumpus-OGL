@@ -46,7 +46,7 @@ Matrix4x4 Matrix4x4::operator*(const Matrix4x4 &other) const
    return res;
 }
 
-/*
+
 Vector4 Matrix4x4::operator*(const Vector4 &v) const
 {
   Vector4 res;
@@ -56,13 +56,13 @@ Vector4 Matrix4x4::operator*(const Vector4 &v) const
       float val = 0;
       for(int col = 0; col < MAT_DIM; col++)
 	{
-	  val += this->asArray()[row*MAT_DIM+col]*(*vp)[col];
+	  val += this->asArray()[col*MAT_DIM+row]*(*vp)[col]; // not entirely sure
 	}
       res[row] = val;
     }
   return res;
 }
-*/
+
 
 Matrix4x4 Matrix4x4::transpose() const
 {

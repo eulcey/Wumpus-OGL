@@ -117,7 +117,8 @@ void AgentLogic::inputNewSenses(const std::set<Senses> &newSenses)
 // only shoots at wumpus if neighboured
 Action AgentLogic::getNextAction()
 {
-  if(hasTreasure && wumpusDead) {
+  
+  if((hasTreasure && wumpusDead) || saveRooms.size() <= 0) { // if level completed or no save spots, go to exit
     if(pos == Vector2i(0,0)) {
       return Leave;
     } else {
@@ -138,12 +139,11 @@ Action AgentLogic::getNextAction()
   
   Encounter nextField = testPosition(pos + dir);
   Vector2i next = pos+dir;
-  //std::cout << "nextField " << next << " was = " << nextField << std::endl;
   if(nextField == WumpusEncounter && hasArrow) {
     return Shoot;
   }
 
-  // find svae room without wumpus guess
+  // find save room without wumpus guess
   Vector2i nextSaveRoom;
   for(auto itSave = saveRooms.begin(); itSave != saveRooms.end(); itSave++) {
     auto wumpusGuess = wumpusGuesses.find(*itSave);
@@ -156,9 +156,7 @@ Action AgentLogic::getNextAction()
   }
   // else explore unvisited save rooms
   
-  //std::cout << "Next Save Rooms is: " << nextSaveRoom << std::endl;
   auto nextRoom = getNextToSaveRoom(nextSaveRoom);
-  //std::cout << "Go To Room " << nextRoom << std::endl;
   if (nextRoom == pos) {
     return goToNeighbourRoom(nextSaveRoom);
   } else {
@@ -184,7 +182,6 @@ void AgentLogic::actionSucceeded(Action action, bool wasSuccessfull)
       newX = dir.y * conversion;
       newY = dir.x * conversion;
       dir = Vector2i(newX, newY);
-      //std::cout << "TurnLeft to " << dir << std::endl;
       break;
     case TurnRight:
       conversion = 1;
@@ -192,7 +189,6 @@ void AgentLogic::actionSucceeded(Action action, bool wasSuccessfull)
       newX = dir.y * conversion;
       newY = dir.x * conversion;
       dir = Vector2i(newX, newY);
-      //std::cout << "TurnRight to " << dir << std::endl;
       break;
     case Grab:
       hasTreasure = true;
