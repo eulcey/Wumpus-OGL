@@ -49,6 +49,8 @@ public:
   void update();
   void close();
   bool isRunning();
+
+  matc::Vector2i getRealWindowSize();
 private:
   bool init(int width, int height, std::string title, UserInput* user);
   int width, height;

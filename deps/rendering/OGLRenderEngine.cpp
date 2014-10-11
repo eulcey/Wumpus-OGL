@@ -67,8 +67,8 @@ bool OGLRenderEngine::render(RenderContext& context, ModelNode& model) {
     shaderMap[shader] = programID;
 
     // std::cout << "for shader: " << shader << std::endl;
-    GLuint shadowMapID = glGetUniformLocation(programID, "shadowMap");
-    std::cout << shadowMapID << std::endl;
+    //GLuint shadowMapID = glGetUniformLocation(programID, "shadowMap");
+    //std::cout << shadowMapID << std::endl;
     
     //std::cerr << "No shaderProgram found for model" << std::endl;
     //return false;
@@ -92,7 +92,7 @@ bool OGLRenderEngine::render(RenderContext& context, ModelNode& model) {
   
   if(textureIt == textureMap.end()) {
     std::string texturePath = TEXTURE_PATH + texture + ".png";
-    std::cout << "OGLRENDERER: need to load texture: " << texturePath << std::endl;
+    //    std::cout << "OGLRENDERER: need to load texture: " << texturePath << std::endl;
     textureBuffer = loadPNG(texturePath.c_str());
     if(textureBuffer == -1) {
       std::cerr << "OGLRENDERER Couldn't load file: texturePath" << std::endl;
@@ -556,4 +556,11 @@ bool OGLRenderEngine::renderShadow(RenderContext& context, ModelNode& model)
   glDisableVertexAttribArray(0);
   
   return true;
+}
+
+Vector2i OGLRenderEngine::getRealWindowSize()
+{
+  int width, height;
+  glfwGetWindowSize(window, &width, &height);
+  return Vector2i(width, height);
 }

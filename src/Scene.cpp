@@ -256,8 +256,11 @@ void Scene::update(float deltaTime)
   camera.update(deltaTime);
   root->update(deltaTime);
   // }
+  int textPosX =12;// width*10/height;
+  int textPosY = 560;
+  //  std::cout << "textpos: " << textPosX << ", " << textPosY << std::endl;
   for(size_t i = 0; i < displayText.size(); i++) { 
-    printText2D(displayText[i], TEXT_POS_X, TEXT_POS_Y - (1.5*TEXT_SIZE)*i, TEXT_SIZE);
+    printText2D(displayText[i], textPosX, textPosY /*TEXT_POS_X, TEXT_POS_Y*/ - (1.5*TEXT_SIZE)*i, TEXT_SIZE);
   }
 }
 

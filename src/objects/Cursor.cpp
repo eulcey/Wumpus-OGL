@@ -34,7 +34,9 @@ Cursor::~Cursor()
 void Cursor::translatePosition(float xPos, float yPos)
 {
   Matrix4x4 oldTransform = position->getTransform();
-  position->setTransform(translate(oldTransform, Vector3(xPos * CURSOR_SPEED, -yPos * CURSOR_SPEED, 0)));
+  if(xPos > -50 && xPos < 50 && yPos > -50 && yPos < 50) { // BUG prevention initially values are to high/low
+    position->setTransform(translate(oldTransform, Vector3(xPos * CURSOR_SPEED, -yPos * CURSOR_SPEED, 0)));
+  }
 }
 
 bool Cursor::link(SceneNode &node)

@@ -9,12 +9,13 @@ using namespace matc;
 
 Hud::Hud(Scene *scene): scene(scene)
 {
-  int width = scene->getScreenWidth();
-  int height = scene->getScreenHeight();
-  std::cout << "hud: " << std::endl;
-  std::cout << (width*1.0f)/height << std::endl;
-  std::cout << (height * 1.0f)/width << std::endl;
-  position = new TransformNode("HUD-Position", translate(Matrix4x4(), Vector3(2.5f, -1.9f, -6)));
+  //int width = scene->getScreenWidth();
+  //int height = scene->getScreenHeight();
+  //std::cout << "hud: " << std::endl;
+  float deltaX = 2.5f;//((width*1.0f)/height) * 2.5f; //5.5f;
+  float deltaY = 1.9f;
+  //std::cout << "deltaX: " << deltaX << ", deltaY: " << deltaY << std::endl;
+  position = new TransformNode("HUD-Position", translate(Matrix4x4(), Vector3(deltaX, -deltaY, -6)));
   scale = new TransformNode("HUD-Transform", matc::scale(Matrix4x4(), 1.5f, 1.5f, 1.0f));
   material = new MaterialNode("HUD-Material", "hud", "texturedShader"); //"ambientShader"); //"phongShader"); //
   model = new ModelNode("HUD-Model", "../assets/hud.obj");

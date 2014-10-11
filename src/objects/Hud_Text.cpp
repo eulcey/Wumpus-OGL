@@ -3,12 +3,18 @@
 #include "TransformNode.hpp"
 #include "MaterialNode.hpp"
 #include "ModelNode.hpp"
+#include "Scene.hpp"
 
 using namespace matc;
 
 Hud_Text::Hud_Text(Scene *scene): scene(scene)
 {
-  position = new TransformNode("HUD-Text-Position", translate(Matrix4x4(), Vector3(-2.8f, 2.3f, -6)));
+  // int width = scene->getScreenWidth();
+  //int height = scene->getScreenHeight();
+  float deltaX = -2.8f;// -((width*1.0f)/height); // -2.8f
+  float deltaY = 2.3f; // 2.3f
+  //std::cout << "hudtext: " << deltaX << ", " << deltaY << std::endl;
+  position = new TransformNode("HUD-Text-Position", translate(Matrix4x4(), Vector3(deltaX, deltaY, -6)));
   scale = new TransformNode("HUD-Text-Transform", matc::scale(Matrix4x4(), 0.8f, 0.6f, 1.0f));
   material = new MaterialNode("HUD-Text-Material", "hud_text","texturedShader"); //"ambientShader"); //"phongShader"); // 
   model = new ModelNode("HUD-Text-Model", "../assets/hud_text.obj");
