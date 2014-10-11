@@ -442,6 +442,7 @@ void Scene::outputAgentPercepts()
     stenchString += "[" + std::to_string(output.x) + "," + std::to_string(output.y) + "]";
     stenchString += " ";
   }
+  perceptText[1] = stenchString;
 
 
   std::string breezeString = "";
@@ -451,8 +452,8 @@ void Scene::outputAgentPercepts()
     breezeString += " ";
   }
   if(breezeString.size() > 30) {
-    perceptText[1] = breezeString.substr(0, 30);
+    perceptText[3] = breezeString.substr(0, 30);
   } else {
-    perceptText[1] = breezeString;
+    perceptText[3] = breezeString;
   }
 }
