@@ -343,7 +343,7 @@ bool OGLRenderEngine::initModel(CubeNode& cube)
 {
   std::string name = cube.getName();
   // shader hier laden?
-  GLuint programID = LoadShaders("../shader/SimpleVertexShader.glsl", "../shader/SimpleFragmentShader.glsl");
+  GLuint programID = LoadShaders(SHADER_PATH + "SimpleVertexShader.glsl", SHADER_PATH + "SimpleFragmentShader.glsl");
   shaderMap[name] = programID;
   
   //std::vector<Vector4> verts = cube.getVertices();
@@ -431,7 +431,7 @@ bool OGLRenderEngine::init(int width, int height, std::string title, UserInput* 
 
 bool OGLRenderEngine::shadowInit()
 {
-  depthProgramID = LoadShaders("../shader/DepthRTT.v.glsl", "../shader/DepthRTT.f.glsl");
+  depthProgramID = LoadShaders(SHADER_PATH + "DepthRTT.v.glsl", SHADER_PATH + "DepthRTT.f.glsl");
   depthMatrixID = glGetUniformLocation(depthProgramID, "depthMVP");
   
   framebufferName = 0;

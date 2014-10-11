@@ -5,6 +5,12 @@
 
 #include <vector>
 
+#if(USE_ES_SHADER)
+  #define SHADER_PATH "../es_shader/"
+#else
+  #define SHADER_PATH "../shader/"
+#endif
+
 //using namespace util;
 using namespace matc;
 
@@ -21,8 +27,8 @@ bool initText2D(const std::string &texturePath, const std::string &textShader)
   glGenBuffers(1, &text2DVertexBufferID);
   glGenBuffers(1, &text2DUVBufferID);
 
-  std::string vertexShader = "../shader/" + textShader + ".v.glsl";
-  std::string fragShader = "../shader/" + textShader + ".f.glsl";
+  std::string vertexShader = SHADER_PATH + textShader + ".v.glsl";
+  std::string fragShader = SHADER_PATH + textShader + ".f.glsl";
   text2DShaderID = LoadShaders(vertexShader.c_str(), fragShader.c_str());
 
   text2DUniformID = glGetUniformLocation(text2DShaderID, "myTextureSampler");

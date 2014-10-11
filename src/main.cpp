@@ -4,15 +4,9 @@
 #include "Printer.hpp"
 #include "Renderer.hpp"
 #include "ShadowRenderer.hpp"
-//#include "CubeNode.hpp"
-//#include "ModelNode.hpp"
-//#include "CameraNode.hpp"
 #include "OGLRenderEngine.hpp"
 #include "UserInput.hpp"
 #include "Scene.hpp"
-//#include "Camera.hpp"
-//#include "World.hpp"
-
 using namespace matc;
 using namespace std;
 
@@ -21,8 +15,6 @@ const int target_height = 1024;
 const float mouseSpeed = 0.0005;
 const float speed = 0.01;
 
-//Matrix4x4 computeTranslation(int, double, Vector3&);
-//Matrix4x4 computeView(double, double, float&, float&, double, Vector3);
 
 Vector3 globalDirection;
 Vector3 globalRight;
@@ -30,7 +22,7 @@ Vector3 globalRight;
 int main(int argc, char** argv)
 {
   UserInput user;
-  OGLRenderEngine engine(target_width, target_height, "Wumpuse-OGL", &user);
+  OGLRenderEngine engine(target_width, target_height, "Wumpus-OGL", &user);
   Vector2i win_size = engine.getRealWindowSize();
   int screen_width = win_size.x;
   int screen_height = win_size.y;
