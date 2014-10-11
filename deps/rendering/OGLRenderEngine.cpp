@@ -15,8 +15,13 @@
 
 using namespace matc;
 
-#define SHADER_PATH "../shader/"
 #define TEXTURE_PATH "../assets/"
+
+#if(USE_ES_SHADER)
+  #define SHADER_PATH "../es_shader/"
+#else
+  #define SHADER_PATH "../shader/"
+#endif
 
 OGLRenderEngine::OGLRenderEngine(int width, int height, std::string title, UserInput* user)
 {

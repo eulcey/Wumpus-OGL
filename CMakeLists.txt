@@ -4,6 +4,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Werror" CACHE STRING "
 
 project(wumpus_ogl)
 
+option(USE_ES_SHADER "use es glsl shader instead of core shader" off)
+
 FILE(GLOB SOURCE_FILES src/*.cpp)
 FILE(GLOB GRAPH_FILES deps/scenegraph/*.cpp)
 FILE(GLOB RENDER_FILES deps/rendering/*.cpp)
@@ -59,9 +61,13 @@ include_directories(deps/input)
 include_directories(src/objects)
 include_directories(deps/jsoncpp)
 include_directories(src/logic)
+include_directories(src)
 
 target_link_libraries(
     wumpus_ogl
     ${ALL_LIBS}
 )
 
+if(USE_ES_SHADER)
+  set_target_properties(wumpus_ogl PROPERTIES COMPILE_DEFINITIONS "USE_ES_SHADER=1")
+endif()

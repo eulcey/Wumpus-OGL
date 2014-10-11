@@ -17,7 +17,7 @@ using namespace matc;
 using namespace std;
 
 const int screen_width = 1200;
-const int screen_height = 1024;
+const int screen_height = 800;
 const float mouseSpeed = 0.0005;
 const float speed = 0.01;
 
@@ -29,7 +29,6 @@ Vector3 globalRight;
 
 int main(int argc, char** argv)
 {
-  
   UserInput user;
   Scene scene(screen_width, screen_height, &user);
   OGLRenderEngine engine(screen_width, screen_height, "Wumpuse-OGL", &user);

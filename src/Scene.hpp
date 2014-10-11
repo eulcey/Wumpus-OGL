@@ -59,6 +59,9 @@ public:
 
   void resetScene();
 
+  int getScreenWidth() const { return width; }
+  int getScreenHeight() const { return height; }
+
 private:
   bool mutexFree;
   
