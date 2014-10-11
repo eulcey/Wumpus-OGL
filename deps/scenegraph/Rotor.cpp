@@ -19,4 +19,5 @@ bool Rotor::accept(NodeVisitor& visitor)
 void Rotor::update(float deltaTime)
 {
   transform = cycleRotation*transform;
+  SceneNode::update(deltaTime);
 }

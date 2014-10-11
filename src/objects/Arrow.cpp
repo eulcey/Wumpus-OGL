@@ -34,7 +34,7 @@ bool Arrow::isAlive()
   if(!alive)
     return false;
   else {
-    if (spring != 0 && spring->percentToEnd() < 0.3f) {
+    if (spring != 0 && spring->percentToEnd() < 0.01f) {
       alive = false;
     }
     return alive;

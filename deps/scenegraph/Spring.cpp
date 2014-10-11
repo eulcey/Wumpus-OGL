@@ -39,6 +39,7 @@ void Spring::update(float deltaTime)
   if(lenToEnd > lenEndStart || lenToStart > lenEndStart) {
     cycleTranslation = cycleTranslation * -1.0f;
   }
+  SceneNode::update(deltaTime);
 }
 
 float Spring::percentToEnd()
