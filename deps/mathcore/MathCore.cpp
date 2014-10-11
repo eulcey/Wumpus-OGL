@@ -217,9 +217,14 @@ Vector3 Vector3::operator-(const Vector3 &other) const
   return Vector3(this->x-other.x, this->y-other.y, this->z-other.z);
 } 
 
-Vector3 Vector3::operator*(const double d) const
+Vector3 Vector3::operator*(const float d) const
 {
   return Vector3(this->x*d, this->y *d, this->z *d);
+}
+
+Vector3 Vector3::operator/(const float d) const
+{
+  return Vector3(this->x/d, this->y/d, this->z/d);
 }
 
 float Vector3::dot(const Vector3 &other) const
@@ -246,6 +251,11 @@ Vector3 Vector3::normalize() const
   res.y /= l;
   res.z /= l;
   return res;
+}
+
+float Vector3::lengthSquared() const
+{
+  return (x*x) + (y*y) + (z*z);
 }
 
 std::string Vector3::toString()

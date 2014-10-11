@@ -13,12 +13,10 @@ Rotor::~Rotor()
 
 bool Rotor::accept(NodeVisitor& visitor)
 {
-
-  TransformNode::accept(visitor);
-  return true;
+  return TransformNode::accept(visitor);
 }
 
-void Rotor::update(float actualTime)
+void Rotor::update(float deltaTime)
 {
   transform = cycleRotation*transform;
 }

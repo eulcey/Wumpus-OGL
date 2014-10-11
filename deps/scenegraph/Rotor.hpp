@@ -12,7 +12,7 @@ public:
   ~Rotor();
 
   virtual bool accept(NodeVisitor& visitor);
-  virtual void update(float actualTime);
+  virtual void update(float deltaTime);
 
   bool isRotating = true;
 

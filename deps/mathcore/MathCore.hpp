@@ -54,9 +54,11 @@ namespace matc
 
     Vector3 operator+(const Vector3 &other) const;
     Vector3 operator-(const Vector3 &other) const;
-    Vector3 operator*(const double d) const;
+    Vector3 operator*(const float d) const;
+    Vector3 operator/(const float d) const;
     float dot(const Vector3 &other) const;
     Vector3 cross(const Vector3 &other) const;
+    float lengthSquared() const;
 
     Vector3 normalize() const;
     
